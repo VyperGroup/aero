@@ -1,0 +1,1 @@
+//XMLHttpRequest.prototype.responseURL = null;

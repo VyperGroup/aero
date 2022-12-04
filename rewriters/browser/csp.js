@@ -1,0 +1,1 @@
+$aero.rewriteCsp = csp => "";
