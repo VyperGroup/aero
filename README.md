@@ -32,16 +32,16 @@ Location objects are replaced with a fake Location api, and also in the case of 
 
 ```js
 const aeroPrefix = "/aero/";
-const proxyPrefix = "/fetch";
 const prefix = "/go/";
+const proxyApi = "/fetch";
 const codec = "plain";
 const debug = {
-	url: true,
-	src: true,
+	url: false,
+	src: false,
 	scoping: false,
 };
 
-export { aeroPrefix, proxyPrefix, prefix, codec, debug };
+export { aeroPrefix, prefix, proxyApi, codec, debug };
 ```
 
 4. Create a service worker like this in the topmost directory

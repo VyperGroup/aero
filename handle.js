@@ -1,7 +1,7 @@
 // Routes
 import routes from "./routes.js";
 // Config
-import { aeroPrefix, proxyPrefix, prefix, debug } from "./config.js";
+import { aeroPrefix, proxyApi, prefix, debug } from "./config.js";
 
 // Utility
 import ProxyClient from "./util/ProxyClient.js";
@@ -28,7 +28,7 @@ const getPath = new RegExp(`^(${prefix})`, "g");
  */
 async function handle(event) {
 	// Construct proxy fetch instance
-	const proxyClient = new ProxyClient(self.location.origin + proxyPrefix);
+	const proxyClient = new ProxyClient(self.location.origin + proxyApi);
 
 	const reqUrl = new URL(event.request.url);
 
