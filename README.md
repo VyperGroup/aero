@@ -29,19 +29,20 @@ Location objects are replaced with a fake Location api, and also in the case of 
 1. Make sure your backend serves aero's [backend](https://git.semisol.dev/Haven/aero-backend) correctly
 2. Make sure you included aero into your site
 3. Create a config like this **named config.js**
+   _⚠️ Enabling Cors Emulation may result in more bugs due to unfinished compatibility_
 
 ```js
 const aeroPrefix = "/aero/";
 const prefix = "/go/";
 const proxyApi = "/fetch";
-const codec = "plain";
+const corsEmulation = false;
 const debug = {
 	url: false,
 	src: false,
 	scoping: false,
 };
 
-export { aeroPrefix, prefix, proxyApi, codec, debug };
+export { aeroPrefix, prefix, proxyApi, corsEmulation, debug };
 ```
 
 4. Create a service worker like this in the topmost directory
