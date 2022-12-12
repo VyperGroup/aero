@@ -1,7 +1,8 @@
-$aero.check = {
-	window: value => (value === window ? { location: $aero.location } : value),
-	location: value => (value == location ? $aero.location : value),
-};
+// In case a function overwrites the value of location in its parameters
+$aero.isLocation = val => val === location;
+
+//$aero.check = val => (val == location ? $aero.location : val);
+$aero.check = val => (val === "location" ? "$aero.location" : val);
 
 $aero.eval = new Proxy(eval, {
 	apply(target, that, args) {
@@ -23,8 +24,7 @@ window.Function = new Proxy(Function, {
 		} else if (
 			typeof func === "function" &&
 			!func.toString() !== `function ${func.name}() { [native code] }"`
-		);
-		{
+		) {
 			bak = func.toString();
 			func = $aero.scope(func.toString());
 		}
