@@ -1,12 +1,14 @@
+// Config
+import { aeroPrefix, proxyApi, prefix, debug, flags } from "./config.js";
+
 // Routes
 import routes from "./routes.js";
-// Config
-import { aeroPrefix, proxyApi, prefix, debug } from "./config.js";
 
 // Utility
 import ProxyClient from "./util/ProxyClient.js";
 import handleSharedModule from "./util/handleSharedModule.js";
 import getRequestUrl from "./util/getRequestUrl.js";
+
 // Cors Emulation
 import block from "./util/corsTest.js";
 import headersToObject from "./util/headersToObject.js";
@@ -147,7 +149,8 @@ async function handle(event) {
 					window.$aero = {
 						config: {
 							prefix: ${prefix},
-							debug: ${JSON.stringify(debug)}
+							debug: ${JSON.stringify(debug)},
+							flags: ${JSON.stringify(flags)}
 						}
 					};
 				</script>
@@ -166,7 +169,10 @@ async function handle(event) {
 	} else if (event.request.destination === "script")
 		// Scope the scripts
 		body = scope(await resp.text());
-	else if (event.request.destination === "serviceworker")
+	else if (
+		flags.nestedWorkers &&
+		event.request.destination === "serviceworker"
+	)
 		// SW nesting by proxifying internal apis
 		body = `
 if (typeof module === "undefined") {
