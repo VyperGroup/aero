@@ -9,7 +9,7 @@ Object.defineProperty($aero, "proxyLocation", {
 });
 
 // Private scope
-(function () {
+(() => {
 	// Prevent detection by instanceof
 	let inheritedObject = {};
 	Reflect.setPrototypeOf(inheritedObject, Location.prototype);
