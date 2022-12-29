@@ -14,8 +14,8 @@ import { prefix } from "../config.js";
  */
 function getRequestUrl(
 	url,
+	proxyUrl,
 	path,
-	proxyOrigin,
 	requestOrigin,
 	realOrigin,
 	isFirstRequest,
@@ -31,12 +31,26 @@ function getRequestUrl(
 	if (absoluteUrl) {
 		return requestOrigin + path;
 	} else {
+		const proxyOrigin = proxyUrl?.origin;
+		const proxyPath = proxyUrl?.pathname;
+
 		if (noPrefix) {
+			// Correct relative urls that don't end with a slash
+			let retUrl = noPrefix;
+			const proxyEndingPath = proxyPathSlashes?.at(-1);
+			if (proxyPathSlashes?.at(-2) !== proxyOrigin && proxyEndingPath.length > 0) {
+				const proxyPathSlashes = proxyPath?.split("/");
+				let noPrefixSplit = noPrefix?.split("/");
+
+				noPrefixSplit.splice(noPrefixSplit.length - 1, 0, proxyEndingPath);
+				retUrl = noPrefixSplit.join("/");
+			}
+
 			const protoSplit = noPrefix.split("https://");
 			const noPrefixProto = protoSplit[1];
 
 			return noPrefix.startsWith(proxyOrigin) || isIframe
-				? noPrefix
+				? retUrl
 				: `${proxyOrigin}/${noPrefixProto}`;
 		} else return proxyOrigin + path;
 	}

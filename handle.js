@@ -47,8 +47,8 @@ async function handle(event) {
 		// Proceed with the request like normal
 		return await fetch(event.request.url);
 
-	var proxyOrigin;
 	var winUrl;
+	var proxyUrl;
 	// Get the origin from the user's window
 	if (event.clientId !== "") {
 		// Get the current window
@@ -56,7 +56,7 @@ async function handle(event) {
 
 		winUrl = new URL(win.url);
 
-		proxyOrigin = new URL(winUrl.pathname.replace(getPath, "")).origin;
+		proxyUrl = new URL(winUrl.pathname.replace(getPath, ""))
 	}
 
 	// Determine if the request was made to load an html file; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn"t want it to rewrite a fetch request)
@@ -68,8 +68,8 @@ async function handle(event) {
 	// Parse the request url to get the url to proxy
 	const url = getRequestUrl(
 		winUrl,
+		proxyUrl,
 		path,
-		proxyOrigin,
 		reqUrl.origin,
 		self.location.origin,
 		firstReq,
