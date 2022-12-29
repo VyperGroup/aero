@@ -1,4 +1,4 @@
-window.postMessage = new Proxy(window.postMessage, {
+postMessage = new Proxy(postMessage, {
 	apply(target, that, args) {
 		[data, origin] = args;
 
@@ -15,7 +15,7 @@ window.postMessage = new Proxy(window.postMessage, {
 	},
 });
 
-window.addEventListener = new Proxy(window.addEventListener, {
+addEventListener = new Proxy(addEventListener, {
 	apply(target, that, args) {
 		[type, listener] = args;
 

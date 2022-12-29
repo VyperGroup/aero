@@ -12,12 +12,12 @@
 	};
 
 	// IndexedDB
-	window.indexedDB.open = new Proxy(indexedDB.open, storageNomenclature);
-	window.indexedDB.deleteDatabase = new Proxy(
+	indexedDB.open = new Proxy(indexedDB.open, storageNomenclature);
+	indexedDB.deleteDatabase = new Proxy(
 		indexedDB.deleteDatabase,
 		storageNomenclature
 	);
-	window.indexedDB.databases = new Proxy(indexedDB.databases, {
+	indexedDB.databases = new Proxy(indexedDB.databases, {
 		apply(target, that, args) {
 			const dbs = Reflect.apply(...arguments);
 
@@ -36,19 +36,19 @@
 	// To prevent issues when overwritten
 	const keyBak = Storage.prototype.key;
 
-	window.Storage.prototype.setItem = new Proxy(
+	Storage.prototype.setItem = new Proxy(
 		Storage.prototype.setItem,
 		storageNomenclature
 	);
-	window.Storage.prototype.getItem = new Proxy(
+	Storage.prototype.getItem = new Proxy(
 		Storage.prototype.getItem,
 		storageNomenclature
 	);
-	window.Storage.prototype.removeItem = new Proxy(
+	Storage.prototype.removeItem = new Proxy(
 		Storage.prototype.getItem,
 		storageNomenclature
 	);
-	window.Storage.prototype.clear = new Proxy(Storage.prototype.clear, {
+	Storage.prototype.clear = new Proxy(Storage.prototype.clear, {
 		apply() {
 			for (let i = 0; i < localStorage.length; i++) {
 				const key = keyBak(i);
@@ -58,7 +58,7 @@
 		},
 	});
 	/*
-	window.Storage.prototype.key = new Proxy(Storage.prototype.key, {
+	Storage.prototype.key = new Proxy(Storage.prototype.key, {
 		apply(target, that, args) {
 			[index] = args;
 

@@ -1,4 +1,4 @@
-window.WebSocket = new Proxy(WebSocket, {
+WebSocket = new Proxy(WebSocket, {
 	construct(target, args) {
 		console.log("Intercepting Websocket connection");
 

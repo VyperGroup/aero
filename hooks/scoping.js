@@ -12,7 +12,7 @@ if ($aero.config.flags.advancedScoping) {
 		},
 	});
 
-	window.Function = new Proxy(Function, {
+	Function = new Proxy(Function, {
 		construct(target, args) {
 			[func] = args;
 

@@ -146,7 +146,7 @@ async function handle(event) {
 						.catch(err => console.error(err.message));
 
 					// Aero's global namespace
-					window.$aero = {
+					const $aero = {
 						config: {
 							prefix: ${prefix},
 							debug: ${JSON.stringify(debug)},
