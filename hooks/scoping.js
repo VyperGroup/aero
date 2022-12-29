@@ -40,9 +40,16 @@ if ($aero.config.flags.advancedScoping) {
 		},
 	});
 
+	/*
 	Function.prototype.toString = new Proxy(Function.prototype.toString, {
-		apply: (target, that, args) => that.bak,
+		apply: (target, that, args) => {
+			//console.log(target);
+			console.log(that);
+			//console.log(args);
+			return that.bak
+		},
 	});
+	*/
 
 	Reflect.get = new Proxy(Reflect.get, {
 		apply(target, that, args) {
