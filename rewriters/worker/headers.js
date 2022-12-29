@@ -1,4 +1,4 @@
-import { prefix } from "../../config.js";
+import { prefix, flags } from "../../config.js";
 
 // Rewriters
 import { rewriteSetCookie } from "../shared/cookie.js";
@@ -6,7 +6,6 @@ import rewriteSrc from "../shared/src.js";
 
 const ignoredHeaders = [
 	"cache-control",
-	"content-security-policy",
 	"content-encoding",
 	"content-length",
 	"cross-origin-opener-policy",
@@ -19,8 +18,8 @@ const ignoredHeaders = [
 
 /**
  * Rewrites the location header
- * @param {object} headers - The url
- * @return {string} - The url pointed to the proxified url
+ * @param {object} The url
+ * @return {string} The url pointed to the proxified url
  */
 function rewriteLocation(url) {
 	// TODO: Use rewriteSrc
@@ -31,8 +30,8 @@ function rewriteLocation(url) {
 
 /**
  * Rewrites the headers
- * @param {object} headers - The headers
- * @return {string} - The rewritten headers
+ * @param {object} The headers
+ * @return {string} The rewritten headers
  */
 export default headers => {
 	const rewrittenHeaders = {};
@@ -40,7 +39,11 @@ export default headers => {
 	Object.keys(headers).forEach(key => {
 		const deleteHeader = ignoredHeaders.includes(key);
 
-		if (deleteHeader) return;
+		if (
+			deleteHeader ||
+			(!flags.corsEmulation && key === "content-security-policy")
+		)
+			return;
 
 		const value = headers[key];
 

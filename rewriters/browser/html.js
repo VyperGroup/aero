@@ -14,7 +14,7 @@ $aero.rewrite = el => {
 			const hasContent = el.innerHTML !== "";
 
 			if (hasContent) {
-				el.innerHTML = $aero.scope(el.innerText);
+				el.innerHTML = $aero.setText($aero.scope(el.innerText));
 
 				// The inline code is read-only, so the element must be cloned
 				const cloner = new $aero.Cloner(el);
@@ -66,7 +66,9 @@ $aero.rewrite = el => {
 		switch (el.httpEquiv) {
 			case "content-security-policy":
 				// Rewrite
-				el.content = $aero.rewriteCSP(el.content);
+				el.content = $aero.config.rewriteCSP
+					? $aero.rewriteCSP(el.content)
+					: "";
 			case "refresh":
 				el.content = el.content.replace(
 					/[0-9]+;url=(.*)/g,
@@ -75,8 +77,7 @@ $aero.rewrite = el => {
 		}
 	}
 
-	const hasIntegrity = "integrity" in el && el.integrity !== "";
-	if (hasIntegrity) {
+	if ("integrity" in el && el.integrity !== "") {
 		const cloner = new $aero.Cloner(el);
 
 		cloner.clone();

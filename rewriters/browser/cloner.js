@@ -20,7 +20,7 @@ $aero.Cloner = class {
 			}
 		}
 		if ("innerHTML" in el && el.innerHTML !== "")
-			clone.innerHTML = el.innerHTML;
+			$aero.setText(clone, el.innerHTML);
 	}
 	clone() {
 		// Insert
@@ -30,7 +30,7 @@ $aero.Cloner = class {
 		if (this.el instanceof HTMLScriptElement) {
 			// Disable old script by breaking the type so it doesn't run
 			this.el.type = "_";
-			this.el.innerHTML = "";
+			$aero.setText(this.el, "");
 		}
 
 		this.el.remove();
