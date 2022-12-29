@@ -1,7 +1,7 @@
 export default {
 	// Used by both the inject code and this service worker
 	"rewriters/shared": ["cookie", "scope", "src"],
-	"rewriters/browser": ["cloner", "html"],
+	"rewriters/browser": ["cors", "cloner", "html"],
 	// Hooks into JS apis
 	hooks: [
 		"cookie",
@@ -13,7 +13,7 @@ export default {
 		"navigator",
 		"popup",
 		"scoping",
-		"wasm",
+		"storage",
 		"workers",
 		"ws",
 	],
