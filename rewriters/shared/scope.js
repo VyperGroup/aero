@@ -86,7 +86,7 @@ $aero.scope = script => {
 				} else return m;
 			}
 		);
-		
+
 	if ($aero.config.debug.scoping)
 		console.log(`Scoping script\n${script}\n->\n${rewrittenScript}`);
 

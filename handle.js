@@ -56,7 +56,7 @@ async function handle(event) {
 
 		winUrl = new URL(win.url);
 
-		proxyUrl = new URL(winUrl.pathname.replace(getPath, ""))
+		proxyUrl = new URL(winUrl.pathname.replace(getPath, ""));
 	}
 
 	// Determine if the request was made to load an html file; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn"t want it to rewrite a fetch request)
