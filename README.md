@@ -40,6 +40,7 @@ const flags = {
 	advancedScoping: false,
 	corsEmulation: false,
 	nestedWorkers: false,
+	wrtc: false,
 };
 const debug = {
 	url: false,
