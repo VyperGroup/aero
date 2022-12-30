@@ -7,7 +7,6 @@ export default {
 		"cookie",
 		"element",
 		"history",
-		"http",
 		"location",
 		"messages",
 		"navigator",
