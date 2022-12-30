@@ -37,12 +37,14 @@ function getRequestUrl(
 		if (noPrefix) {
 			// Correct relative urls that don't end with a slash
 			let retUrl = noPrefix;
+
+			const proxyPathSlashes = proxyPath?.split("/");
+
 			const proxyEndingPath = proxyPathSlashes?.at(-1);
 			if (
 				proxyPathSlashes?.at(-2) !== proxyOrigin &&
 				proxyEndingPath.length > 0
 			) {
-				const proxyPathSlashes = proxyPath?.split("/");
 				let noPrefixSplit = noPrefix?.split("/");
 
 				noPrefixSplit.splice(
