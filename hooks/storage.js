@@ -6,7 +6,7 @@
 			[key] = args;
 
 			args[0] = prefix + key;
-			
+
 			return Reflect.apply(...arguments);
 		},
 	};

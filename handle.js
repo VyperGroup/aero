@@ -1,5 +1,12 @@
 // Config
-import { aeroPrefix, proxyApi, proxyApiWs, prefix, debug, flags } from "./config.js";
+import {
+	aeroPrefix,
+	proxyApi,
+	proxyApiWs,
+	prefix,
+	debug,
+	flags,
+} from "./config.js";
 
 // Routes
 import routes from "./routes.js";

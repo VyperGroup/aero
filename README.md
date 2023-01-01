@@ -26,7 +26,7 @@ Location objects are replaced with a fake Location api, and also in the case of 
 
 # Why doesn't aero work on iOS?
 
-The bug is Apple's fault not ours, since Safari doesn't support the Service Worker standard. This would normally be fine in most mobile operating systems but due to the restrictions apple imposes on the apps, browsers are forced to use Safari's engine. 
+The bug is Apple's fault not ours, since Safari doesn't support the Service Worker standard. This would normally be fine in most mobile operating systems but due to the restrictions apple imposes on the apps, browsers are forced to use Safari's engine.
 
 # How do I use aero?
 
