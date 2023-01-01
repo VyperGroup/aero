@@ -22,7 +22,11 @@ HTML is intercepted and rewritten through a Mutation Observer where important el
 
 ## Deep Scope Property Checking
 
-Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect hooks. I hope you enjoy using aero on your site!
+Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect hooks. *Support for this feature is enabled in flags*
+
+## Cors Emulation
+
+Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! This isn't fully complete yet, as we still have more rules to finish. *Support for this feature is enabled in flags*
 
 # Why doesn't aero work on iOS?
 
