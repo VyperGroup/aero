@@ -35,6 +35,7 @@ Location objects are replaced with a fake Location api, and also in the case of 
 const aeroPrefix = "/aero/";
 const prefix = "/go/";
 const proxyApi = "/fetch";
+const proxyApiWs = "/fetchWs";
 // For experimental features
 const flags = {
 	advancedScoping: false,

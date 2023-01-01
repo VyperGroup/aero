@@ -1,11 +1,11 @@
 // Config
-import { aeroPrefix, proxyApi, prefix, debug, flags } from "./config.js";
+import { aeroPrefix, proxyApi, proxyApiWs, prefix, debug, flags } from "./config.js";
 
 // Routes
 import routes from "./routes.js";
 
 // Utility
-import ProxyClient from "./util/ProxyClient.js";
+import ProxyFetch from "./util/ProxyFetch.js";
 import handleSharedModule from "./util/handleSharedModule.js";
 import getRequestUrl from "./util/getRequestUrl.js";
 
@@ -30,7 +30,7 @@ const getPath = new RegExp(`^(${prefix})`, "g");
  */
 async function handle(event) {
 	// Construct proxy fetch instance
-	const proxyClient = new ProxyClient(self.location.origin + proxyApi);
+	const proxyFetch = new ProxyFetch(self.location.origin + proxyApi);
 
 	const reqUrl = new URL(event.request.url);
 
@@ -96,7 +96,7 @@ async function handle(event) {
 	if (event.request.method === "POST") opts.body = await event.request.text();
 
 	// Make the request to the proxy
-	const resp = await proxyClient.fetch(url, opts);
+	const resp = await proxyFetch.fetch(url, opts);
 
 	// Rewrite the headers
 	const headers = headersToObject(resp.headers);
@@ -148,7 +148,8 @@ async function handle(event) {
 					// Aero's global namespace
 					var $aero = {
 						config: {
-							prefix: ${prefix},
+							prefix: "${prefix}",
+							proxyApiWs: "${proxyApiWs}",
 							debug: ${JSON.stringify(debug)},
 							flags: ${JSON.stringify(flags)}
 						}

@@ -28,5 +28,4 @@ export default class {
 
 		return fetch(this.endpoint, ret);
 	}
-	ws(url) {}
 }
