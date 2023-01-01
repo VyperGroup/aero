@@ -24,6 +24,10 @@ HTML is intercepted and rewritten through a Mutation Observer where important el
 
 Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect hooks. I hope you enjoy using aero on your site!
 
+# Why doesn't aero work on iOS?
+
+The bug is Apple's fault not ours, since Safari doesn't support the Service Worker standard. This would normally be fine in most mobile operating systems but due to the restrictions apple imposes on the apps, browsers are forced to use Safari's engine. 
+
 # How do I use aero?
 
 1. Make sure your backend serves aero's [backend](https://git.semisol.dev/Haven/aero-backend) correctly
