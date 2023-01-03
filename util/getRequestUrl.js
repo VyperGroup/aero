@@ -2,45 +2,43 @@ import { prefix } from "../config.js";
 
 /**
  * Gets the url that will actually be fetched
- * @param {string} The
- * @param {string}
- * @param {string}
- * @param {string}
- * @param {string}
- * @param {boolean}
- * @param {boolean} Iframe
+ * @param {string} The origin of the site
+ * @param {string} The origin of the service worker
+ * @param {string} The raw url after the proxy prefix
+ * @param {string} The path of the site 
+ * @param {boolean} If the request is for the homepage
+ * @param {boolean} If the site is inside of an iFrame
  *
  * @returns {URL} The url to proxy
  */
 function getRequestUrl(
-	url,
+	origin,
+    workerOrigin,
 	proxyUrl,
 	path,
-	requestOrigin,
-	realOrigin,
-	isFirstRequest,
+	isHomepage,
 	isIframe
 ) {
 	const noPrefix = path.split(prefix)[1];
 
+	if (isHomepage) return new URL(noPrefix);
+	
 	// Don't hardcode origins
-	const absoluteUrl = requestOrigin !== realOrigin;
-
-	if (isFirstRequest) return new URL(noPrefix);
+	const absoluteUrl = origin !== workerOrigin;
 
 	if (absoluteUrl) {
-		return requestOrigin + path;
+		return origin + path;
 	} else {
 		const proxyOrigin = proxyUrl?.origin;
 		const proxyPath = proxyUrl?.pathname;
 
 		if (noPrefix) {
-			// Correct relative urls that don't end with a slash
 			let retUrl = noPrefix;
 
 			const proxyPathSlashes = proxyPath?.split("/");
-
 			const proxyEndingPath = proxyPathSlashes?.at(-1);
+			
+			// Correct relative urls that don't end with a slash; this is an edge case
 			if (
 				proxyPathSlashes?.at(-2) !== proxyOrigin &&
 				proxyEndingPath.length > 0

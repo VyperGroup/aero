@@ -54,32 +54,30 @@ async function handle(event) {
 		// Proceed with the request like normal
 		return await fetch(event.request.url);
 
-	var winUrl;
 	var proxyUrl;
 	// Get the origin from the user's window
 	if (event.clientId !== "") {
 		// Get the current window
 		const win = await clients.get(event.clientId);
 
-		winUrl = new URL(win.url);
-
-		proxyUrl = new URL(winUrl.pathname.replace(getPath, ""));
+        // Get the url after the prefix
+		proxyUrl = new URL(new URL(win.url).pathname.replace(getPath, ""));
 	}
 
-	// Determine if the request was made to load an html file; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn"t want it to rewrite a fetch request)
-	const firstReq =
+	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
+	const homepage =
 		event.request.mode === "navigate" &&
 		event.request.destination === "document";
+	// This is used for determining the request url and 
 	const iFrame = event.request.destination === "iframe";
 
 	// Parse the request url to get the url to proxy
 	const url = getRequestUrl(
-		winUrl,
-		proxyUrl,
-		path,
 		reqUrl.origin,
 		self.location.origin,
-		firstReq,
+		proxyUrl,
+		path,
+		homepage,
 		iFrame
 	);
 
@@ -107,19 +105,17 @@ async function handle(event) {
 
 	// Rewrite the headers
 	const headers = headersToObject(resp.headers);
-
-	const type = headers["content-type"];
-
 	const rewrittenHeaders = headersRewriter(headers);
+	
+	const type = headers["content-type"];
 
 	const html =
 		// Not all sites respond with a type
 		typeof type === "undefined" || type.startsWith("text/html");
 
-	const rewriteHtml = (firstReq || iFrame) && html;
-
 	// Rewrite the body
 	let body;
+	const rewriteHtml = (homepage || iFrame) && html;
 	if (rewriteHtml) {
 		body = await resp.text();
 
@@ -166,7 +162,7 @@ async function handle(event) {
 				<!-- Injected Aero code -->
 				${unwrapImports(routes)}
 				<script>
-					// This is used to later copy into an iframe or innerhtml
+					// This is used to later copy into an iFrame's srcdoc; this is an edge case
 					$aero.imports = \`${unwrapImports(routes, true)}\`;
 				</script>
 				</head>
