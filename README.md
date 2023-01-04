@@ -22,11 +22,11 @@ HTML is intercepted and rewritten through a Mutation Observer where important el
 
 ## Deep Scope Property Checking
 
-Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect hooks. *Support for this feature is enabled in flags*
+Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect hooks. _Support for this feature is enabled in flags_
 
 ## Cors Emulation
 
-Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! This isn't fully complete yet, as we still have more rules to finish. *Support for this feature is enabled in flags*
+Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! This isn't fully complete yet, as we still have more rules to finish. _Support for this feature is enabled in flags_
 
 # Why doesn't aero work on iOS?
 
@@ -36,31 +36,7 @@ The bug is Apple's fault not ours, since Safari doesn't support the Service Work
 
 1. Make sure your backend serves aero's [backend](https://git.semisol.dev/Haven/aero-backend) correctly
 2. Make sure you included aero into your site
-3. Create a config like this **named config.js**
-   _⚠️ Enabling flags may result in more bugs due to unfinished compatibility_
-
-```js
-const aeroPrefix = "/aero/";
-const prefix = "/go/";
-const proxyApi = "/fetch";
-const proxyApiWs = "/fetchWs";
-// For experimental features
-const flags = {
-	advancedScoping: false,
-	corsEmulation: false,
-	nestedWorkers: false,
-	wrtc: false,
-};
-const debug = {
-	url: false,
-	src: false,
-	scoping: false,
-};
-
-export { aeroPrefix, prefix, proxyApi, flags, debug };
-```
-
-4. Create a service worker like this in the topmost directory
+3. Create a service worker like this in the topmost directory
 
 ```js
 import handle from "./aero/handle.js";
@@ -74,7 +50,7 @@ self.addEventListener("fetch", async event =>
 );
 ```
 
-5. Register the service worker in a script on your main page like this
+4. Register the service worker in a script on your main page like this
    _This example uses our [sdk](https://git.semisol.dev/ProxyHaven/sdk)_
 
 ```js
