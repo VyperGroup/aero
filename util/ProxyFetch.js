@@ -4,7 +4,7 @@ export default class {
 	/**
 	 * A wrapper for Fetch that routes all requests through the proxy backend
 	 * @constructor
-	 * @param {string} The api route for the proxy backend
+	 * @param {string} - The api route for the proxy backend
 	 */
 	constructor(endpoint) {
 		this.endpoint = endpoint;

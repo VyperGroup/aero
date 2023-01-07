@@ -2,18 +2,18 @@ import { prefix } from "../config.js";
 
 /**
  * Gets the url that will actually be fetched
- * @param {string} The origin of the site
- * @param {string} The origin of the service worker
- * @param {string} The raw url after the proxy prefix
- * @param {string} The path of the site 
- * @param {boolean} If the request is for the homepage
- * @param {boolean} If the site is inside of an iFrame
+ * @param {string} - The origin of the site
+ * @param {string} - The origin of the service worker
+ * @param {string} - raw url after the proxy prefix
+ * @param {string} - path of the site
+ * @param {boolean} - the request is for the homepage
+ * @param {boolean} - the site is inside of an iFrame
  *
  * @returns {URL} The url to proxy
  */
 function getRequestUrl(
 	origin,
-    workerOrigin,
+	workerOrigin,
 	proxyUrl,
 	path,
 	isHomepage,
@@ -21,8 +21,9 @@ function getRequestUrl(
 ) {
 	const noPrefix = path.split(prefix)[1];
 
+	// If it is the first request, there is no need to do any relative url checking
 	if (isHomepage) return new URL(noPrefix);
-	
+
 	// Don't hardcode origins
 	const absoluteUrl = origin !== workerOrigin;
 
@@ -37,7 +38,7 @@ function getRequestUrl(
 
 			const proxyPathSlashes = proxyPath?.split("/");
 			const proxyEndingPath = proxyPathSlashes?.at(-1);
-			
+
 			// Correct relative urls that don't end with a slash; this is an edge case
 			if (
 				proxyPathSlashes?.at(-2) !== proxyOrigin &&

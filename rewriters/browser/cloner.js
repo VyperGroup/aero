@@ -3,7 +3,7 @@ $aero.Cloner = class {
 	/**
 	 * Clones an element without their read-only integrity attribute
 	 * @constructor
-	 * @param {element} The element to be cloned
+	 * @param {element} - The element to be cloned
 	 */
 	constructor(el) {
 		const clone = document.createElement(el.tagName);

@@ -1,6 +1,6 @@
 /**
  * Rewrite an element
- * @param {Element} element The event to rewrite
+ * @param {Element} - element The event to rewrite
  */
 $aero.rewrite = el => {
 	if (typeof el.observed !== "undefined") return;

@@ -8,8 +8,8 @@ if (typeof $aero === "undefined")
 
 /**
  * Deep property check scoping
- * @param {string} The script to be rewritten
- * @return {string} The rewritten script
+ * @param {string} - The script to be rewritten
+ * @return {string} - The rewritten script
  */
 $aero.scope = script => {
 	const hide = src => src;

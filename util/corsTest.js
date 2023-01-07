@@ -1,6 +1,6 @@
 /**
  * Tests to see if the request would be blocked due to cors rules
- * @param {String} url The url that is being tested
+ * @param {String} - url The url that is being tested
  * @return {Boolean} The result
  */
 export default async url => {

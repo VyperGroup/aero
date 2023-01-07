@@ -1,41 +1,38 @@
-// Config
-import {
-	aeroPrefix,
-	proxyApi,
-	proxyApiWs,
-	prefix,
-	debug,
-	flags,
-} from "./config.js";
-
 // Routes
 import routes from "./routes.js";
+
+// Dynamic Config
+import getConfig from "./util/getConfig.js";
 
 // Utility
 import ProxyFetch from "./util/ProxyFetch.js";
 import handleSharedModule from "./util/handleSharedModule.js";
 import getRequestUrl from "./util/getRequestUrl.js";
+import headersToObject from "./util/headersToObject.js";
+import unwrapImports from "./util/unwrapImports.js";
 
 // Cors Emulation
 import block from "./util/corsTest.js";
-import headersToObject from "./util/headersToObject.js";
-import unwrapImports from "./util/unwrapImports.js";
 
 // Rewriters
 import headersRewriter from "./rewriters/worker/headers.js";
 import rewriteManifest from "./rewriters/worker/manifest.js";
 import scope from "./rewriters/shared/scope.js";
 
-// Separate the prefix from the url to get the proxy url isolated
-const getPath = new RegExp(`^(${prefix})`, "g");
-
 /**
  * Handles the requests
- * @param {FetchEvent} The event
- * @param {Location} The window location
- * @returns {Response} The proxified response
+ * @param {FetchEvent} - The event
+ * @param {Location} - The window location
+ * @returns {Response} - The proxified response
  */
 async function handle(event) {
+	// Dynamic config
+	const { aeroPrefix, proxyApi, proxyApiWs, prefix, debug, flags } =
+		getConfig();
+
+	// Separate the prefix from the url to get the proxy url isolated
+	const getPath = new RegExp(`^(${prefix})`, "g");
+
 	// Construct proxy fetch instance
 	const proxyFetch = new ProxyFetch(self.location.origin + proxyApi);
 
@@ -60,7 +57,7 @@ async function handle(event) {
 		// Get the current window
 		const win = await clients.get(event.clientId);
 
-        // Get the url after the prefix
+		// Get the url after the prefix
 		proxyUrl = new URL(new URL(win.url).pathname.replace(getPath, ""));
 	}
 
@@ -68,7 +65,7 @@ async function handle(event) {
 	const homepage =
 		event.request.mode === "navigate" &&
 		event.request.destination === "document";
-	// This is used for determining the request url and 
+	// This is used for determining the request url and
 	const iFrame = event.request.destination === "iframe";
 
 	// Parse the request url to get the url to proxy
@@ -85,6 +82,7 @@ async function handle(event) {
 	if (await block(url.href))
 		return new Response("Blocked by CORS", { status: 500 });
 
+	// Log requests
 	if (debug.url)
 		console.log(
 			event.request.destination == ""
@@ -94,10 +92,10 @@ async function handle(event) {
 
 	let opts = {
 		method: event.request.method,
-		// TODO: Rewrite requestHeaders
 		headers: event.request.headers,
 	};
 
+	// A request body should only be created under a post request
 	if (event.request.method === "POST") opts.body = await event.request.text();
 
 	// Make the request to the proxy
@@ -106,7 +104,7 @@ async function handle(event) {
 	// Rewrite the headers
 	const headers = headersToObject(resp.headers);
 	const rewrittenHeaders = headersRewriter(headers);
-	
+
 	const type = headers["content-type"];
 
 	const html =
