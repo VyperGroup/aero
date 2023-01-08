@@ -4,7 +4,7 @@ aero an innovative, first of its kind, interception-based web proxy from, has no
 
 # How to use aero
 
-1. Make sure your backend serves aero's [backend](https://github.com/aero-backend) correctly
+1. Make sure your backend serves an aero [backend](https://github.com/aero-backends) correctly
 2. Make sure you included aero into your site
 3. Create a service worker like this in the topmost directory
 
