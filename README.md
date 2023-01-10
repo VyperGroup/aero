@@ -32,7 +32,7 @@ import { proxyApi } from "./aero/config.js";
 import ProxyManager from "./sdk/ProxyManager.js";
 
 const proxyManager = new ProxyManager();
-7;
+
 proxyManager.add("/sw.js", proxyApi);
 ```
 
