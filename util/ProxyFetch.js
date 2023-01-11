@@ -22,7 +22,9 @@ export default class {
 			if ("body" in opts) ret.body = opts.body;
 			if ("headers" in opts)
 				ret.headers["x-headers"] = JSON.stringify(
-					headersToObject(opts.headers)
+					typeof opts.headers === "object"
+						? opts.headers
+						: headersToObject(opts.headers)
 				);
 		}
 
