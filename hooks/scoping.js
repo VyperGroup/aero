@@ -59,15 +59,11 @@ Reflect.get = new Proxy(Reflect.get, {
 		if (_target instanceof Window && prop === "location")
 			return $aero.location;
 		if (_target instanceof Document) {
-			if (prop === "location")
-				return $aero.location;
-			if (prop === "domain")
-				return $aero.document.domain;
-			if (prop === "URL")
-				return $aero.document.URL;
+			if (prop === "location") return $aero.location;
+			if (prop === "domain") return $aero.document.domain;
+			if (prop === "URL") return $aero.document.URL;
 		}
-		if (_target instanceof Location)
-			return $aero.location[prop];
+		if (_target instanceof Location) return $aero.location[prop];
 		return target(...args);
 	},
 });
@@ -76,8 +72,7 @@ Reflect.set = new Proxy(Reflect.set, {
 	apply(target, that, args) {
 		[_target, prop, value] = args;
 
-		if (_target instanceof Location)
-			return $aero.location[prop] = value;
+		if (_target instanceof Location) return ($aero.location[prop] = value);
 		return target(...args);
 	},
 });
