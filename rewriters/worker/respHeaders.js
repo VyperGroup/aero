@@ -2,7 +2,6 @@ import { prefix, flags } from "../../config.js";
 
 // Rewriters
 import { rewriteSetCookie } from "../shared/cookie.js";
-import rewriteSrc from "../shared/src.js";
 
 const ignoredHeaders = [
 	"cache-control",
@@ -22,15 +21,14 @@ const ignoredHeaders = [
  * @return {string} The url pointed to the proxified url
  */
 function rewriteLocation(url) {
-	// TODO: Use rewriteSrc
 	const rewrite = self.location.origin + prefix + url;
 
 	return rewrite;
 }
 
 /**
- * Rewrites the headers
- * @param {object} The headers
+ * Rewrites the response headers
+ * @param {object}
  * @return {string} The rewritten headers
  */
 export default headers => {

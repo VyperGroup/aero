@@ -15,7 +15,8 @@ import unwrapImports from "./util/unwrapImports.js";
 import block from "./util/corsTest.js";
 
 // Rewriters
-import headersRewriter from "./rewriters/worker/headers.js";
+import rewriteReqHeaders from "./rewriters/worker/reqHeaders.js";
+import rewriteRespHeaders from "./rewriters/worker/respHeaders.js";
 import rewriteManifest from "./rewriters/worker/manifest.js";
 import scope from "./rewriters/shared/scope.js";
 
@@ -90,9 +91,13 @@ async function handle(event) {
 				: `${event.request.method} ${url} (${event.request.destination})`
 		);
 
+	// Rewrite the request headers
+	const reqHeaders = headersToObject(event.request.headers);
+	const rewrittenReqHeaders = rewriteReqHeaders(reqHeaders);
+
 	let opts = {
 		method: event.request.method,
-		headers: event.request.headers,
+		headers: rewrittenReqHeaders,
 	};
 
 	// A request body should only be created under a post request
@@ -101,11 +106,11 @@ async function handle(event) {
 	// Make the request to the proxy
 	const resp = await proxyFetch.fetch(url, opts);
 
-	// Rewrite the headers
-	const headers = headersToObject(resp.headers);
-	const rewrittenHeaders = headersRewriter(headers);
+	// Rewrite the response headers
+	const respHeaders = headersToObject(resp.headers);
+	const rewrittenRespHeaders = rewriteRespHeaders(respHeaders);
 
-	const type = headers["content-type"];
+	const type = respHeaders["content-type"];
 
 	const html =
 		// Not all sites respond with a type
@@ -195,7 +200,7 @@ ${body}
 	// Return the response
 	return new Response(body, {
 		status: resp.status ? resp.status : 200,
-		headers: rewrittenHeaders,
+		headers: rewrittenRespHeaders,
 	});
 }
 
