@@ -50,22 +50,34 @@ if ($aero.config.flags.advancedScoping) {
 		},
 	});
 	*/
-
-	Reflect.get = new Proxy(Reflect.get, {
-		apply(target, that, args) {
-			[_target, prop] = args;
-			_target instanceof Window && prop === location
-				? $aero.location
-				: target(...args);
-		},
-	});
-
-	Reflect.set = new Proxy(Reflect.set, {
-		apply(target, that, args) {
-			[_target, prop, value] = args;
-			_target instanceof Location && _target !== $aero.location
-				? ($aero.location[prop] = value)
-				: target(...args);
-		},
-	});
 }
+
+Reflect.get = new Proxy(Reflect.get, {
+	apply(target, that, args) {
+		[_target, prop] = args;
+
+		if (_target instanceof Window && prop === "location")
+			return $aero.location;
+		if (_target instanceof Document) {
+			if (prop === "location")
+				return $aero.location;
+			if (prop === "domain")
+				return $aero.document.domain;
+			if (prop === "URL")
+				return $aero.document.URL;
+		}
+		if (_target instanceof Location)
+			return $aero.location[prop];
+		return target(...args);
+	},
+});
+
+Reflect.set = new Proxy(Reflect.set, {
+	apply(target, that, args) {
+		[_target, prop, value] = args;
+
+		if (_target instanceof Location)
+			return $aero.location[prop] = value;
+		return target(...args);
+	},
+});
