@@ -93,7 +93,11 @@ async function handle(event) {
 
 	// Rewrite the request headers
 	const reqHeaders = headersToObject(event.request.headers);
-	const rewrittenReqHeaders = rewriteReqHeaders(reqHeaders, proxyUrl, afterPrefix);
+	const rewrittenReqHeaders = rewriteReqHeaders(
+		reqHeaders,
+		proxyUrl,
+		afterPrefix
+	);
 
 	let opts = {
 		method: event.request.method,
@@ -118,8 +122,8 @@ async function handle(event) {
 
 	// Rewrite the body
 	let body;
-	const rewriteHtml = (homepage || iFrame) && html;
-	if (rewriteHtml) {
+	const noModuleSupportMsg = "No nest support for service worker";
+	if ((homepage || iFrame) && html) {
 		body = await resp.text();
 
 		if (body !== "") {
@@ -176,24 +180,44 @@ async function handle(event) {
 	} else if (event.request.destination === "script")
 		// Scope the scripts
 		body = scope(await resp.text());
+	else if (event.request.destination === "manifest")
+		body = rewriteManifest(await resp.text());
+	// Nests
+	else if (flags.nestedWorkers && event.request.destination === "worker")
+		body = `
+if (typeof module !== "undefined")
+	importScripts("${aeroPrefix}nest/worker.js");
+else
+	console.warn("${noModuleSupportMsg}");
+
+${body}
+`;
+	else if (
+		flags.nestedWorkers &&
+		event.request.destination === "sharedworker"
+	)
+		body = `
+if (typeof module !== "undefined") {
+	importScripts("${aeroPrefix}nest/worker.js");
+	importScripts("${aeroPrefix}nest/sharedworker.js");
+} else
+	console.warn("${noModuleSupportMsg}");
+	
+${body}
+`;
 	else if (
 		flags.nestedWorkers &&
 		event.request.destination === "serviceworker"
 	)
-		// SW nesting by proxifying internal apis
 		body = `
-if (typeof module === "undefined") {
-	importScripts("./nest/worker.js");
-	importScripts("./nest/sw.js");
-} else {
-	// sw.js doesn't need any module imports as importScripts isn't a thing in module scripts
-	import { onevent, Clients.get, self.addEventListener } from "./worker.js";
-}
+if (typeof module !== "undefined") {
+	importScripts("${aeroPrefix}nest/worker.js");
+	importScripts("${aeroPrefix}nest/sw.js");
+} else
+	console.warn("${noModuleSupportMsg}");
 
 ${body}
 		`;
-	else if (event.request.destination === "manifest")
-		body = rewriteManifest(await resp.text());
 	// No rewrites are needed; proceed as normal
 	else body = resp.body;
 

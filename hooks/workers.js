@@ -15,41 +15,38 @@ if ($aero.config.nestedWorkers) {
 		);
 
 		const rewriteReg = reg =>
-			reg.map(
-				reg =>
-					(reg.active.scriptURL = reg.active.scriptURL.match(
-						new RegExp(
-							`(?<=${$aero.proxyLocation.hostname}).*`,
-							"g"
-						)
-					)[0])
-			);
+			// Don't let the site see the aero sw
+			(reg.active.scriptURL = reg.active.scriptURL.match(
+				new RegExp(
+					`(?<=${location.origin}${prefix}${$aero.proxyLocation.origin}).*`,
+					"g"
+				)
+			)[0]);
 
 		navigator.serviceWorker.getRegistration = new Proxy(
 			navigator.serviceWorker.getRegistration,
 			{
-				async apply(target, that, args) {
-					const reg = await target();
-
-					reg.active.scriptUrl === "/sw.js"
-						? undefined
-						: rewriteReg(reg);
-				},
+				apply: async (target, that, args) =>
+					(await target()).map(reg => rewriteReg(reg)),
 			}
 		);
 		navigator.serviceWorker.getRegistrations = new Proxy(
 			navigator.serviceWorker.getRegistrations,
 			{
-				async apply(target, that, args) {
-					return rewriteReg(await target());
-				},
+				apply: async (target, that, args) => rewriteReg(await target()),
 			}
 		);
 	}
 
 	Worker = new Proxy(Worker, {
 		construct(target, args) {
-			return Reflect.construct(target, args);
+			return Reflect.construct(...arguments);
+		},
+	});
+
+	SharedWorker = new Proxy(SharedWorker, {
+		construct(target, args) {
+			return Reflect.construct(...arguments);
 		},
 	});
 }
