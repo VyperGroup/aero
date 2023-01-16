@@ -36,6 +36,16 @@ const proxyManager = new ProxyManager();
 proxyManager.add("/sw.js", proxyApi);
 ```
 
+# Directories
+
+**apis** API interceptors for site code
+**workerApis** Worker-related API interceptors
+**injects** - Code added to the site as a script that isn't a hook
+**nest** - Worker API interceptors
+**rewriters** - Rewriters
+**util** - miscellaneous modules
+...
+
 # Faq
 
 ## When will aero release...
@@ -70,7 +80,7 @@ HTML is intercepted and rewritten through a Mutation Observer where important el
 
 ## Deep Scope Property Checking
 
-Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect hooks. _Support for this feature is enabled in flags_
+Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect interceptors. _Support for this feature is enabled in flags_
 
 ## Cors Emulation
 

@@ -48,7 +48,7 @@ async function handle(event) {
 	)
 		return await handleSharedModule(event);
 	// Don't rewrite requests for aero library files
-	else if (path.startsWith(aeroPrefix))
+	if (path.startsWith(aeroPrefix))
 		// Proceed with the request like normal
 		return await fetch(event.request.url);
 
@@ -198,8 +198,8 @@ ${body}
 	)
 		body = `
 if (typeof module !== "undefined") {
-	importScripts("${aeroPrefix}nest/worker.js");
-	importScripts("${aeroPrefix}nest/sharedworker.js");
+	importScripts("${aeroPrefix}workerApis/worker.js");
+	importScripts("${aeroPrefix}workerApis/sharedworker.js");
 } else
 	console.warn("${noModuleSupportMsg}");
 	
@@ -211,8 +211,8 @@ ${body}
 	)
 		body = `
 if (typeof module !== "undefined") {
-	importScripts("${aeroPrefix}nest/worker.js");
-	importScripts("${aeroPrefix}nest/sw.js");
+	importScripts("${aeroPrefix}workerApis/worker.js");
+	importScripts("${aeroPrefix}workerApis/sw.js");
 } else
 	console.warn("${noModuleSupportMsg}");
 
