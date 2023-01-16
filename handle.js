@@ -161,9 +161,11 @@ async function handle(event) {
 							prefix: "${prefix}",
 							proxyApiWs: "${proxyApiWs}",
 							debug: ${JSON.stringify(debug)},
-							flags: ${JSON.stringify(flags)}
+							flags: ${JSON.stringify(flags)},
 						}
 					};
+
+					$aero.afterPrefix = new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g");
 				</script>
 
 				<!-- Injected Aero code -->

@@ -1,11 +1,6 @@
 // Dynamically update location using a function getters
 Object.defineProperty($aero, "proxyLocation", {
-	get: () =>
-		new URL(
-			location.href.match(
-				new RegExp(`(?<=${$aero.config.prefix}).*`, "g")
-			)[0]
-		),
+	get: () => new URL(location.href.replace($aero.afterPrefix, "")),
 });
 
 // Private scope
