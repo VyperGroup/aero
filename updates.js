@@ -1,4 +1,4 @@
-import handleStore from "./util/handleStore.js";
+import getStore from "./util/getStore.js";
 
 import { dynamicConfig, flags } from "./config.js";
 
@@ -7,7 +7,7 @@ const { dbName, id } = dynamicConfig;
 // For dynamic config updates
 export default () => {
 	if (flags.dynamicConfig)
-		handleStore(dbName, store => {
+		getStore(dbName, store => {
 			self.addEventListener("message", event => {
 				const config = event.data;
 
