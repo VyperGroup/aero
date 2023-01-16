@@ -6,15 +6,11 @@ if (typeof $aero === "undefined")
 		config: config,
 	};
 
+/**
+ * This should not be used for processed html attributes, rather rewriteSrcHtml
+ * @param {string} - The url to rewrite
+ */
 $aero.rewriteSrc = url => {
-	if (/^(about:|data:|javascript:)/g.test(url)) return url;
-
-	if (url === null) {
-		console.error("Nullish value passed to the src rewriter");
-
-		return url;
-	}
-
 	const rawProxyUrl =
 		location.pathname.replace(new RegExp(`^(${$aero.config.prefix})`), "") +
 		location.search;

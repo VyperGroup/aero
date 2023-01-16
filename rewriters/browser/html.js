@@ -29,7 +29,7 @@ $aero.rewrite = el => {
 
 		el._href = href;
 
-		el.setAttribute("href", $aero.rewriteSrc(href));
+		el.setAttribute("href", $aero.rewriteHtmlSrc(href));
 	} else if (tag === "form" && /*Don't rewrite again*/ !el._action) {
 		const action = el.getAttribute("action");
 
@@ -40,12 +40,16 @@ $aero.rewrite = el => {
 			// Backup
 			el._action = action;
 
-			el.setAttribute("action", $aero.rewriteSrc(action));
+			el.setAttribute("action", $aero.rewriteHtmlSrc(action));
 		}
 	} else if (tag === "iframe") {
 		const srcExists = el.src != null && el.src != "";
 
 		if (srcExists) {
+			/*
+			There is an edge-case that I need to fix, where it is possible that the site is requesting a resource from the proxy site itself and seeing if it would be rewritten 
+			This is rare, as it would require the site to know the proxy url in the first place, but is a real concern
+			*/
 			const src = el.getAttribute("src");
 
 			el._src = src;
@@ -53,7 +57,7 @@ $aero.rewrite = el => {
 			// Inject aero imports if applicable then rewrite the Src
 			el.setAttribute(
 				"src",
-				$aero.rewriteSrc(
+				$aero.rewriteHtmlSrc(
 					src.replace(/data:text\/html/g, "$&" + $aero.imports)
 				)
 			);

@@ -1,7 +1,7 @@
 export default {
 	// Used by both the inject code and this service worker
 	"rewriters/shared": ["cookie", "scope", "src"],
-	"rewriters/browser": ["cors", "cloner", "html"],
+	"rewriters/browser": ["cors", "cloner", "htmlSrc", "html"],
 	// API interceptors
 	apis: [
 		"cookie",
