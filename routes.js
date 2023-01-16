@@ -15,6 +15,7 @@ export default {
 		"storage",
 		"workers",
 		"ws",
+		"wrtc"
 	],
 	// Miscellaneous injected code
 	injects: ["dom"],
