@@ -4,8 +4,11 @@ export default {
 	"rewriters/browser": ["cors", "cloner", "htmlSrc", "html"],
 	// API interceptors
 	apis: [
-		"cookie",
+		// Concealers
 		"element",
+		"error",
+		// Misc
+		"cookie",
 		"history",
 		"location",
 		"messages",
@@ -15,7 +18,7 @@ export default {
 		"storage",
 		"workers",
 		"ws",
-		"wrtc"
+		"wrtc",
 	],
 	// Miscellaneous injected code
 	injects: ["dom"],

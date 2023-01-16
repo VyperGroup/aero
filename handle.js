@@ -158,6 +158,7 @@ async function handle(event) {
 					// Aero's global namespace
 					var $aero = {
 						config: {
+							aeroPrefix: ${aeroPrefix},
 							prefix: "${prefix}",
 							proxyApiWs: "${proxyApiWs}",
 							debug: ${JSON.stringify(debug)},

@@ -12,6 +12,7 @@ const dynamicConfig = {
 
 // For experimental features
 const flags = {
+	nonstandardApis: true, // Recommended
 	dynamicConfig: false, // May impair performance
 	advancedScoping: false, // May impair performance
 	corsEmulation: false, // Not finished
