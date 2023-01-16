@@ -41,7 +41,6 @@ proxyManager.add("/sw.js", proxyApi);
 **apis** API interceptors for site code
 **workerApis** Worker-related API interceptors
 **injects** - Code added to the site as a script that isn't a hook
-**nest** - Worker API interceptors
 **rewriters** - Rewriters
 **util** - miscellaneous modules
 ...
