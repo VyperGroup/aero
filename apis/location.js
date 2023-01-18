@@ -40,9 +40,9 @@ Object.defineProperty($aero, "proxyLocation", {
 				prop === "pathname" ||
 				(prop === "href" && value.startsWith("/"))
 			)
-				location[prop] = $aero.config.prefix + $aero.proxyLocation.origin + value;
-			else
-				location[prop] = value;
+				location[prop] =
+					$aero.config.prefix + $aero.proxyLocation.origin + value;
+			else location[prop] = value;
 		},
 	});
 
