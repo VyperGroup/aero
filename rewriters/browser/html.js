@@ -1,3 +1,10 @@
+$aero.set = (el, attr, val) => {
+	// Backup element
+	// For Element hooks
+	el[`_${attr}`] = val;
+	el[attr] = val;
+};
+
 /**
  * Rewrite an element
  * @param {Element} - element The event to rewrite
@@ -7,76 +14,61 @@ $aero.rewrite = el => {
 
 	const tag = el.tagName.toLowerCase();
 
-	if (tag === "script") {
-		const rewrite = typeof el.innerHTML === "string" && !el.rewritten;
+	if (
+		tag === "script" &&
+		!el.rewritten &&
+		typeof el.innerHTML === "string" &&
+		el.innerHTML !== ""
+	) {
+		$aero.set(el, el.innerHTML, $aero.safeText($aero.scope(el.innerText)));
 
-		if (rewrite) {
-			const hasContent = el.innerHTML !== "";
+		// The inline code is read-only, so the element must be cloned
+		const cloner = new $aero.Cloner(el);
 
-			if (hasContent) {
-				el.innerHTML = $aero.setText($aero.scope(el.innerText));
+		cloner.clone();
+		cloner.cleanup();
+	} else if (tag === "a" && el.href)
+		$aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
+	else if (
+		tag === "form" &&
+		// Don't rewrite again
+		!el._action &&
+		// Action is automatically created
+		el.action !== null
+	)
+		$aero.set(el, "action", $aero.rewriteHtmlSrc(action));
+	else if (tag === "iframe") {
+		if (el.csp) $aero.set(el, "csp", rewriteCSP(el.csp));
 
-				// The inline code is read-only, so the element must be cloned
-				const cloner = new $aero.Cloner(el);
-
-				cloner.clone();
-				cloner.cleanup();
-			}
-		}
-	} else if (tag === "a" && el.href) {
-		// Backup
-		const href = el.getAttribute("href");
-
-		el._href = href;
-
-		el.setAttribute("href", $aero.rewriteHtmlSrc(href));
-	} else if (tag === "form" && /*Don't rewrite again*/ !el._action) {
-		const action = el.getAttribute("action");
-
-		// In form elements actions are automatically created, instead so check if it is null
-		const actionExists = action !== null;
-
-		if (actionExists) {
-			// Backup
-			el._action = action;
-
-			el.setAttribute("action", $aero.rewriteHtmlSrc(action));
-		}
-	} else if (tag === "iframe") {
-		const srcExists = el.src != null && el.src != "";
-
-		if (srcExists) {
-			/*
-			There is an edge-case that I need to fix, where it is possible that the site is requesting a resource from the proxy site itself and seeing if it would be rewritten 
-			This is rare, as it would require the site to know the proxy url in the first place, but is a real concern
-			*/
-			const src = el.getAttribute("src");
-
-			el._src = src;
-
+		/*
+		There is an edge-case that I need to fix, where it is possible that the site is requesting a resource from the proxy site itself and seeing if it would be rewritten 
+		This is rare, as it would require the site to know the proxy url in the first place, but is a real concern
+		*/
+		if (el.src)
 			// Inject aero imports if applicable then rewrite the Src
-			el.setAttribute(
+			$aero.set(
+				el,
 				"src",
 				$aero.rewriteHtmlSrc(
 					src.replace(/data:text\/html/g, "$&" + $aero.imports)
 				)
 			);
-
-			if (el.srcdoc)
-				// Inject aero imports
-				el.srcdoc = $aero.imports += el.srcdoc;
-		}
+		if (el.srcdoc)
+			// Inject aero imports
+			$aero.set(el, "srcdoc", $aero.imports + el.srcdoc);
 	} else if (tag === "meta") {
 		switch (el.httpEquiv) {
 			case "content-security-policy":
-				// Rewrite
-				el.content = $aero.config.rewriteCSP
-					? $aero.rewriteCSP(el.content)
-					: "";
+				$aero.set(el, "content", $aero.rewriteCSP(el.content));
 			case "refresh":
-				el.content = el.content.replace(
-					/[0-9]+;url=(.*)/g,
-					`${$aero.config.prefix}/$1`
+				$aero.set(
+					el,
+					"content",
+					el.content.replace(
+						/^([0-9]+)(;)(\s+)?(url=)(.*)/g,
+						(match, g1, g2, g3, g4, g5) =>
+							g1 + g2 + g3 + g4 + $aero.rewriteSrc(g5)
+					)
 				);
 		}
 	}

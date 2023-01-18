@@ -7,8 +7,8 @@ $aero.tt = trustedTypes.createPolicy("$aero", {
 	createScript: str => str,
 });
 
-// A safe wrapper for trusted types
-$aero.setText = (el, str) => {
+// A safe wrapper for text to comply with trusted types
+$aero.safeText = (el, str) => {
 	const isScript = el instanceof HTMLScriptElement;
 
 	if ($aero.config.flags.corsEmulation)

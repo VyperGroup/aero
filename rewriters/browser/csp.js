@@ -1,1 +1,1 @@
-$aero.rewriteCsp = csp => "";
+$aero.rewriteCsp = csp => ($aero.config.rewriteCSP ? csp : "");

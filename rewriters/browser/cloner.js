@@ -13,14 +13,11 @@ $aero.Cloner = class {
 
 		clone.observed = true;
 
-		for (const name of el.getAttributeNames()) {
-			if (name !== "integrity") {
-				const value = el.getAttribute(name);
-				clone[name] = value;
-			}
-		}
+		for (const name of el.getAttributeNames())
+			if (name !== "integrity") clone[name] = el[name];
+
 		if ("innerHTML" in el && el.innerHTML !== "")
-			$aero.setText(clone, el.innerHTML);
+			$aero.safeText(clone, el.innerHTML);
 	}
 	clone() {
 		// Insert
@@ -30,7 +27,8 @@ $aero.Cloner = class {
 		if (this.el instanceof HTMLScriptElement) {
 			// Disable old script by breaking the type so it doesn't run
 			this.el.type = "_";
-			$aero.setText(this.el, "");
+
+			$aero.safeText(this.el, "");
 		}
 
 		this.el.remove();
