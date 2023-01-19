@@ -122,7 +122,8 @@ async function handle(event) {
 
 	// Rewrite the body
 	let body;
-	const noModuleSupportMsg = "No nest support for service worker";
+	// For modules
+	const isMod = new URLSearchParams(location.search).mod === "true";
 	if ((homepage || iFrame) && html) {
 		body = await resp.text();
 
@@ -187,37 +188,43 @@ async function handle(event) {
 		body = rewriteManifest(await resp.text());
 	// Nests
 	else if (flags.nestedWorkers && event.request.destination === "worker")
-		body = `
-if (typeof module !== "undefined")
-	importScripts("${aeroPrefix}nest/worker.js");
-else
-	console.warn("${noModuleSupportMsg}");
+		body = isMod
+			? `
+import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
+self.location = proxyLocation;
+`
+			: `
+importScripts("${aeroPrefix}nest/worker.js");
 
 ${body}
-`;
+		`;
 	else if (
 		flags.nestedWorkers &&
 		event.request.destination === "sharedworker"
 	)
-		body = `
-if (typeof module !== "undefined") {
-	importScripts("${aeroPrefix}workerApis/worker.js");
-	importScripts("${aeroPrefix}workerApis/sharedworker.js");
-} else
-	console.warn("${noModuleSupportMsg}");
+		body = isMod
+			? `
+import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
+self.location = proxyLocation;
+`
+			: `
+importScripts("${aeroPrefix}workerApis/worker.js");
+importScripts("${aeroPrefix}workerApis/sharedworker.js");
 	
 ${body}
-`;
+		`;
 	else if (
 		flags.nestedWorkers &&
 		event.request.destination === "serviceworker"
 	)
-		body = `
-if (typeof module !== "undefined") {
-	importScripts("${aeroPrefix}workerApis/worker.js");
-	importScripts("${aeroPrefix}workerApis/sw.js");
-} else
-	console.warn("${noModuleSupportMsg}");
+		body = isMod
+			? `
+import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
+self.location = proxyLocation;
+`
+			: `
+importScripts("${aeroPrefix}workerApis/worker.js");
+importScripts("${aeroPrefix}workerApis/sw.js");
 
 ${body}
 		`;

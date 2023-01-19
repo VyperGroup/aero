@@ -5,9 +5,15 @@ if ($aero.config.nestedWorkers) {
 			navigator.serviceWorker.register,
 			{
 				apply(target, that, args) {
-					console.log("Registering a nested service worker");
+					[path, opts] = args;
 
-					console.log(args);
+					args[0] = `${$aero.rewriteSrc(path)}?mod=${
+						opts.type === "module"
+					}`;
+
+					console.log(
+						`Registering a nested service worker\n${path} -> ${args[0]}`
+					);
 
 					return Reflect.apply(...arguments);
 				},

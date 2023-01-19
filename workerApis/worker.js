@@ -24,3 +24,8 @@ self.addEventListener = new Proxy(self.addEventListener, {
 		Reflect.apply(...arguments);
 	},
 });
+
+// TODO: Make a shared module for location proxying, as it is also used in a window api interceptor
+const proxyLocation = {};
+
+self.location = proxyLocation;
