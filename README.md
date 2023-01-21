@@ -24,7 +24,7 @@ dynamicUpdates();
 ```
 
 4. Register the service worker in a script on your main page like this
-   _This example uses our [sdk](https://github.com/ProxyHaven/sdk); this allows you to safely manage deployments of multiple proxies, and supports dynamic config updates_
+   _This example uses our [sdk](https://github.com/ProxyHaven/sdk); allowing you to safely manage deployments of multiple proxies, and supports dynamic config updates_
 
 ```js
 import { proxyApi } from "./aero/config.js";
@@ -38,12 +38,15 @@ proxyManager.add("/sw.js", proxyApi);
 
 # Directories
 
-**apis** API interceptors for site code
-**workerApis** Worker-related API interceptors
+**apis** - API interceptors for site code
+
+**workerApis** - Worker-related API interceptors
+
 **injects** - Code added to the site as a script that isn't a hook
+
 **rewriters** - Rewriters
-**util** - miscellaneous modules
-...
+
+**util** - Miscellaneous modules
 
 # Faq
 
