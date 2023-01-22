@@ -7,9 +7,14 @@ if ($aero.config.flags.nonstandardApis) {
 		construct(target, args) {
 			const ret = Reflect.construct(...arguments);
 
-			// Firefox exclusive
+			// Firefox exclusives
+			if (typeof ret.columnNumber !== "undefined")
+				// TODO: Get the column number of the unscoped file
+				// Possibly, add a data attribute with the og script
+				ret.columnNumber = "";
 			if (typeof ret.fileName !== "undefined")
 				ret.fileName = ret.fileName.replace($aero.afterPrefix, "");
+
 			// Implemented in most major browsers
 			if (typeof ret.stack !== "undefined")
 				if (navigator.userAgent.includes("Firefox")) {
