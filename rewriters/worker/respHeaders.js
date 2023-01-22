@@ -17,8 +17,8 @@ const ignoredHeaders = [
 
 /**
  * Rewrites the location header
- * @param {object} The url
- * @return {string} The url pointed to the proxified url
+ * @param {object} - The url
+ * @return {string} - The url pointed to the proxified url
  */
 function rewriteLocation(url) {
 	const rewrite = self.location.origin + prefix + url;
