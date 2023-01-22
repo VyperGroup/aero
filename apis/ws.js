@@ -13,3 +13,17 @@ WebSocket = new Proxy(WebSocket, {
 		return Reflect.construct(...arguments);
 	},
 });
+
+// Only supported on Chromium
+if ("WebTransport" in window) {
+	// https://developer.mozilla.org/en-US/docs/Web/API/WebTransport
+	WebTransport = new Proxy(WebTransport, {
+		construct(target, args) {
+			[url] = args;
+
+			args[0] = $aero.rewriteSrc(url);
+
+			return Reflect.construct(...arguments);
+		},
+	});
+}
