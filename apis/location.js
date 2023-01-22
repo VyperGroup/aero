@@ -48,7 +48,6 @@ Object.defineProperty($aero, "proxyLocation", {
 
 	Object.defineProperty($aero, "location", {
 		value: locationProxy,
-		writeable: false,
 	});
 })();
 

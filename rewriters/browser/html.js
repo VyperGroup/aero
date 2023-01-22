@@ -7,14 +7,19 @@ $aero.set = (el, attr, val) => {
 
 /**
  * Rewrite an element
- * @param {Element} - element The event to rewrite
+ * @param {Element} - The element to rewrite
+ * @param {String=} - If it is an attribute that is being rewritten
  */
-$aero.rewrite = el => {
-	if (typeof el.observed !== "undefined") return;
+$aero.rewrite = (el, attr) => {
+	// Don't exclusively rewrite attributes or check for already observed elements
+	const isNew = typeof attr === "undefined";
+
+	if (isNew && typeof el.observed !== "undefined") return;
 
 	const tag = el.tagName.toLowerCase();
 
 	if (
+		isNew &&
 		tag === "script" &&
 		!el.rewritten &&
 		typeof el.innerHTML === "string" &&
@@ -36,7 +41,7 @@ $aero.rewrite = el => {
 		// Action is automatically created
 		el.action !== null
 	)
-		$aero.set(el, "action", $aero.rewriteHtmlSrc(action));
+		$aero.set(el, "action", $aero.rewriteHtmlSrc(el.action));
 	else if (tag === "iframe") {
 		if (el.csp) $aero.set(el, "csp", rewriteCSP(el.csp));
 
@@ -50,7 +55,7 @@ $aero.rewrite = el => {
 				el,
 				"src",
 				$aero.rewriteHtmlSrc(
-					src.replace(/data:text\/html/g, "$&" + $aero.imports)
+					el.src.replace(/data:text\/html/g, "$&" + $aero.imports)
 				)
 			);
 		if (el.srcdoc)
@@ -73,7 +78,7 @@ $aero.rewrite = el => {
 		}
 	}
 
-	if ("integrity" in el && el.integrity !== "") {
+	if (isNew && "integrity" in el && el.integrity !== "") {
 		const cloner = new $aero.Cloner(el);
 
 		cloner.clone();

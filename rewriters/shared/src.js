@@ -15,18 +15,14 @@ $aero.rewriteSrc = url => {
 		location.pathname.replace(new RegExp(`^(${$aero.config.prefix})`), "") +
 		location.search;
 
-	try {
-		var proxyUrl = new URL(rawProxyUrl);
-	} catch (err) {
-		console.error(`Error parsing url for src: ${rawProxyUrl}`);
-		return url;
-	}
+	var proxyUrl = new URL(rawProxyUrl);
 
+	// Prepare first part
 	let rewrittenUrl = url
 		// /
 		.replace(/^(\/)/g, $aero.config.prefix + proxyUrl.origin + "/")
 		// ./
-		.replace(/^(\.\/)/g, proxyUrl.hostname.origin);
+		.replace(/^(\.\/)/g, $aero.config.prefix + proxyUrl.href.split("/").slice(0,-1).join("/") + "/");
 
 	// Protocol
 	if (/^(https?:\/\/)/g.test(rewrittenUrl))
