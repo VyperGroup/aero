@@ -11,6 +11,21 @@ navigator.registerProtocolHandler = new Proxy(
 	}
 );
 
+// Not finished
+navigator.unregisterProtocolHandler = new Proxy(
+	navigator.unregisterProtocolHandler,
+	{
+		apply(target, that, args) {
+			[, url] = args;
+
+			// TODO: "Unrewrite"
+			args[1] = url;
+
+			return Reflect.apply(...arguments);
+		},
+	}
+);
+
 Navigator.prototype.sendBeacon = new Proxy(Navigator.prototype.sendBeacon, {
 	apply(target, that, args) {
 		[url] = args;
