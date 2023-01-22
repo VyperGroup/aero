@@ -3,7 +3,7 @@ open = new Proxy(open, {
 		[url] = args;
 
 		args[0] = $aero.rewriteSrc(url);
-		
+
 		return Reflect.apply(...arguments);
 	},
 });
