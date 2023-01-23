@@ -5,18 +5,21 @@ export default {
 	// API interceptors
 	apis: [
 		// Concealers
+		"location",
+		"history",
 		"element",
 		"error",
+		"messages",
+		"navigation",
 		// Misc
 		"cookie",
-		"history",
-		"location",
-		"messages",
 		"navigator",
 		"popup",
+		"reporting",
 		"scoping",
 		"storage",
 		"workers",
+		// Alt protocols
 		"ws",
 		"wrtc",
 	],
