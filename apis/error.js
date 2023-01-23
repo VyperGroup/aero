@@ -8,12 +8,13 @@ if ($aero.config.flags.nonstandardApis) {
 			const ret = Reflect.construct(...arguments);
 
 			// Firefox exclusives
+			// Error location
 			if (typeof ret.columnNumber !== "undefined")
 				// TODO: Get the column number of the unscoped file
 				// Possibly, add a data attribute with the og script
 				ret.columnNumber = "";
 			if (typeof ret.fileName !== "undefined")
-				ret.fileName = ret.fileName.replace($aero.afterPrefix, "");
+				ret.fileName = $aero.afterPrefix(ret.fileName);
 
 			// Implemented in most major browsers
 			if (typeof ret.stack !== "undefined")
@@ -31,7 +32,7 @@ if ($aero.config.flags.nonstandardApis) {
 								"g"
 							),
 							(match, g1, g2, g3) =>
-								g1 + g2.replace($aero.afterPrefix, "") + g3
+								g1 + $aero.afterPrefix(g2) + g3
 						);
 					}
 				} else if (navigator.userAgent.includes("Chrome"))
@@ -48,12 +49,11 @@ if ($aero.config.flags.nonstandardApis) {
 						.replace(
 							/^(at )([A-Za-z\.]+ )?.+(?=:\d+:\d+)/g,
 							(match, g1, g2, g3) =>
-								g1 + g2 + g3.replace($aero.afterPrefix, "")
+								g1 + g2 + $aero.afterPrefix(g3)
 						)
 						.replace(
 							/(?<=\().+(?=:\d+:\d+\))/g,
-							(match, g1, g2) =>
-								g1 + g2.replace($aero.afterPrefix, "")
+							(match, g1, g2) => g1 + $aero.afterPrefix(g2)
 						);
 			// TODO: Support Safari
 

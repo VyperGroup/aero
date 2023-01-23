@@ -1,10 +1,10 @@
 // Dynamically update location using a function getters
 Object.defineProperty($aero, "proxyLocation", {
-	get: () => new URL(location.href.replace($aero.afterPrefix, "")),
+	get: () => new URL($aero.afterPrefix(location.href)),
 });
 
 // Private scope
-(() => {
+{
 	// Prevent detection by instanceof
 	let inheritedObject = {};
 	Reflect.setPrototypeOf(inheritedObject, Location.prototype);
@@ -49,7 +49,7 @@ Object.defineProperty($aero, "proxyLocation", {
 	Object.defineProperty($aero, "location", {
 		value: locationProxy,
 	});
-})();
+}
 
 $aero.document = {};
 

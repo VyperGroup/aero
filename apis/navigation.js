@@ -1,4 +1,3 @@
-// DON'T COMMIT THIS YET!!!
 if (
 	// Not finished
 	$aero.config.flags.misc &&
@@ -47,8 +46,6 @@ if (
 				newEntries.push(newEntry);
 			}
 
-			console.log(newEntries);
-
 			return entries;
 		},
 	});
@@ -56,13 +53,12 @@ if (
 	if (navigation.transition !== null)
 		navigation.transition.from = $aero.navigationEntry;
 
-	navigation.addEventListener = (type, handle) => event => {
+	navigation.addEventListener = (type, listener) => event => {
 		if (type === "currententrychange")
 			Object.defineProperty(event.from, "url", {
-				get: () => event.from.url.replace($aero.afterPrefix, ""),
-				writable: false,
+				get: () => $aero.afterPrefix(event.from.url),
 			});
 
-		return handle(event);
+		return listener(event);
 	};
 }

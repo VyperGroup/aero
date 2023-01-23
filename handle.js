@@ -32,7 +32,8 @@ async function handle(event) {
 		getConfig();
 
 	// Separate the prefix from the url to get the proxy url isolated
-	const afterPrefix = new RegExp(`^(${self.location.origin}${prefix})`, "g");
+	const afterPrefix = url =>
+		url.replace(new RegExp(`^(${self.location.origin}${prefix})`, "g"), "");
 
 	// Construct proxy fetch instance
 	const proxyFetch = new ProxyFetch(self.location.origin + proxyApi);
@@ -59,7 +60,7 @@ async function handle(event) {
 		const win = await clients.get(event.clientId);
 
 		// Get the url after the prefix
-		proxyUrl = new URL(win.url.replace(afterPrefix, ""));
+		proxyUrl = new URL(afterPrefix(win.url));
 	}
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
@@ -167,7 +168,7 @@ async function handle(event) {
 						}
 					};
 
-					$aero.afterPrefix = new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g");
+					$aero.afterPrefix = url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""); 
 				</script>
 
 				<!-- Injected Aero code -->

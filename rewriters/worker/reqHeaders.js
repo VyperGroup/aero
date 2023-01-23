@@ -16,8 +16,7 @@ export default (headers, proxyUrl, afterPrefix) => {
 
 		if (key === "host") rewrittenHeaders[key] = proxyUrl?.host;
 		else if (key === "origin") rewrittenHeaders[key] = proxyUrl?.origin;
-		else if (key === "referrer")
-			rewrittenHeaders[key] = value.replace(afterPrefix, "");
+		else if (key === "referrer") rewrittenHeaders[key] = afterPrefix(value);
 		else if (key === "cookie")
 			rewrittenHeaders[key] = rewriteGetCookie(value);
 		else rewrittenHeaders[key] = value;
