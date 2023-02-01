@@ -1,6 +1,6 @@
 postMessage = new Proxy(postMessage, {
 	apply(target, that, args) {
-		[data, origin] = args;
+		const [data, origin] = args;
 
 		if (origin !== "*") {
 			args[1] = "*";
@@ -17,7 +17,7 @@ postMessage = new Proxy(postMessage, {
 
 addEventListener = new Proxy(addEventListener, {
 	apply(target, that, args) {
-		[type, listener] = args;
+		const [type, listener] = args;
 
 		if (type === "message")
 			listener = event => {

@@ -1,6 +1,6 @@
 WebSocket = new Proxy(WebSocket, {
 	construct(target, args) {
-		[url] = args;
+		const [url] = args;
 
 		const rewrittenUrl = `${
 			location.protocol === "https:" ? "wss" : "ws"
@@ -19,7 +19,7 @@ if ("WebTransport" in window) {
 	// https://developer.mozilla.org/en-US/docs/Web/API/WebTransport
 	WebTransport = new Proxy(WebTransport, {
 		construct(target, args) {
-			[url] = args;
+			const [url] = args;
 
 			args[0] = $aero.rewriteSrc($aero.config.prefix, url);
 

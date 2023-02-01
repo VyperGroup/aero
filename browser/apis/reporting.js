@@ -40,7 +40,7 @@ if ("ReportingObserver" in window) {
 
 	ReportingObserver = new Proxy(ReportingObserver, {
 		construct(target, args) {
-			[callback] = args;
+			const [callback] = args;
 
 			args[1] = async (reports, observer) => {
 				reports = await rewriteReports(reports);

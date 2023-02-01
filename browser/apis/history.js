@@ -1,6 +1,6 @@
 var historyState = {
 	apply(target, that, args) {
-		let [state, title, url = ""] = args;
+		const [state, title, url = ""] = args;
 
 		args[2] = $aero.rewriteSrc($aero.config.prefix, url);
 		args[3] = $aero.rewriteSrc($aero.config.prefix, url);

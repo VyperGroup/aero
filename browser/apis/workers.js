@@ -5,7 +5,7 @@ if ($aero.config.nestedWorkers) {
 			navigator.serviceWorker.register,
 			{
 				apply(target, that, args) {
-					[path, opts] = args;
+					const [path, opts] = args;
 
 					args[0] = `${$aero.rewriteSrc(
 						$aero.config.prefix,

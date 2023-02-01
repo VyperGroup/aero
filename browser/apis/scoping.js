@@ -19,7 +19,7 @@ $aero.eval = new Proxy(eval, {
 
 Function = new Proxy(Function, {
 	construct(target, args) {
-		[func] = args;
+		const [func] = args;
 
 		let bak = "";
 
@@ -57,7 +57,7 @@ Function = new Proxy(Function, {
 
 Reflect.get = new Proxy(Reflect.get, {
 	apply(target, that, args) {
-		[_target, prop] = args;
+		const [_target, prop] = args;
 
 		if (_target instanceof Window && prop === "location")
 			return $aero.location;
@@ -73,7 +73,7 @@ Reflect.get = new Proxy(Reflect.get, {
 
 Reflect.set = new Proxy(Reflect.set, {
 	apply(target, that, args) {
-		[_target, prop, value] = args;
+		const [_target, prop, value] = args;
 
 		if (_target instanceof Location) return ($aero.location[prop] = value);
 		return target(...args);

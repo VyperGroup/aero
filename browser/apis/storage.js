@@ -3,7 +3,7 @@
 
 	const storageNomenclature = {
 		apply(target, that, args) {
-			[key] = args;
+			const [key] = args;
 
 			args[0] = prefix + key;
 
@@ -60,7 +60,7 @@
 	/*
 	Storage.prototype.key = new Proxy(Storage.prototype.key, {
 		apply(target, that, args) {
-			[index] = args;
+			const [index] = args;
 
 			let keys = [];
 

@@ -2,7 +2,7 @@ navigator.registerProtocolHandler = new Proxy(
 	navigator.registerProtocolHandler,
 	{
 		apply(target, that, args) {
-			[, url] = args;
+			const [, url] = args;
 
 			args[1] = $aero.rewriteSrc($aero.config.prefix, url);
 
@@ -16,7 +16,7 @@ navigator.unregisterProtocolHandler = new Proxy(
 	navigator.unregisterProtocolHandler,
 	{
 		apply(target, that, args) {
-			[, url] = args;
+			const [, url] = args;
 
 			// TODO: "Unrewrite"
 			args[1] = url;
@@ -28,7 +28,7 @@ navigator.unregisterProtocolHandler = new Proxy(
 
 Navigator.prototype.sendBeacon = new Proxy(Navigator.prototype.sendBeacon, {
 	apply(target, that, args) {
-		[url] = args;
+		const [url] = args;
 
 		args[0] = $aero.rewriteSrc($aero.config.prefix, url);
 

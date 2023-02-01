@@ -3,7 +3,7 @@ if ($aero.config.flags.wrtc) {
 
 	RTCPeerConnection = new Proxy(RTCPeerConnection, {
 		construct(target, args) {
-			[config] = args;
+			const [config] = args;
 
 			if (config.iceServers && customIceServers.length > 0)
 				config.iceServers = customIceServers;
@@ -16,7 +16,7 @@ if ($aero.config.flags.wrtc) {
 		RTCPeerConnection.prototype.addIceCandidate,
 		{
 			apply(target, that, args) {
-				[canidate] = args;
+				const [canidate] = args;
 
 				return Reflect.apply(...arguments);
 			},

@@ -19,7 +19,7 @@ Clients.get = async id => {
 
 self.addEventListener = new Proxy(self.addEventListener, {
 	apply(target, that, args) {
-		[type, listener] = args;
+		const [type, listener] = args;
 
 		Reflect.apply(...arguments);
 	},

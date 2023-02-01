@@ -6,7 +6,7 @@ if ("cookieStore" in window) {
 
 	cookieStore.set = new Proxy(cookieStore.set, {
 		apply(target, that, args) {
-			[cookie] = args;
+			const [cookie] = args;
 
 			cookie.domain = location.domain;
 			cookie.path = locationUpToProxyOrigin + cookie.path;
