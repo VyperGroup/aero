@@ -1,0 +1,55 @@
+// Rewriters
+import { rewriteSetCookie } from "../../shared/cookie.js";
+
+const ignoredHeaders = [
+	"cache-control",
+	"content-encoding",
+	"content-length",
+	"cross-origin-opener-policy",
+	"cross-origin-opener-policy-report-only",
+	"report-to",
+	"strict-transport-security",
+	"x-content-type-options",
+	"x-frame-options",
+];
+
+/**
+ * Rewrites the location header
+ * @param {object} - The url
+ * @return {string} - The url pointed to the proxified url
+ */
+function rewriteLocation(url) {
+	const rewrite = self.location.origin + prefix + url;
+
+	return rewrite;
+}
+
+/**
+ * Rewrites the response headers
+ * @param {object}
+ * @return {string} The rewritten headers
+ */
+export default (prefix, corsEmulation, headers) => {
+	const rewrittenHeaders = {};
+
+	Object.keys(headers).forEach(key => {
+		const deleteHeader = ignoredHeaders.includes(key);
+
+		if (
+			deleteHeader ||
+			(!corsEmulation && key === "content-security-policy")
+		)
+			return;
+
+		const value = headers[key];
+
+		if (key === "location") rewrittenHeaders[key] = rewriteLocation(value);
+		else if (key === "cookie")
+			rewrittenHeaders[key] = rewriteGetCookie(prefix, value);
+		else if (key === "set-cookie")
+			rewrittenHeaders[key] = rewriteSetCookie(prefix, value);
+		else rewrittenHeaders[key] = value;
+	});
+
+	return rewrittenHeaders;
+};

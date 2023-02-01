@@ -2,28 +2,27 @@
 import routes from "./routes.js";
 
 // Dynamic Config
-import getConfig from "./util/getConfig.js";
+import getConfig from "./this/dynamic/getConfig.js";
 
 // Utility
-import ProxyFetch from "./util/ProxyFetch.js";
-import handleSharedModule from "./util/handleSharedModule.js";
-import getRequestUrl from "./util/getRequestUrl.js";
-import headersToObject from "./util/headersToObject.js";
-import unwrapImports from "./util/unwrapImports.js";
+import ProxyFetch from "./this/misc/ProxyFetch.js";
+import sharedModule from "./this/misc/sharedModule.js";
+import getRequestUrl from "./this/misc/getRequestUrl.js";
+import headersToObject from "./this/misc/headersToObject.js";
+import unwrapImports from "./this/misc/unwrapImports.js";
 
 // Cors Emulation
-import block from "./util/corsTest.js";
+import block from "./this/misc/corsTest.js";
 
 // Rewriters
-import rewriteReqHeaders from "./rewriters/worker/reqHeaders.js";
-import rewriteRespHeaders from "./rewriters/worker/respHeaders.js";
-import rewriteManifest from "./rewriters/worker/manifest.js";
-import scope from "./rewriters/shared/scope.js";
+import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
+import rewriteRespHeaders from "./this/rewriters/respHeaders.js";
+import rewriteManifest from "./this/rewriters/manifest.js";
+import scope from "./shared/scope.js";
 
 /**
  * Handles the requests
  * @param {FetchEvent} - The event
- * @param {Location} - The window location
  * @returns {Response} - The proxified response
  */
 async function handle(event) {
@@ -38,20 +37,19 @@ async function handle(event) {
 	// Construct proxy fetch instance
 	const proxyFetch = new ProxyFetch(self.location.origin + proxyApi);
 
-	const reqUrl = new URL(event.request.url);
+	const req = event.request;
+
+	const reqUrl = new URL(req.url);
 
 	const path = reqUrl.pathname + reqUrl.search;
 
 	// Remove the module components
-	if (
-		path.startsWith(aeroPrefix + "rewriters/shared/") &&
-		path.endsWith(".js")
-	)
-		return await handleSharedModule(event);
+	if (path.startsWith(aeroPrefix + "shared/") && path.endsWith(".js"))
+		return await sharedModule(event);
 	// Don't rewrite requests for aero library files
 	if (path.startsWith(aeroPrefix))
 		// Proceed with the request like normal
-		return await fetch(event.request.url);
+		return await fetch(req.url);
 
 	var proxyUrl;
 	// Get the origin from the user's window
@@ -64,14 +62,13 @@ async function handle(event) {
 	}
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
-	const homepage =
-		event.request.mode === "navigate" &&
-		event.request.destination === "document";
+	const homepage = req.mode === "navigate" && req.destination === "document";
 	// This is used for determining the request url and
-	const iFrame = event.request.destination === "iframe";
+	const iFrame = req.destination === "iframe";
 
 	// Parse the request url to get the url to proxy
 	const url = getRequestUrl(
+		prefix,
 		reqUrl.origin,
 		self.location.origin,
 		proxyUrl,
@@ -81,39 +78,44 @@ async function handle(event) {
 	);
 
 	// Ensure the request isn't blocked by CORS
-	if (await block(url.href))
+	if (flags.corsEmulation && (await block(url.href)))
 		return new Response("Blocked by CORS", { status: 500 });
 
 	// Log requests
 	if (debug.url)
 		console.log(
-			event.request.destination == ""
-				? `${event.request.method} ${url}`
-				: `${event.request.method} ${url} (${event.request.destination})`
+			req.destination == ""
+				? `${req.method} ${url}`
+				: `${req.method} ${url} (${req.destination})`
 		);
 
 	// Rewrite the request headers
-	const reqHeaders = headersToObject(event.request.headers);
+	const reqHeaders = headersToObject(req.headers);
 	const rewrittenReqHeaders = rewriteReqHeaders(
+		prefix,
 		reqHeaders,
 		proxyUrl,
 		afterPrefix
 	);
 
 	let opts = {
-		method: event.request.method,
+		method: req.method,
 		headers: rewrittenReqHeaders,
 	};
 
 	// A request body should only be created under a post request
-	if (event.request.method === "POST") opts.body = await event.request.text();
+	if (req.method === "POST") opts.body = await req.text();
 
 	// Make the request to the proxy
 	const resp = await proxyFetch.fetch(url, opts);
 
 	// Rewrite the response headers
 	const respHeaders = headersToObject(resp.headers);
-	const rewrittenRespHeaders = rewriteRespHeaders(respHeaders);
+	const rewrittenRespHeaders = rewriteRespHeaders(
+		prefix,
+		flags.corsEmulation,
+		respHeaders
+	);
 
 	const type = respHeaders["content-type"];
 
@@ -172,23 +174,27 @@ async function handle(event) {
 				</script>
 
 				<!-- Injected Aero code -->
-				${unwrapImports(routes)}
+				${unwrapImports(aeroPrefix, routes)}
 				<script>
 					// This is used to later copy into an iFrame's srcdoc; this is an edge case
-					$aero.imports = \`${unwrapImports(routes, true)}\`;
+					$aero.imports = \`${unwrapImports(aeroPrefix, routes, true)}\`;
 				</script>
 				</head>
 				
 				${body}
 			`;
 		}
-	} else if (event.request.destination === "script")
+	} else if (req.destination === "script")
 		// Scope the scripts
-		body = scope(await resp.text());
-	else if (event.request.destination === "manifest")
-		body = rewriteManifest(await resp.text());
+		body = scope(flags.advancedScoping, debug.scoping, await resp.text());
+	else if (req.destination === "manifest") {
+		// Safari exclusive
+		if (flags.legacy && type.contains("text/cache-manifest"))
+			body = rewriteCacheManifest();
+		body = rewriteManifest(prefix, await resp.text());
+	}
 	// Nests
-	else if (flags.nestedWorkers && event.request.destination === "worker")
+	else if (flags.nestedWorkers && req.destination === "worker")
 		body = isMod
 			? `
 import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
@@ -199,10 +205,7 @@ importScripts("${aeroPrefix}nest/worker.js");
 
 ${body}
 		`;
-	else if (
-		flags.nestedWorkers &&
-		event.request.destination === "sharedworker"
-	)
+	else if (flags.nestedWorkers && req.destination === "sharedworker")
 		body = isMod
 			? `
 import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
@@ -214,10 +217,7 @@ importScripts("${aeroPrefix}workerApis/sharedworker.js");
 	
 ${body}
 		`;
-	else if (
-		flags.nestedWorkers &&
-		event.request.destination === "serviceworker"
-	)
+	else if (flags.nestedWorkers && req.destination === "serviceworker")
 		body = isMod
 			? `
 import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";

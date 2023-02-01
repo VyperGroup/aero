@@ -36,18 +36,6 @@ const proxyManager = new ProxyManager();
 proxyManager.add("/sw.js", proxyApi);
 ```
 
-# Directories
-
-**apis** - API interceptors for site code
-
-**workerApis** - Worker-related API interceptors
-
-**injects** - Code added to the site as a script that isn't a hook
-
-**rewriters** - Rewriters
-
-**util** - Miscellaneous modules
-
 # Faq
 
 ## When will aero release...

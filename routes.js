@@ -1,28 +1,34 @@
 export default {
 	// Used by both the inject code and this service worker
-	"rewriters/shared": ["cookie", "scope", "src"],
-	"rewriters/browser": ["cors", "cloner", "htmlSrc", "html"],
+	shared: ["cookie", "scope", "src"],
+	"browser/rewriters": ["cors", "cloner", "htmlSrc", "html"],
 	// API interceptors
-	apis: [
-		// Concealers
+	"browser/apis": [
+		// Dependencies
 		"location",
+		// Misc
+		"cookie",
+		"navigator",
+		"popup",
+		"portal",
+		"push",
+		"reporting",
+		"scoping",
+		"storage",
+		"workers",
+		// Concealers
 		"history",
 		"element",
 		"error",
 		"messages",
 		"navigation",
-		// Misc
-		"cookie",
-		"navigator",
-		"popup",
-		"reporting",
-		"scoping",
-		"storage",
-		"workers",
+		"payment",
+		"presentation",
+		"speech",
 		// Alt protocols
 		"ws",
 		"wrtc",
 	],
 	// Miscellaneous injected code
-	injects: ["dom"],
+	"browser/injects": ["dom"],
 };

@@ -1,4 +1,4 @@
-import getStore from "./util/getStore.js";
+import getStore from "./this/dynamic/getStore.js";
 
 import { dynamicConfig, flags } from "./config.js";
 

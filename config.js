@@ -12,7 +12,9 @@ const dynamicConfig = {
 
 // For experimental features
 const flags = {
-	nonstandardApis: true, // Recommended
+	safariSupport: false, // Safari has limited support of SW, so there may be some workarounds
+	legacy: true, // Recommended
+	nonstandard: true, // Recommended
 	misc: true, // Experimental features that haven't been tested, and aren't significant enough to earn a flag
 	dynamicConfig: false, // May impair performance
 	advancedScoping: false, // May impair performance
