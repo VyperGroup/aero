@@ -19,23 +19,36 @@ $aero.rewrite = async (el, attr) => {
 	const tag = el.tagName.toLowerCase();
 
 	if (
-		isNew &&
-		tag === "script" &&
-		!el.rewritten &&
-		typeof el.innerHTML === "string" &&
-		el.innerHTML !== ""
+		(isNew &&
+			tag === "script" &&
+			!el.rewritten &&
+			typeof el.innerHTML === "string" &&
+			el.innerHTML !== "" &&
+			// Make sure the script has a js type
+			el.type === "") ||
+		el.type === "text/javascript" ||
+		el.type === "application/javascript"
 	) {
-		const scriptBuffer = new TextEncoder().encode(el.innerHTML);
-		const scriptBlocked =
-			el.integrity ===
-			(await crypto.subtle.digest("SHA-256", scriptBuffer));
-
 		// If mismatched hash
-		if ($aero.config.flags.corsEmulation && scriptBlocked) {
-			// Disable old script by breaking the type so it doesn't run
-			this.el.type = "_";
+		if ($aero.config.flags.corsEmulation && el.integrity && el.src) {
+			const [rawAlgo, hash] = el.integrity.split("-");
 
-			$aero.safeText(this.el, "");
+			const algo = rawAlgo.replace(/^sha/g, "SHA-");
+
+			const buf = new TextEncoder().encode(el.innerHTML);
+
+			const calcHashBuf = await crypto.subtle.digest(algo, buf);
+
+			const calcHash = new TextDecoder().decode(calcHashBuf);
+
+			const blocked = hash === calcHash;
+
+			if (blocked) {
+				// Disable old script by breaking the type so it doesn't run
+				this.el.type = "_";
+
+				$aero.safeText(this.el, "");
+			}
 		} else {
 			$aero.set(
 				el,
