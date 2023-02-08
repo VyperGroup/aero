@@ -2,7 +2,7 @@
 
 // TODO: Rewrite
 importScripts = new Proxy(importScripts, {
-	apply(target, that, args) {
+	apply() {
 		Reflect.apply(...arguments);
 	},
 });

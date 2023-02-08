@@ -1,4 +1,6 @@
-export default (aeroPrefix, cats, escape) => {
+import { aeroPrefix } from "../../config.js";
+
+export default (cats, escape) => {
 	const createScript = path =>
 		`<script src="${path}"><${escape ? "\\" : ""}/script>`;
 

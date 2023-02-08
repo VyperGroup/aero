@@ -4,7 +4,7 @@
  * @return {Boolean} The result
  */
 export default async url => {
-	// Doesn't always work
+	// FIXME: Doesn't always work
 	try {
 		const controller = new AbortController();
 		const signal = controller.signal;
@@ -14,7 +14,7 @@ export default async url => {
 		// Don't actually send the request.
 		controller.abort();
 
-		return true;
+		return false;
 	} catch (err) {
 		return err.name === "AbortError";
 	}

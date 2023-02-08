@@ -1,7 +1,7 @@
 // Worker nests
 
 onevent = new Proxy(onevent, {
-	set(target, prop, value) {
+	set() {
 		return Reflect.apply(...arguments);
 	},
 });
@@ -17,15 +17,19 @@ Clients.get = async id => {
 	return client;
 };
 
+/*
 self.addEventListener = new Proxy(self.addEventListener, {
-	apply(target, that, args) {
+	apply(_target, _that, args) {
 		const [type, listener] = args;
+
+		// TODO: Intercept
 
 		Reflect.apply(...arguments);
 	},
 });
+*/
 
-// TODO: Make a shared module for location proxying, as it is also used in a window api interceptor
+// TODO: Make a shared module for location proxying, since it is also used in a window api interceptor
 const proxyLocation = {};
 
 self.location = proxyLocation;

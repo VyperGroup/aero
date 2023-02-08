@@ -2,6 +2,7 @@ $aero.set = (el, attr, val) => {
 	// Backup element
 	// For Element hooks
 	el[`_${attr}`] = val;
+
 	el[attr] = val;
 };
 
@@ -18,48 +19,33 @@ $aero.rewrite = async (el, attr) => {
 
 	const tag = el.tagName.toLowerCase();
 
-	if (
-		(isNew &&
-			tag === "script" &&
-			!el.rewritten &&
+	// CSP Testing
+	function allow(dir) {
+		if ($aero.config.flags.corsEmulation) return true;
+
+		if ($aero.checkCsp(dir)) {
+			el.remove();
+			return false;
+		}
+
+		return true;
+	}
+
+	// TODO: Finish CSP emulation
+	if (isNew && tag === "script" && !el.rewritten) {
+		if (el.src) $aero.set(el, "src", $aero.rewriteHtmlSrc(el.src));
+		if (
 			typeof el.innerHTML === "string" &&
 			el.innerHTML !== "" &&
 			// Make sure the script has a js type
-			el.type === "") ||
-		el.type === "text/javascript" ||
-		el.type === "application/javascript"
-	) {
-		// If mismatched hash
-		if ($aero.config.flags.corsEmulation && el.integrity && el.src) {
-			const [rawAlgo, hash] = el.integrity.split("-");
-
-			const algo = rawAlgo.replace(/^sha/g, "SHA-");
-
-			const buf = new TextEncoder().encode(el.innerHTML);
-
-			const calcHashBuf = await crypto.subtle.digest(algo, buf);
-
-			const calcHash = new TextDecoder().decode(calcHashBuf);
-
-			const blocked = hash === calcHash;
-
-			if (blocked) {
-				// Disable old script by breaking the type so it doesn't run
-				this.el.type = "_";
-
-				$aero.safeText(this.el, "");
-			}
-		} else {
+			(el.type === "" ||
+				el.type === "text/javascript" ||
+				el.type === "application/javascript")
+		) {
 			$aero.set(
 				el,
 				el.innerHTML,
-				$aero.safeText(
-					$aero.scope(
-						$aero.config.flags.advancedScoping,
-						$aero.config.debug.scoping,
-						el.innerText
-					)
-				)
+				$aero.safeText($aero.scope(el.innerText))
 			);
 
 			// The inline code is read-only, so the element must be cloned
@@ -81,11 +67,11 @@ $aero.rewrite = async (el, attr) => {
 	else if (tag === "iframe") {
 		if (el.csp) $aero.set(el, "csp", rewriteCSP(el.csp));
 
-		/*
-		There is an edge-case that I need to fix, where it is possible that the site is requesting a resource from the proxy site itself and seeing if it would be rewritten 
-		This is rare, as it would require the site to know the proxy url in the first place, but is a real concern
-		*/
-		if (el.src)
+		if (el.src && allow("frame-src")) {
+			// Embed the origin the origin as an attribute, so that the frame can reference it to do its checks
+			/// TODO: Conceal this
+			el.parentProxyOrigin = $aero.proxyLocation.origin;
+
 			// Inject aero imports if applicable then rewrite the Src
 			$aero.set(
 				el,
@@ -94,10 +80,16 @@ $aero.rewrite = async (el, attr) => {
 					el.src.replace(/data:text\/html/g, "$&" + $aero.imports)
 				)
 			);
+		}
 		if (el.srcdoc)
 			// Inject aero imports
 			$aero.set(el, "srcdoc", $aero.imports + el.srcdoc);
-	} else if (tag === "meta") {
+		if (el.allow)
+			// TODO: Emulate Permissions policy using $aero.cors.perms
+			null;
+	} else if (tag === "portal" && el.src)
+		$el.set(el, "src", $aero.rewriteHtmlSrc(el.src));
+	else if (tag === "meta") {
 		switch (el.httpEquiv) {
 			case "content-security-policy":
 				$aero.set(el, "content", $aero.rewriteCSP(el.content));
@@ -107,24 +99,16 @@ $aero.rewrite = async (el, attr) => {
 					"content",
 					el.content.replace(
 						/^([0-9]+)(;)(\s+)?(url=)(.*)/g,
-						(match, g1, g2, g3, g4, g5) =>
-							g1 +
-							g2 +
-							g3 +
-							g4 +
-							$aero.rewriteSrc($aero.config.prefix, g5)
+						(_match, g1, g2, g3, g4, g5) =>
+							g1 + g2 + g3 + g4 + $aero.rewriteSrc(g5)
 					)
 				);
 		}
 	} else if (tag === "link" && tag.rel === "manifest") {
-		$aero.set(el, "href", $aero.rewriteSrc($aero.config.prefix, el.href));
-	} else if ($aero.config.flags.legacy && tag === "head") {
+		$aero.set(el, "href", $aero.rewriteSrc(el.href));
+	} else if ($aero.config.flags.legacy && tag === "html") {
 		// Cache manifests
-		$aero.set(
-			el,
-			"manifest",
-			$aero.rewriteSrc($aero.config.prefix, el.manifest)
-		);
+		$aero.set(el, "manifest", $aero.rewriteSrc(el.manifest));
 	}
 
 	if (isNew && "integrity" in el && el.integrity !== "") {

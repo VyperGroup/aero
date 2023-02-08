@@ -1,7 +1,9 @@
 // For Cors Emulation
 
-// Trusted Types
-// To comply with trusted type headers if applicable
+/*
+Trusted Types
+To comply with trusted type headers if applicable
+*/
 $aero.tt = trustedTypes.createPolicy("$aero", {
 	createHTML: str => str,
 	createScript: str => str,
@@ -11,7 +13,7 @@ $aero.tt = trustedTypes.createPolicy("$aero", {
 $aero.safeText = (el, str) => {
 	const isScript = el instanceof HTMLScriptElement;
 
-	if ($aero.config.flags.corsEmulation)
-		el.innerHTML = $aero.tt[isScript ? "createHTML" : "createScript"](str);
-	else el.innerHTML = str;
+	el.innerHTML = $aero.config.flags.corsEmulation
+		? $aero.tt[isScript ? "createHTML" : "createScript"](str)
+		: str;
 };

@@ -1,6 +1,7 @@
+import { prefix } from "../../config.js";
+
 /**
  * Gets the url that will actually be fetched
- * @param {string} - Aero prefix
  * @param {string} - The origin of the site
  * @param {string} - The origin of the service worker
  * @param {string} - raw url after the proxy prefix
@@ -11,7 +12,6 @@
  * @returns {URL} The url to proxy
  */
 function getRequestUrl(
-	prefix,
 	origin,
 	workerOrigin,
 	proxyUrl,

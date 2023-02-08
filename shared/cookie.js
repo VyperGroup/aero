@@ -1,10 +1,17 @@
-// For module scripts
-if (typeof $aero === "undefined") var $aero = {};
+import { prefix } from "../config.js";
 
-function rewriteGetCookie(prefix, cookie) {
+// For module scripts
+if (typeof $aero === "undefined")
+	var $aero = {
+		config: {
+			prefix: prefix,
+		},
+	};
+
+function rewriteGetCookie(cookie) {
 	return (
 		cookie
-			// Not done yet
+			// TODO: Finish getter
 			.replace(
 				new RegExp(
 					`(?<=path\=)${$aero.config.prefix}${$aero.location.origin}.*(?= )`,
@@ -15,8 +22,7 @@ function rewriteGetCookie(prefix, cookie) {
 			.replace(/_path\=.*(?= )/g, "")
 	);
 }
-function rewriteSetCookie(prefix, cookie) {
-	console.log(cookie);
+function rewriteSetCookie(cookie) {
 	return cookie.replace(
 		/(?<=path\=).*(?= )/g,
 		`${$aero.config.prefix}${$aero.location.origin}$& _path=$&`

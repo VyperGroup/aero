@@ -1,34 +1,46 @@
 export default {
 	// Used by both the inject code and this service worker
 	shared: ["cookie", "scope", "src"],
-	"browser/rewriters": ["cors", "cloner", "htmlSrc", "html"],
-	// API interceptors
-	"browser/apis": [
-		// Dependencies
-		"location",
-		// Misc
-		"cookie",
-		"navigator",
-		"popup",
-		"portal",
+	"browser/misc": [
+		"escape",
+		"proxyLocation",
+		"storage",
+		// CORS Emulation
+		"frame",
+		"clear",
+	],
+	"browser/rewriters": ["cors", "csp", "cspSrc", "cloner", "htmlSrc", "html"],
+	// Hide the true origin
+	"browser/api/concealer": [
+		"credentials",
+		"element",
+		"error",
+		"event",
+		"file",
+		"fs",
+		"navigation",
+		"opt",
+		"payment",
+		"presentation",
 		"push",
 		"reporting",
 		"scoping",
-		"storage",
-		"workers",
-		// Concealers
-		"history",
-		"element",
-		"error",
-		"messages",
-		"navigation",
-		"payment",
-		"presentation",
-		"speech",
-		// Alt protocols
-		"ws",
-		"wrtc",
 	],
-	// Miscellaneous injected code
+	"browser/api/event": ["messages"],
+	"browser/api/loc": [
+		"contentIndex",
+		"history",
+		"location",
+		"navigator",
+		"popup",
+	],
+	// Alt protocols
+	"browser/api/req": ["ws", "wrtc"],
+	"browser/api/storage": ["cookie", "idb", "sql", "storage"],
+	"browser/api/worker": ["workers"],
+	/*
+	Miscellaneous injected code
+	Don't put anything after dom
+	*/
 	"browser/injects": ["dom"],
 };

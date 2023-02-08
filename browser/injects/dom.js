@@ -1,4 +1,4 @@
-const rewriter = new MutationObserver((mutations, observer) => {
+new MutationObserver(mutations => {
 	for (let mutation of mutations)
 		if (mutation.type === "childList")
 			for (let node of mutation.addedNodes)
@@ -6,9 +6,7 @@ const rewriter = new MutationObserver((mutations, observer) => {
 				else if (mutation.type === "attributes")
 					for (let attr of mutation.attributeName)
 						$aero.rewrite(mutation.target, attr);
-});
-
-rewriter.observe(document, {
+}).observe(document, {
 	childList: true,
 	subtree: true,
 });

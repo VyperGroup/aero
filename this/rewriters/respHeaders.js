@@ -3,6 +3,7 @@ import { rewriteSetCookie } from "../../shared/cookie.js";
 
 const ignoredHeaders = [
 	"cache-control",
+	"clear-site-data",
 	"content-encoding",
 	"content-length",
 	"cross-origin-opener-policy",
@@ -29,7 +30,7 @@ function rewriteLocation(url) {
  * @param {object}
  * @return {string} The rewritten headers
  */
-export default (prefix, corsEmulation, headers) => {
+export default (corsEmulation, headers) => {
 	const rewrittenHeaders = {};
 
 	Object.keys(headers).forEach(key => {
@@ -45,9 +46,9 @@ export default (prefix, corsEmulation, headers) => {
 
 		if (key === "location") rewrittenHeaders[key] = rewriteLocation(value);
 		else if (key === "cookie")
-			rewrittenHeaders[key] = rewriteGetCookie(prefix, value);
+			rewrittenHeaders[key] = rewriteGetCookie(value);
 		else if (key === "set-cookie")
-			rewrittenHeaders[key] = rewriteSetCookie(prefix, value);
+			rewrittenHeaders[key] = rewriteSetCookie(value);
 		else rewrittenHeaders[key] = value;
 	});
 

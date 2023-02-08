@@ -8,7 +8,7 @@ import { rewriteGetCookie } from "../../shared/cookie.js";
  * @param {RegExp}
  * @return {string} The rewritten headers
  */
-export default (prefix, headers, proxyUrl, afterPrefix) => {
+export default (headers, proxyUrl, afterPrefix) => {
 	const rewrittenHeaders = {};
 
 	Object.keys(headers).forEach(key => {
@@ -18,7 +18,7 @@ export default (prefix, headers, proxyUrl, afterPrefix) => {
 		else if (key === "origin") rewrittenHeaders[key] = proxyUrl?.origin;
 		else if (key === "referrer") rewrittenHeaders[key] = afterPrefix(value);
 		else if (key === "cookie")
-			rewrittenHeaders[key] = rewriteGetCookie(prefix, value);
+			rewrittenHeaders[key] = rewriteGetCookie(value);
 		else rewrittenHeaders[key] = value;
 	});
 

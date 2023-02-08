@@ -4,7 +4,7 @@ aero an innovative, first of its kind, interception-based web proxy from, has no
 
 # How to use aero
 
-1. Make sure your backend serves an aero [backend](https://github.com/aero-backends) correctly
+1. Make sure your backend serves an aero [backend](https://github.com/aero-aeroPrefix) correctly
 2. Make sure you included aero into your site
 3. Create a service worker like this in the topmost directory
 
@@ -38,14 +38,6 @@ proxyManager.add("/sw.js", proxyApi);
 
 # Faq
 
-## When will aero release...
-
-Nowadays, there will never be any released dates announced before the feature is ready. Be patient and the time will come.
-
-## Why doesn't aero work on iOS?
-
-The bug is Apple's fault not ours, since Safari doesn't support the Service Worker standard. This would normally be fine in most mobile operating systems but due to the restrictions apple imposes on the apps, browsers are forced to use Safari's engine. This yet another problem with monopolies and proprietary software.
-
 ## What is the purpose of aero / What differs from it's competition?
 
 Unlike other proxies, we are more focused on experimentation originally to introduce interception proxies, which was why aero was originally made. Every way that it works is different to its predecessors. The focus has changed after it served its original purpose, and are now trying to achieve every site support in the upcoming months, while having the best speed and extensibility possible. This means that we support way more edge cases than any other proxies giving us the highest compatibility. You may notice that other proxies support more major sites than us; this is due to their hacky solutions that often focus on the short term, rather than the long term. Eventually, we will surpass our flaws. aero does its own thing and never follows competition.
@@ -74,4 +66,4 @@ Location objects are replaced with a fake Location api, and also in the case of 
 
 ## Cors Emulation
 
-Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! This isn't fully complete yet, as we still have more rules to finish. _Support for this feature is enabled in flags_
+Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! _Support for this feature is enabled in flags_

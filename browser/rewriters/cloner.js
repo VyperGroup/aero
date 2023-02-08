@@ -6,22 +6,22 @@ $aero.Cloner = class {
 	 * @param {element} - The element to be cloned
 	 */
 	constructor(el) {
-		const clone = document.createElement(el.tagName);
+		let copy = document.createElement(el.tagName);
 
 		this.el = el;
-		this._clone = clone;
+		this.copy = copy;
 
-		clone.observed = true;
+		copy.observed = true;
 
 		for (const name of el.getAttributeNames())
-			if (name !== "integrity") clone[name] = el[name];
+			if (name !== "integrity") copy[name] = el[name];
 
 		if ("innerHTML" in el && el.innerHTML !== "")
-			$aero.safeText(clone, el.innerHTML);
+			$aero.safeText(copy, el.innerHTML);
 	}
 	clone() {
 		// Insert
-		this.el.after(this._clone);
+		this.el.after(this.copy);
 	}
 	cleanup() {
 		if (this.el instanceof HTMLScriptElement) {

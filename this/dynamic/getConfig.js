@@ -4,8 +4,8 @@ import getStore from "./getStore.js";
 
 // Dynamically retrieve the config
 export default () => {
-	if (config.flags.dynamicConfig)
-		getStore(config.dynamicConfig.name, store => {
+	if (config.flags.dynamicUpdates)
+		getStore(config.dynamicUpdates.name, store => {
 			const dbConfig = store.getAll();
 
 			// Could be undefined, or worse erroneous

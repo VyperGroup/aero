@@ -3,6 +3,8 @@ import routes from "./routes.js";
 
 // Dynamic Config
 import getConfig from "./this/dynamic/getConfig.js";
+// Standard Config
+import { prefix, aeroPrefix, debug, flags } from "./config.js";
 
 // Utility
 import ProxyFetch from "./this/misc/ProxyFetch.js";
@@ -19,6 +21,7 @@ import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
 import rewriteRespHeaders from "./this/rewriters/respHeaders.js";
 import rewriteManifest from "./this/rewriters/manifest.js";
 import scope from "./shared/scope.js";
+import corsTest from "./this/misc/corsTest.js";
 
 /**
  * Handles the requests
@@ -27,15 +30,14 @@ import scope from "./shared/scope.js";
  */
 async function handle(event) {
 	// Dynamic config
-	const { aeroPrefix, proxyApi, proxyApiWs, prefix, debug, flags } =
-		getConfig();
+	const { backends, wsBackends, wrtcBackends } = getConfig();
 
 	// Separate the prefix from the url to get the proxy url isolated
 	const afterPrefix = url =>
 		url.replace(new RegExp(`^(${self.location.origin}${prefix})`, "g"), "");
 
 	// Construct proxy fetch instance
-	const proxyFetch = new ProxyFetch(self.location.origin + proxyApi);
+	const proxyFetch = new ProxyFetch(backends);
 
 	const req = event.request;
 
@@ -51,14 +53,14 @@ async function handle(event) {
 		// Proceed with the request like normal
 		return await fetch(req.url);
 
-	var proxyUrl;
+	var clientUrl;
 	// Get the origin from the user's window
 	if (event.clientId !== "") {
 		// Get the current window
-		const win = await clients.get(event.clientId);
+		const client = await clients.get(event.clientId);
 
 		// Get the url after the prefix
-		proxyUrl = new URL(afterPrefix(win.url));
+		clientUrl = new URL(afterPrefix(client.url));
 	}
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
@@ -67,34 +69,72 @@ async function handle(event) {
 	const iFrame = req.destination === "iframe";
 
 	// Parse the request url to get the url to proxy
-	const url = getRequestUrl(
-		prefix,
+	const proxyUrl = getRequestUrl(
 		reqUrl.origin,
 		self.location.origin,
-		proxyUrl,
+		clientUrl,
 		path,
 		homepage,
 		iFrame
 	);
 
 	// Ensure the request isn't blocked by CORS
-	if (flags.corsEmulation && (await block(url.href)))
+	if (flags.corsEmulation && (await block(proxyUrl.href)))
 		return new Response("Blocked by CORS", { status: 500 });
 
 	// Log requests
 	if (debug.url)
 		console.log(
 			req.destination == ""
-				? `${req.method} ${url}`
-				: `${req.method} ${url} (${req.destination})`
+				? `${req.method} ${proxyUrl}`
+				: `${req.method} ${proxyUrl} (${req.destination})`
 		);
 
 	// Rewrite the request headers
 	const reqHeaders = headersToObject(req.headers);
+
+	// CORS Emulation headers for CORS testing in the following injected scripts
+	let cors = {};
+	if (flags.corsEmulation) {
+		cors.headers = {
+			clear: reqHeaders["clear-site-data"],
+			// TODO: Respect the permissions policy
+			perms: reqHeaders["permissions-policy"],
+			// These are parsed later in frame.js if needed
+			frame: reqHeaders["x-frame-options"],
+			// This is only used for getting the frame frameancesors for $aero.frame
+			csp: reqHeaders["content-security-policy"],
+		};
+
+		// Cache emulation
+		
+		/*
+		For some reason unbeknownst to me, this api isn't support in any major browser
+		https://www.w3.org/TR/clear-site-data/#grammardef-executioncontexts
+		*/
+		if (flags.experimental && cors.headers.clear) {
+			const clear = JSON.parse(`[${$aero.cors.headers.clear}]`);
+
+			if (clear.includes("'*'") || clearincludes("'cache'")) {
+				// TODO: Delete cache for origin using cache emulation
+			}
+			// Send messages to all windows with the same origin to reload
+			if (clear.includes("'*'") || clear.includes("executionContexts"))
+			for (const client of clients.get(event.clientId)) {
+				const clientOrigin = new URL(client.url.replace(new RegExp(`^(${prefix})`, "g"), "")).origin;
+				
+				if (clientOrigin === proxyUrl.origin)
+					client.postMessage("clearExecutionContext");
+			}
+		}
+	}
+
+	// TODO: Cache emulation
+
 	const rewrittenReqHeaders = rewriteReqHeaders(
 		prefix,
 		reqHeaders,
-		proxyUrl,
+		clientUrl,
 		afterPrefix
 	);
 
@@ -107,12 +147,16 @@ async function handle(event) {
 	if (req.method === "POST") opts.body = await req.text();
 
 	// Make the request to the proxy
-	const resp = await proxyFetch.fetch(url, opts);
+	const resp = await proxyFetch.fetch(proxyUrl, opts);
+
+	if (typeof resp === "Error")
+		return new Response(resp, {
+			status: 500,
+		});
 
 	// Rewrite the response headers
 	const respHeaders = headersToObject(resp.headers);
 	const rewrittenRespHeaders = rewriteRespHeaders(
-		prefix,
 		flags.corsEmulation,
 		respHeaders
 	);
@@ -132,88 +176,120 @@ async function handle(event) {
 
 		if (body !== "") {
 			body = `
-			<!DOCTYPE html>
-			<head>
-				<!-- Fix encoding issue -->
-				<meta charset="utf-8">
-				
-				<!-- Favicon -->
-				<!--
-				Delete favicon if /favicon.ico isn't found
-				This is needed because the browser will cache the favicon from the previous site
-				-->
-				<link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon">
-				<!-- If not defined already, manually set the favicon -->
-				<link href="${prefix + url.origin}/favicon.ico" rel="icon" type="image/x-icon">
-				
-				<script>
-					// Update the service worker
-					navigator.serviceWorker
-						.register("/sw.js", {
-							scope: ${prefix},
-							// Don't cache http requests
-							updateViaCache: "none",
-							type: "module",
-						})
-						// Update service worker
-						.then(reg => reg.update())
-						.catch(err => console.error(err.message));
+<!DOCTYPE html>
+<head>
+    <!-- Fix encoding issue -->
+    <meta charset="utf-8">
+    
+    <!-- Favicon -->
+    <!--
+    Delete favicon if /favicon.ico isn't found
+    This is needed because the browser will cache the favicon from the previous site
+    -->
+    <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon">
+    <!-- If not defined already, manually set the favicon -->
+    <link href="${
+		prefix + proxyUrl.origin
+	}/favicon.ico" rel="icon" type="image/x-icon">
+    
+    <script>
+        // Update the service worker
+        navigator.serviceWorker
+            .register("/sw.js", {
+                scope: ${prefix},
+                // Don't cache http requests
+                updateViaCache: "none",
+                type: "module",
+            })
+            // Update service worker
+            .then(reg => reg.update())
+            .catch(err => console.error(err.message));
 
-					// Aero's global namespace
-					var $aero = {
-						config: {
-							aeroPrefix: ${aeroPrefix},
-							prefix: "${prefix}",
-							proxyApiWs: "${proxyApiWs}",
-							debug: ${JSON.stringify(debug)},
-							flags: ${JSON.stringify(flags)},
-						}
-					};
+        // Aero's global namespace
+        var $aero = {
+            config: {
+                prefix: "${prefix}",
+                wsBackends: "${wsBackends}",
+                wrtcBackends: "${wrtcBackends}",
+                debug: ${JSON.stringify(debug)},
+                flags: ${JSON.stringify(flags)},
+            },
+            cors: ${cors},
+            // This is used to later copy into an iFrame's srcdoc; this is for an edge case
+            imports: \`${unwrapImports(routes, true)}\`,
+            afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
+        };
+    </script>
 
-					$aero.afterPrefix = url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""); 
-				</script>
+    <!-- Injected Aero code -->
+    ${unwrapImports(routes)}
+</head>
 
-				<!-- Injected Aero code -->
-				${unwrapImports(aeroPrefix, routes)}
-				<script>
-					// This is used to later copy into an iFrame's srcdoc; this is an edge case
-					$aero.imports = \`${unwrapImports(aeroPrefix, routes, true)}\`;
-				</script>
-				</head>
-				
-				${body}
-			`;
+${body}
+`;
 		}
-	} else if (req.destination === "script")
+	} else if (req.destination === "script") {
+		body = "";
+
+		if (flags.corsEmulation)
+			// Integrity check
+			body += `
+(async () => {
+	if (document.currentScript.integrity) {
+		const [rawAlgo, hash] = document.currentScript.integrity.split("-");
+
+		const algo = rawAlgo.replace(/^sha/g, "SHA-");
+
+		alert(algo);
+
+		const buf = new TextEncoder().encode(document.currentScript.innerHTML);
+
+		const calcHashBuf = await crypto.subtle.digest(algo, buf);
+
+		const calcHash = new TextDecoder().decode(calcHashBuf);
+
+		// If mismatched hash
+		const blocked = hash === calcHash;
+
+		// Exit script
+		if (blocked)
+			// TODO: Error emulation
+			throw new Error("Script blocked")
+	}
+})();
+`;
+
 		// Scope the scripts
-		body = scope(flags.advancedScoping, debug.scoping, await resp.text());
-	else if (req.destination === "manifest") {
+		body += scope(await resp.text(), flags.advancedScoping, debug.scoping);
+	} else if (req.destination === "manifest") {
 		// Safari exclusive
-		if (flags.legacy && type.contains("text/cache-manifest"))
-			body = rewriteCacheManifest();
-		body = rewriteManifest(prefix, await resp.text());
+		if (flags.legacy && type.contains("text/cache-manifest")) {
+			const isFirefox = reqHeaders["user-agent"].includes("Firefox");
+
+			body = rewriteCacheManifest(isFirefox);
+		} else body = rewriteManifest(await resp.text());
 	}
 	// Nests
 	else if (flags.nestedWorkers && req.destination === "worker")
 		body = isMod
 			? `
-import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
+import { proxyLocation } from "${aeroPrefix}worker/worker.js";
 self.location = proxyLocation;
 `
 			: `
-importScripts("${aeroPrefix}nest/worker.js");
+importScripts("${aeroPrefix}worker/worker.js");
 
 ${body}
 		`;
 	else if (flags.nestedWorkers && req.destination === "sharedworker")
 		body = isMod
 			? `
-import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
+import { proxyLocation } from "${aeroPrefix}worker/worker.js";
 self.location = proxyLocation;
 `
 			: `
-importScripts("${aeroPrefix}workerApis/worker.js");
-importScripts("${aeroPrefix}workerApis/sharedworker.js");
+importScripts("${aeroPrefix}worker/worker.js");
+importScripts("${aeroPrefix}worker/sharedworker.js");
 	
 ${body}
 		`;
@@ -224,8 +300,8 @@ import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
 self.location = proxyLocation;
 `
 			: `
-importScripts("${aeroPrefix}workerApis/worker.js");
-importScripts("${aeroPrefix}workerApis/sw.js");
+importScripts("${aeroPrefix}worker/worker.js");
+importScripts("${aeroPrefix}worker/sw.js");
 
 ${body}
 		`;

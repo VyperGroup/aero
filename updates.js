@@ -6,7 +6,7 @@ const { dbName, id } = dynamicConfig;
 
 // For dynamic config updates
 export default () => {
-	if (flags.dynamicConfig)
+	if (flags.dynamicUpdates)
 		getStore(dbName, store => {
 			self.addEventListener("message", event => {
 				const config = event.data;

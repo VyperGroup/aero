@@ -1,17 +1,29 @@
+import { flags, debug } from "../config.js";
+
 // For module scripts
-if (typeof $aero === "undefined") var $aero = {};
+if (typeof $aero === "undefined")
+	var $aero = {
+		config: {
+			flags: flags,
+			debug: debug,
+		},
+	};
 
 /**
  * Deep property check scoping
  * @param {string} - The script to be rewritten
  * @return {string} - The rewritten script
  */
-$aero.scope = (advanced, debug, script) => {
-	// TODO: Unscope script
-	const hide = src => src;
+$aero.scope = script => {
+	const hide = src => {
+		// TODO: Make this more undetectable
+		return src.replace(/\$aero/g, "_$aero");
+	};
 
-	//const sur = v => new RegExp(`(,|,\\s+)?(?<!\\.|_|[a-zA-Z])(${v})(?!:|=|_|[a-zA-Z])(,|\\s+,)?`);
-	const sur = v => v;
+	const sur = v =>
+		new RegExp(
+			`(,|,\\s+)?(?<!\\.|_|[a-zA-Z])(${v})(?!:|=|_|[a-zA-Z])(,|\\s+,)?`
+		);
 
 	const surName = (name, m, g1, g2, g3) => {
 		// Don't replace if it is within a function's parameters. Detected by commands surrounding the variable name.
@@ -43,7 +55,7 @@ $aero.scope = (advanced, debug, script) => {
 			surName("$aero.eval", m, g1, g2, g3)
 		);
 
-	if (advanced) {
+	if ($aero.config.flags.advancedScoping) {
 		rewrittenScript = rewrittenScript.replace(
 			/(["\']).*?(?<!\\)(\\\\)*\1|((return|return\s+|,|,\s+|\)|\)\s+|for|for\s+|var|var\s+|let|let\s+|const|const\s+|=|=\s+)?((?:(\([^)(]*\)|\?\.|[a-zA-Z\.$_=])*)?\[[^\][]*]))(,|\s+,)?/g,
 			(m, g1, g2, g3, g4, g5, g6, g7, g8, offset, string) => {
@@ -71,17 +83,17 @@ $aero.scope = (advanced, debug, script) => {
 					// Remove this
 					g3.endsWith("]");
 				if (canScope) {
-					console.log(g3);
-
 					const rewrite = `$aero.check(${m})`;
 
-					if (debug) console.log(`Check ${m} -> ${rewrite}`);
+					if ($aero.debug.scoping)
+						console.log(`Check ${m} ➜ ${rewrite}`);
 
 					return rewrite;
 				} else return m;
 			}
 		);
-		console.log(`Scoping script\n${script}\n->\n${rewrittenScript}`);
+		if ($aero.config.debug.scoping)
+			console.log(`Scoping script\n${script}\n➜\n${rewrittenScript}`);
 	}
 
 	return rewrittenScript;
