@@ -1,3 +1,4 @@
+// Scope Checking
 if ($aero.config.flags.advancedScoping) {
 	// In case a function overwrites the value of location in its parameters
 	$aero.isLocation = val => val === location;
@@ -5,6 +6,7 @@ if ($aero.config.flags.advancedScoping) {
 	$aero.check = val => (val == location ? $aero.location : val);
 }
 
+// Evals
 $aero.eval = new Proxy(eval, {
 	apply(_target, _that, args) {
 		args[0] = $aero.scope(
@@ -16,7 +18,6 @@ $aero.eval = new Proxy(eval, {
 		return Reflect.apply(...arguments);
 	},
 });
-
 Function = new Proxy(Function, {
 	construct(_that, args) {
 		let [func] = args;
@@ -55,6 +56,7 @@ Function = new Proxy(Function, {
 	},
 });
 
+// Reflectors
 Reflect.get = new Proxy(Reflect.get, {
 	apply(target, _that, args) {
 		const [theTarget, theProp] = args;
@@ -70,12 +72,25 @@ Reflect.get = new Proxy(Reflect.get, {
 		return target(...args);
 	},
 });
-
 Reflect.set = new Proxy(Reflect.set, {
 	apply(target, _that, args) {
 		const [_target, prop, value] = args;
 
 		if (_target instanceof Location) return ($aero.location[prop] = value);
 		return target(...args);
+	},
+});
+
+// Objects
+Object.getOwnPropertyDescriptor = new Proxy(Object.getOwnPropertyDescriptor, {
+	apply(_target, _that, args) {
+		let [obj, prop] = args;
+
+		if (obj === location || (obj === window && prop === "location"))
+			obj = $aero.location;
+
+		args[0] = obj;
+
+		return Reflect.apply(...arguments);
 	},
 });
