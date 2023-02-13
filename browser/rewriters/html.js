@@ -54,7 +54,7 @@ $aero.rewrite = async (el, attr) => {
 			cloner.clone();
 			cloner.cleanup();
 		}
-	} else if (tag === "a" && el.href)
+	} else if ((tag === "a" || tag === "area") && el.href)
 		$aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
 	else if (
 		tag === "form" &&
