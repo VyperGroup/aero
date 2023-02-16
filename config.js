@@ -1,6 +1,8 @@
 const aeroPrefix = "/aero/";
 const prefix = "/go/";
 
+const cacheKey = "HTTP_";
+
 const backends = ["/fetch"];
 const wsBackends = ["/fetchws"];
 // Not implemented yet
@@ -41,6 +43,7 @@ const debug = {
 export {
 	aeroPrefix,
 	prefix,
+	cacheKey,
 	backends,
 	wsBackends,
 	wrtcBackends,

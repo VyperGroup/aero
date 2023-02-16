@@ -3,6 +3,10 @@ Object.defineProperty($aero, "proxyLocation", {
 	get: () => new URL($aero.afterPrefix(location.href)),
 });
 
+Object.defineProperties($aero, "upToProxyOrigin", {
+	get: () => $aero.upToProxyOrigin,
+});
+
 // Private scope
 {
 	// Prevent detection by instanceof
@@ -35,14 +39,13 @@ Object.defineProperty($aero, "proxyLocation", {
 
 			return location[prop];
 		},
-		set(_that, prop, value) {
+		set(target, prop, value) {
 			if (
 				prop === "pathname" ||
 				(prop === "href" && value.startsWith("/"))
 			)
-				location[prop] =
-					$aero.config.prefix + $aero.proxyLocation.origin + value;
-			else location[prop] = value;
+				target[prop] = $aero.upToProxyOrigin + value;
+			else target[prop] = value;
 		},
 	});
 }

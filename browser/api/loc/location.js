@@ -2,10 +2,9 @@ Object.defineProperty($aero, "location", {
 	value: $aero.locationProxy,
 });
 
-$aero.document = {};
-Object.defineProperty($aero.document, "domain", {
+Object.defineProperty(document, "domain", {
 	get: () => $aero.proxyLocation.hostname,
 });
-Object.defineProperty($aero.document, "URL", {
+Object.defineProperty(document, "URL", {
 	get: () => $aero.proxyLocation.href,
 });

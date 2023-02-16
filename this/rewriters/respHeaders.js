@@ -20,9 +20,7 @@ const ignoredHeaders = [
  * @return {string} - The url pointed to the proxified url
  */
 function rewriteLocation(url) {
-	const rewrite = self.location.origin + prefix + url;
-
-	return rewrite;
+	return self.location.origin + prefix + url;
 }
 
 /**
@@ -34,22 +32,23 @@ export default (corsEmulation, headers) => {
 	const rewrittenHeaders = {};
 
 	Object.keys(headers).forEach(key => {
-		const deleteHeader = ignoredHeaders.includes(key);
+		function set(val) {
+			rewrittenHeaders[key] = val;
+		}
 
 		if (
-			deleteHeader ||
+			ignoredHeaders.includes(key) ||
 			(!corsEmulation && key === "content-security-policy")
-		)
+		) {
 			return;
+		}
 
 		const value = headers[key];
 
-		if (key === "location") rewrittenHeaders[key] = rewriteLocation(value);
-		else if (key === "cookie")
-			rewrittenHeaders[key] = rewriteGetCookie(value);
-		else if (key === "set-cookie")
-			rewrittenHeaders[key] = rewriteSetCookie(value);
-		else rewrittenHeaders[key] = value;
+		if (key === "location") set(rewriteLocation(value));
+		else if (key === "cookie") set(rewriteGetCookie(value));
+		else if (key === "set-cookie") set(rewriteSetCookie(value));
+		else set(value);
 	});
 
 	return rewrittenHeaders;

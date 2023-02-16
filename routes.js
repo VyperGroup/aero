@@ -18,6 +18,7 @@ export default {
 		"event",
 		"file",
 		"fs",
+		"http",
 		"navigation",
 		"opt",
 		"payment",
@@ -25,6 +26,7 @@ export default {
 		"push",
 		"reporting",
 		"scoping",
+		"timing",
 	],
 	"browser/api/event": ["messages"],
 	"browser/api/loc": [

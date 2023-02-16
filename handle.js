@@ -4,7 +4,7 @@ import routes from "./routes.js";
 // Dynamic Config
 import getConfig from "./this/dynamic/getConfig.js";
 // Standard Config
-import { prefix, aeroPrefix, debug, flags } from "./config.js";
+import { prefix, aeroPrefix, cacheKey, debug, flags } from "./config.js";
 
 // Utility
 import ProxyFetch from "./this/misc/ProxyFetch.js";
@@ -14,14 +14,15 @@ import headersToObject from "./this/misc/headersToObject.js";
 import unwrapImports from "./this/misc/unwrapImports.js";
 
 // Cors Emulation
-import block from "./this/misc/corsTest.js";
+import block from "./this/cors/test.js";
+import cache, { clearCache, getCacheAge } from "./this/cors/cache.js";
 
 // Rewriters
 import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
 import rewriteRespHeaders from "./this/rewriters/respHeaders.js";
+import rewriteCacheManifest from "./this/rewriters/cacheManifest.js";
 import rewriteManifest from "./this/rewriters/manifest.js";
 import scope from "./shared/scope.js";
-import corsTest from "./this/misc/corsTest.js";
 
 /**
  * Handles the requests
@@ -29,6 +30,8 @@ import corsTest from "./this/misc/corsTest.js";
  * @returns {Response} - The proxified response
  */
 async function handle(event) {
+	const req = event.request;
+
 	// Dynamic config
 	const { backends, wsBackends, wrtcBackends } = getConfig();
 
@@ -38,8 +41,6 @@ async function handle(event) {
 
 	// Construct proxy fetch instance
 	const proxyFetch = new ProxyFetch(backends);
-
-	const req = event.request;
 
 	const reqUrl = new URL(req.url);
 
@@ -94,10 +95,13 @@ async function handle(event) {
 	const reqHeaders = headersToObject(req.headers);
 
 	// CORS Emulation headers for CORS testing in the following injected scripts
-	let cors = {};
+	let injectHeaders = {};
 	if (flags.corsEmulation) {
-		cors.headers = {
-			clear: reqHeaders["clear-site-data"],
+		injectHeaders.headers = {
+			// Cache Emulation
+			timing: reqHeaders["timing-allow-origin"],
+			// CORS Emulation
+			clear: `[${reqHeaders["clear-site-data"]}]`,
 			// TODO: Respect the permissions policy
 			perms: reqHeaders["permissions-policy"],
 			// These are parsed later in frame.js if needed
@@ -106,30 +110,38 @@ async function handle(event) {
 			csp: reqHeaders["content-security-policy"],
 		};
 
-		// Cache emulation
-		
-		/*
-		For some reason unbeknownst to me, this api isn't support in any major browser
-		https://www.w3.org/TR/clear-site-data/#grammardef-executioncontexts
-		*/
-		if (flags.experimental && cors.headers.clear) {
-			const clear = JSON.parse(`[${$aero.cors.headers.clear}]`);
+		if (injectHeaders.headers.clear) {
+			const clear = JSON.parse($aero.cors.clear);
 
-			if (clear.includes("'*'") || clearincludes("'cache'")) {
-				// TODO: Delete cache for origin using cache emulation
-			}
+			if (clear.includes("'*'") || clearincludes("'cache'"))
+				await clearCache(proxyUrl.origin);
 			// Send messages to all windows with the same origin to reload
-			if (clear.includes("'*'") || clear.includes("executionContexts"))
-			for (const client of clients.get(event.clientId)) {
-				const clientOrigin = new URL(client.url.replace(new RegExp(`^(${prefix})`, "g"), "")).origin;
-				
-				if (clientOrigin === proxyUrl.origin)
-					client.postMessage("clearExecutionContext");
-			}
+			if (
+				(flags.experimental && clear.includes("'*'")) ||
+				clear.includes("executionContexts")
+			)
+				for (const client of clients.get(event.clientId)) {
+					const clientOrigin = new URL(
+						client.url.replace(new RegExp(`^(${prefix})`, "g"), "")
+					).origin;
+
+					if (clientOrigin === proxyUrl.origin)
+						client.postMessage("clearExecutionContext");
+				}
 		}
 	}
 
-	// TODO: Cache emulation
+	const cacheResp = getCache(`HTTP_${proxyUrl.path}`);
+
+	if (cacheResp) return cacheResp;
+
+	// Get the cache age before we start rewriting
+	let cacheAge = getCacheAge(reqHeaders["cache-control"], reqHeaders["expires"]);
+
+	// Store every original cached proxy url in here for performance interceptor
+	let cached = (await cacheStore.keys())
+		.keys()
+		.filter(key => key.startsWith(prefix + proxyUrl.origin));
 
 	const rewrittenReqHeaders = rewriteReqHeaders(
 		prefix,
@@ -156,10 +168,15 @@ async function handle(event) {
 
 	// Rewrite the response headers
 	const respHeaders = headersToObject(resp.headers);
+
 	const rewrittenRespHeaders = rewriteRespHeaders(
 		flags.corsEmulation,
 		respHeaders
 	);
+
+	// Backup headers to conceal from http request apis
+	if (req.destination === "")
+		rewriteGetCookie["x-aero-headers"] = JSON.stringify(respHeaders);
 
 	const type = respHeaders["content-type"];
 
@@ -168,9 +185,13 @@ async function handle(event) {
 		typeof type === "undefined" || type.startsWith("text/html");
 
 	// Rewrite the body
+
+	/** @type {string | ReadableStream} */
 	let body;
+
 	// For modules
 	const isMod = new URLSearchParams(location.search).mod === "true";
+
 	if ((homepage || iFrame) && html) {
 		body = await resp.text();
 
@@ -214,7 +235,8 @@ async function handle(event) {
                 debug: ${JSON.stringify(debug)},
                 flags: ${JSON.stringify(flags)},
             },
-            cors: ${cors},
+            cors: ${injectHeaders},
+			cached: "${cached}",
             // This is used to later copy into an iFrame's srcdoc; this is for an edge case
             imports: \`${unwrapImports(routes, true)}\`,
             afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
@@ -308,11 +330,30 @@ ${body}
 	// No rewrites are needed; proceed as normal
 	else body = resp.body;
 
-	// Return the response
-	return new Response(body, {
+	rewriteRespHeaders["x-aero-size-transfer"] = null;
+	rewriteRespHeaders["x-aero-size-encbody"] = null;
+
+	// TODO: x-aero-size-transfer
+	if (typeof body === "string") {
+		rewriteRespHeaders["x-aero-size-body"] = new TextEncoder().encode(
+			body
+		).length;
+		// TODO: x-aero-size-encbody
+	} else if (typeof body === "ArrayBuffer") {
+		rewriteRespHeaders["x-aero-size-body"] = body.byteLength;
+		// TODO: x-aero-size-encbody
+	}
+
+	const proxyResp = Response(body, {
 		status: resp.status ? resp.status : 200,
 		headers: rewrittenRespHeaders,
 	});
+
+	// Cache the response
+	setCache(proxyUrl.path, proxyResp, cacheAge);
+
+	// Return the response
+	return new proxyResp;
 }
 
 export default handle;

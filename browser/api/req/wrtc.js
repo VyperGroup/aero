@@ -17,7 +17,6 @@ if ($aero.config.flags.wrtc) {
 
 			return ret;
 		},
-		// TODO: Hide the backup in element interceptors
 		get: (_target, prop) =>
 			$aero.escape("iceServers").test(prop)
 				? `_${prop}`

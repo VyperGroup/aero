@@ -1,10 +1,10 @@
-# Aero
+# aero
 
 aero an innovative, first of its kind, interception-based web proxy from, has now been open-sourced! It has the best site compatibility and is the fastest proxy by far.
 
 # How to use aero
 
-1. Make sure your backend serves an aero [backend](https://github.com/aero-aeroPrefix) correctly
+1. Make sure your backend serves an aero [backend](https://github.com/aero-backends) correctly
 2. Make sure you included aero into your site
 3. Create a service worker like this in the topmost directory
 
@@ -36,12 +36,6 @@ const proxyManager = new ProxyManager();
 proxyManager.add("/sw.js", proxyApi);
 ```
 
-# Faq
-
-## What is the purpose of aero / What differs from it's competition?
-
-Unlike other proxies, we are more focused on experimentation originally to introduce interception proxies, which was why aero was originally made. Every way that it works is different to its predecessors. The focus has changed after it served its original purpose, and are now trying to achieve every site support in the upcoming months, while having the best speed and extensibility possible. This means that we support way more edge cases than any other proxies giving us the highest compatibility. You may notice that other proxies support more major sites than us; this is due to their hacky solutions that often focus on the short term, rather than the long term. Eventually, we will surpass our flaws. aero does its own thing and never follows competition.
-
 # The difference from other proxies
 
 ## Precedence
@@ -54,7 +48,7 @@ aero takes a different approach by not only completely avoiding rewrites, but al
 
 ## Extensibility
 
-One of our strengths is Extensibility. This is done by making aero readable and customizable by anyone. Every aspect of it is documented. Even if you are not a programmer, you can understand how aero works. There are configs to control functionality - in order to have no compromises and allow those who can't write code to easily customize it. If you are a programmer, you will probably appreciate all the hooks and guiding variables we have to easily modify the code. We are working on an even better way of making extensions: event-driven middleware that takes advantage of its internals.
+One of our strengths is Extensibility. This is done by making aero readable and customizable by anyone. Every aspect of it is documented. Even if you are not a programmer, you can understand how aero works. There are configs to control functionality - in order to have no compromises and allow those who can't write code to easily customize it. If you are a programmer, you will appreciate all the hooks and guiding variables we have to easily modify the code. We are working on an even better way of making extensions: event-driven middleware that takes advantage of its internals.
 
 ## HTML Interception
 
@@ -64,6 +58,32 @@ HTML is intercepted and rewritten through a Mutation Observer where important el
 
 Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect interceptors. _Support for this feature is enabled in flags_
 
+## Cache Emulation
+
+## HTTP Caches
+
+HTTP caches are removed and replaced by a system using aero's own cache stores. This allows us to have caches stored for a specific origin. This is important for support since Clear-Site-Data deletes every origin's cache making aero otherwise detectable.
+
+# Clear-Site-Data
+
+Whenever this header is present a script is injected to aero that handles clearing the data since it can't be done in the SW itself
+
+# Cache Manifests
+
+aero rewrites the paths in the cache manfiests files
+
+## SW Interception
+
+aero has interceptors in other SWs to adhere to cache emulation and hide the fact real http caches aren't being used.
+
 ## Cors Emulation
 
 Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! _Support for this feature is enabled in flags_
+
+# Cors Testing
+
+Aero sends an real request to the proxy site in order to check if they allow us to use it
+
+# Trusted Types
+
+We support trusted types through interceptors. Aero simply do nothing because it alreadys know the origin secure.

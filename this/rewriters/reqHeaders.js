@@ -12,14 +12,17 @@ export default (headers, proxyUrl, afterPrefix) => {
 	const rewrittenHeaders = {};
 
 	Object.keys(headers).forEach(key => {
+		function set(val) {
+			rewrittenHeaders[key] = val;
+		}
+
 		const value = headers[key];
 
-		if (key === "host") rewrittenHeaders[key] = proxyUrl?.host;
-		else if (key === "origin") rewrittenHeaders[key] = proxyUrl?.origin;
-		else if (key === "referrer") rewrittenHeaders[key] = afterPrefix(value);
-		else if (key === "cookie")
-			rewrittenHeaders[key] = rewriteGetCookie(value);
-		else rewrittenHeaders[key] = value;
+		if (key === "host") set(proxyUrl?.host);
+		else if (key === "origin") set(proxyUrl?.origin);
+		else if (key === "referrer") set(afterPrefix(value));
+		else if (key === "cookie") set(rewriteGetCookie(value));
+		else set(value);
 	});
 
 	return rewrittenHeaders;
