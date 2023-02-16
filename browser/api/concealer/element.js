@@ -1,3 +1,4 @@
+// TODO: Only perform the escapes on the correct element
 {
 	const escape = {
 		get: attr => {

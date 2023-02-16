@@ -4,7 +4,7 @@ import routes from "./routes.js";
 // Dynamic Config
 import getConfig from "./this/dynamic/getConfig.js";
 // Standard Config
-import { prefix, aeroPrefix, cacheKey, debug, flags } from "./config.js";
+import { prefix, aeroPrefix, debug, flags } from "./config.js";
 
 // Utility
 import ProxyFetch from "./this/misc/ProxyFetch.js";
@@ -15,7 +15,14 @@ import unwrapImports from "./this/misc/unwrapImports.js";
 
 // Cors Emulation
 import block from "./this/cors/test.js";
-import cache, { clearCache, getCacheAge } from "./this/cors/cache.js";
+
+// Cache Emulation
+import {
+	clearCache,
+	getCacheAge,
+	getCache,
+	setCache,
+} from "./this/cors/cache.js";
 
 // Rewriters
 import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
@@ -136,7 +143,10 @@ async function handle(event) {
 	if (cacheResp) return cacheResp;
 
 	// Get the cache age before we start rewriting
-	let cacheAge = getCacheAge(reqHeaders["cache-control"], reqHeaders["expires"]);
+	let cacheAge = getCacheAge(
+		reqHeaders["cache-control"],
+		reqHeaders["expires"]
+	);
 
 	// Store every original cached proxy url in here for performance interceptor
 	let cached = (await cacheStore.keys())
@@ -353,7 +363,7 @@ ${body}
 	setCache(proxyUrl.path, proxyResp, cacheAge);
 
 	// Return the response
-	return new proxyResp;
+	return new proxyResp();
 }
 
 export default handle;

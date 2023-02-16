@@ -16,6 +16,8 @@ if (
 
 			// We may delete some entries, so we will update the index with the new index
 			let i = 0;
+
+			/** @const {string[]} */
 			const newEntries = [];
 
 			for (let entry of entries) {
@@ -31,10 +33,9 @@ if (
 					if (
 						new URL(newEntry.url).origin !==
 						$aero.proxyLocation.origin
-					) {
+					)
 						// The site is not supposed to see this entry
 						continue;
-					}
 				} catch {
 					continue;
 				}
@@ -50,7 +51,7 @@ if (
 		},
 	});
 
-	if (navigation.transition !== null)
+	if (navigation.transition)
 		navigation.transition.from = $aero.navigationEntry;
 
 	navigation.addEventListener = (type, listener) => event => {
