@@ -7,7 +7,7 @@ const backends = ["/fetch"];
 const wsBackends = ["/fetchws"];
 // Not implemented yet
 const wrtcBackends = {
-	// This is recommended, as it will likely be unblocked
+	// I recommend using your TURN servers from https://www.metered.ca/tools/openrelay/
 	ice: ["stun:stun.l.google.com:19302"],
 };
 
