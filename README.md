@@ -1,6 +1,6 @@
 # aero
 
-aero an innovative, first of its kind, interception-based web proxy from, has now been open-sourced! It has the best site compatibility and is the fastest proxy by far.
+aero an innovative, first of its kind, interception-based web proxy from, has now been open-sourced! It has full site compatibility and is the fastest proxy by far.
 
 # How to use aero
 
