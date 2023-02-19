@@ -35,7 +35,7 @@ const flags = {
 // Ignore these if you are not a programmer
 const debug = {
 	errors: true,
-	url: false,
+	url: true,
 	src: false,
 	scoping: false,
 };

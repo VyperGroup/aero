@@ -12,7 +12,6 @@ export default {
 	"browser/rewriters": ["cors", "csp", "cspSrc", "cloner", "htmlSrc", "html"],
 	// Hide the true origin
 	"browser/api/concealer": [
-		"credentials",
 		"element",
 		"error",
 		"event",
@@ -20,7 +19,6 @@ export default {
 		"fs",
 		"http",
 		"navigation",
-		"opt",
 		"payment",
 		"presentation",
 		"push",
@@ -37,7 +35,7 @@ export default {
 		"popup",
 	],
 	// Alt protocols
-	"browser/api/req": ["ws", "wrtc"],
+	"browser/api/req": ["http", "ws", "wrtc"],
 	"browser/api/storage": ["cookie", "idb", "sql", "storage"],
 	"browser/api/worker": ["workers"],
 	/*
