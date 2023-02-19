@@ -13,10 +13,13 @@ if ("Presentation" in window) {
 			return Reflect.construct(...arguments);
 		},
 	});
+	/*
+	// FIXME: Undefined
 	PresentationConnnection = new Proxy(PresentationConnnection, {
 		get(target, prop) {
 			if (prop === "url") return $aero.afterPrefix(target.url);
 			return Reflect.get(...arguments);
 		},
 	});
+	*/
 }

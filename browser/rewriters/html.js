@@ -63,7 +63,7 @@ $aero.rewrite = async (el, attr) => {
 		// Action is automatically created
 		el.action !== null
 	)
-		$aero.set(el, "action", $aero.rewriteHtmlSrc(el.action));
+		$aero.set(el, "action", $aero.rewriteHtmlSrc(el.href));
 	else if (tag === "iframe") {
 		if (el.csp) $aero.set(el, "csp", rewriteCSP(el.csp));
 
@@ -93,6 +93,7 @@ $aero.rewrite = async (el, attr) => {
 		switch (el.httpEquiv) {
 			case "content-security-policy":
 				$aero.set(el, "content", $aero.rewriteCSP(el.content));
+				break;
 			case "refresh":
 				$aero.set(
 					el,

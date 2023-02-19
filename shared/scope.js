@@ -58,18 +58,7 @@ $aero.scope = script => {
 	if ($aero.config.flags.advancedScoping) {
 		rewrittenScript = rewrittenScript.replace(
 			/(["\']).*?(?<!\\)(\\\\)*\1|((return|return\s+|,|,\s+|\)|\)\s+|for|for\s+|var|var\s+|let|let\s+|const|const\s+|=|=\s+)?((?:(\([^)(]*\)|\?\.|[a-zA-Z\.$_=])*)?\[[^\][]*]))(,|\s+,)?/g,
-			(m, g1, g2, g3, g4, g5, g6, g7, g8, offset, string) => {
-				// TODO: Document with named groups instead
-				/*
-				Return original match
-					g5 - Whatever proceeds the match. Could be for ignore patterns or checking to see if the \
-					g7 - What is inside of the brackets
-					g8 - comma ignore
-
-				Rewrite
-					g3 - The match we want
-				*/
-
+			(m, _g1, _g2, g3, g4, _g5, _g6, g7, g8) => {
 				// General scoping cases
 				const canScope =
 					// Ensure that there is no return or variable statements

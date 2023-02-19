@@ -8,8 +8,7 @@ import { prefix } from "../../config.js";
  * @param {string} - path of the site
  * @param {boolean} - the request is for the homepage
  * @param {boolean} - the site is inside of an iFrame
- *
- * @returns {URL} The url to proxy
+ * @returns {string} The url to proxy
  */
 function getRequestUrl(
 	origin,

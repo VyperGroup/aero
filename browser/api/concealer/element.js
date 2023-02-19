@@ -41,8 +41,8 @@
 	window.Element.prototype.getAttributeNames = new Proxy(
 		Element.prototype.getAttributeNames,
 		{
-			apply: target =>
-				Reflect.apply(...arguments)
+			apply(target) {
+				return Reflect.apply(...arguments)
 					.filter(attr => attr === "_href")
 					.map(attr =>
 						(target instanceof HTMLAnchorElement &&
@@ -51,7 +51,8 @@
 							$aero.escape("integrity").test(attr))
 							? attr.slice(1)
 							: attr
-					),
+					);
+			},
 		}
 	);
 

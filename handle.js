@@ -17,12 +17,7 @@ import unwrapImports from "./this/misc/unwrapImports.js";
 import block from "./this/cors/test.js";
 
 // Cache Emulation
-import {
-	clearCache,
-	getCacheAge,
-	getCache,
-	setCache,
-} from "./this/cors/cache.js";
+import CacheManager from "./this/cors/cache.js";
 
 // Rewriters
 import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
@@ -77,13 +72,16 @@ async function handle(event) {
 	const iFrame = req.destination === "iframe";
 
 	// Parse the request url to get the url to proxy
-	const proxyUrl = getRequestUrl(
-		reqUrl.origin,
-		self.location.origin,
-		clientUrl,
-		path,
-		homepage,
-		iFrame
+	// FIXME: Breaks on https://soundcloud.com; I think this is a subdomain-related error
+	const proxyUrl = new URL(
+		getRequestUrl(
+			reqUrl.origin,
+			location.origin,
+			clientUrl,
+			path,
+			homepage,
+			iFrame
+		)
 	);
 
 	// Ensure the request isn't blocked by CORS
@@ -94,21 +92,25 @@ async function handle(event) {
 	if (debug.url)
 		console.log(
 			req.destination == ""
-				? `${req.method} ${proxyUrl}`
-				: `${req.method} ${proxyUrl} (${req.destination})`
+				? `${req.method} ${proxyUrl.href}`
+				: `${req.method} ${proxyUrl.href} (${req.destination})`
 		);
 
 	// Rewrite the request headers
 	const reqHeaders = headersToObject(req.headers);
 
-	// CORS Emulation headers for CORS testing in the following injected scripts
+	// Cache mode emulation
+	const cache = new CacheManager(reqHeaders);
+
 	let injectHeaders = {};
 	if (flags.corsEmulation) {
-		injectHeaders.headers = {
+		injectHeaders = {
 			// Cache Emulation
 			timing: reqHeaders["timing-allow-origin"],
 			// CORS Emulation
-			clear: `[${reqHeaders["clear-site-data"]}]`,
+			clear: reqHeaders["clear-site-data"]
+				? JSON.parse(`[${reqHeaders["clear-site-data"]}]`)
+				: undefined,
 			// TODO: Respect the permissions policy
 			perms: reqHeaders["permissions-policy"],
 			// These are parsed later in frame.js if needed
@@ -117,41 +119,25 @@ async function handle(event) {
 			csp: reqHeaders["content-security-policy"],
 		};
 
-		if (injectHeaders.headers.clear) {
-			const clear = JSON.parse($aero.cors.clear);
-
-			if (clear.includes("'*'") || clearincludes("'cache'"))
-				await clearCache(proxyUrl.origin);
-			// Send messages to all windows with the same origin to reload
-			if (
-				(flags.experimental && clear.includes("'*'")) ||
-				clear.includes("executionContexts")
-			)
-				for (const client of clients.get(event.clientId)) {
-					const clientOrigin = new URL(
-						client.url.replace(new RegExp(`^(${prefix})`, "g"), "")
-					).origin;
-
-					if (clientOrigin === proxyUrl.origin)
-						client.postMessage("clearExecutionContext");
-				}
-		}
+		if (injectHeaders.clear)
+			await clear(injectHeaders.clear, event.clientId);
 	}
 
-	const cacheResp = getCache(`HTTP_${proxyUrl.path}`);
-
-	if (cacheResp) return cacheResp;
-
 	// Get the cache age before we start rewriting
-	let cacheAge = getCacheAge(
+	let cacheAge = cache.getAge(
 		reqHeaders["cache-control"],
 		reqHeaders["expires"]
 	);
 
-	// Store every original cached proxy url in here for performance interceptor
-	let cached = (await cacheStore.keys())
-		.keys()
-		.filter(key => key.startsWith(prefix + proxyUrl.origin));
+	const cacheResp = await cache.get(reqUrl, cacheAge);
+
+	if (cacheResp) return cacheResp;
+
+	if (cache.mode === "only-if-cached")
+		// TODO: Properly emulate the network error
+		return new Response("Can't find a cache", {
+			status: 500,
+		});
 
 	const rewrittenReqHeaders = rewriteReqHeaders(
 		prefix,
@@ -169,7 +155,7 @@ async function handle(event) {
 	if (req.method === "POST") opts.body = await req.text();
 
 	// Make the request to the proxy
-	const resp = await proxyFetch.fetch(proxyUrl, opts);
+	const resp = await proxyFetch.fetch(proxyUrl.href, opts);
 
 	if (typeof resp === "Error")
 		return new Response(resp, {
@@ -184,7 +170,7 @@ async function handle(event) {
 		respHeaders
 	);
 
-	// Backup headers to conceal from http request apis
+	// Backup headers to later conceal in http request api interceptors
 	if (req.destination === "")
 		rewriteGetCookie["x-aero-headers"] = JSON.stringify(respHeaders);
 
@@ -245,13 +231,18 @@ async function handle(event) {
                 debug: ${JSON.stringify(debug)},
                 flags: ${JSON.stringify(flags)},
             },
-            cors: ${injectHeaders},
-			cached: "${cached}",
+            cors: ${JSON.stringify(injectHeaders)},
             // This is used to later copy into an iFrame's srcdoc; this is for an edge case
             imports: \`${unwrapImports(routes, true)}\`,
             afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
         };
     </script>
+
+	<script>
+	// Sanity check
+	if (!("$aero" in window))
+		document.write("Unable to initalize $aero");
+	</script>
 
     <!-- Injected Aero code -->
     ${unwrapImports(routes)}
@@ -354,16 +345,16 @@ ${body}
 		// TODO: x-aero-size-encbody
 	}
 
-	const proxyResp = Response(body, {
-		status: resp.status ? resp.status : 200,
+	const proxyResp = new Response(body, {
+		status: resp.status ?? 200,
 		headers: rewrittenRespHeaders,
 	});
 
 	// Cache the response
-	setCache(proxyUrl.path, proxyResp, cacheAge);
+	cache.set(reqUrl, proxyResp.clone());
 
 	// Return the response
-	return new proxyResp();
+	return proxyResp;
 }
 
 export default handle;

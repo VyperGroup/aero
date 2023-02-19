@@ -17,7 +17,7 @@ If you make a request to two different proxy origins on the site that are both c
 	};
 
 	function isCached(url) {
-		return url in $aero.cached || info.get(url);
+		return url in info.get(url);
 	}
 
 	async function getHeader(name) {

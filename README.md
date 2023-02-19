@@ -10,17 +10,15 @@ aero an innovative, first of its kind, interception-based web proxy from, has no
 
 ```js
 import handle from "./aero/handle.js";
-import dynamicUpdates from "./aero/updates.js";
+import "./aero/init.js";
 
-self.addEventListener("install", event => self.skipWaiting());
+self.addEventListener("install", () => self.skipWaiting());
 
 self.addEventListener("fetch", async event =>
 	event.respondWith(
 		handle(event).catch(err => new Response(err.stack, { status: 500 }))
 	)
 );
-
-dynamicUpdates();
 ```
 
 4. Register the service worker in a script on your main page like this
@@ -60,30 +58,30 @@ Location objects are replaced with a fake Location api, and also in the case of 
 
 ## Cache Emulation
 
-## HTTP Caches
+### HTTP Caches
 
 HTTP caches are removed and replaced by a system using aero's own cache stores. This allows us to have caches stored for a specific origin. This is important for support since Clear-Site-Data deletes every origin's cache making aero otherwise detectable.
 
-# Clear-Site-Data
-
-Whenever this header is present a script is injected to aero that handles clearing the data since it can't be done in the SW itself
-
-# Cache Manifests
+### Cache Manifests
 
 aero rewrites the paths in the cache manfiests files
 
-## SW Interception
+### Clear Site Data
 
-aero has interceptors in other SWs to adhere to cache emulation and hide the fact real http caches aren't being used.
+Whenever this header is present a script is injected to aero that handles clearing the data since it can't be done in the SW itself
 
 ## Cors Emulation
 
 Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! _Support for this feature is enabled in flags_
 
-# Cors Testing
+### SW Interception
+
+aero has interceptors in other SWs to adhere to cache emulation and hide the fact real http caches aren't being used.
+
+### Cors Testing
 
 Aero sends an real request to the proxy site in order to check if they allow us to use it
 
-# Trusted Types
+### Trusted Types
 
 We support trusted types through interceptors. Aero simply do nothing because it alreadys know the origin secure.

@@ -1,3 +1,5 @@
+// TODO: Finish all the apis
+
 var oldClientsGet = Clients.get;
 Clients.get = async id => {
 	const client = await oldClientsGet(id);

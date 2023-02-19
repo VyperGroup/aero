@@ -1,4 +1,5 @@
-import rewriteSrc from "../../shared/src.js";
+import aero from "../../shared/src.js";
+const { rewriteSrc } = aero;
 
 export default body => {
 	const json = JSON.parse(body);

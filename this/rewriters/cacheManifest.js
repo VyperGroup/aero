@@ -1,6 +1,7 @@
 import { prefix } from "../../config.js";
 
-import { rewriteRelativeUrl } from "../../rewriters/shared/src.js";
+import aero from "../../shared/src.js";
+const { rewriteRelativeUrl } = aero;
 
 /*
 This is an old standard that has been deprecated

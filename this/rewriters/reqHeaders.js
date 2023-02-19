@@ -22,7 +22,7 @@ export default (headers, proxyUrl, afterPrefix) => {
 		else if (key === "origin") set(proxyUrl?.origin);
 		else if (key === "referrer") set(afterPrefix(value));
 		else if (key === "cookie") set(rewriteGetCookie(value));
-		else set(value);
+		else if (!key.startsWith("x-aero")) set(value);
 	});
 
 	return rewrittenHeaders;

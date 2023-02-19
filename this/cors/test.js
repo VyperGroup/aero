@@ -4,12 +4,14 @@
  * @return {Boolean} The result
  */
 export default async url => {
-	// FIXME: Doesn't always work
 	try {
 		const controller = new AbortController();
 		const signal = controller.signal;
 
-		await fetch(url, { signal });
+		await fetch(url, {
+			mode: "no-cors",
+			signal,
+		});
 
 		// Don't actually send the request.
 		controller.abort();

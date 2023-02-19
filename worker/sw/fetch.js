@@ -10,7 +10,7 @@ fetch = new Proxy(fetch, {
 			!(opts.mode !== "same-origin" && opts.cache === "only-if-cached")
 		)
 			// Emulate cache mode
-			args[1].headers.add("X-Aero-Cache", opts.cache);
+			args[1].headers.add("x-aero-cache", opts.cache);
 
 		return Reflect.apply(...arguments);
 	},

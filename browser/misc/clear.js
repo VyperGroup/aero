@@ -6,19 +6,19 @@ https://w3c.github.io/webappsec-clear-site-data
 */
 
 /*
-For some reason unbeknownst to me, this api isn't support in any major browser
+For some reason unbeknownst to me, this api isn't support in any major browser although it is standard
 https://www.w3.org/TR/clear-site-data/#grammardef-executioncontexts
 */
-if (flags.experimental)
+if ($aero.config.flags.nonstandard)
 	navigator.serviceWorker.addEventListener("message", event => {
 		if (event.data === "clearExecutionContext") location.reload();
 	});
 
 // Private scope
 {
-	const clear = JSON.parse($aero.cors.clear);
+	if ($aero.cors.clear) {
+		const clear = JSON.parse($aero.cors.clear);
 
-	if (clear) {
 		const all = clear.includes("'*'");
 
 		if (all || clear.includes("'cookies'")) {
