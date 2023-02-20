@@ -156,8 +156,8 @@ async function handle(event) {
 
 	// Make the request to the proxy
 	const resp = await proxyFetch.fetch(proxyUrl.href, opts);
-
-	if (typeof resp === "Error")
+	
+	if (resp instanceof Error)
 		return new Response(resp, {
 			status: 500,
 		});
