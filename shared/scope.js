@@ -65,8 +65,6 @@ $aero.scope = script => {
 					typeof g4 === "undefined" &&
 					// Ensure that there are no commas, since that indicates a destructure
 					typeof g8 === "undefined" &&
-					// Ensure that the scope isn't checking a Symbol
-					typeof g7 === "Symbol.iterator" &&
 					// Ensure that the brackets have been matched
 					typeof g3 !== "undefined" &&
 					// Remove this
