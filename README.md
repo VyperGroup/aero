@@ -1,10 +1,10 @@
 # aero
 
-aero an innovative, first of its kind, interception-based web proxy from, has now been open-sourced! It has full site compatibility and is the fastest proxy by far.
+aero an innovative, first of its kind, interception-based web proxy from, has now been open-sourced! It has full site compatibility and is the fastest proxy by far. To see a deployable version of aero, see {aero-deploy}(https://github.com/NebulaServices/aero-deploy)
 
 # How to use aero
 
-1. Make sure your backend serves an aero [backend](https://github.com/aero-backends) correctly
+1. Make sure your backend serves an aero [backend](https://github.com/NebulaServices/aero-backends) correctly
 2. Make sure you included aero into your site
 3. Create a service worker like this in the topmost directory
 
@@ -22,7 +22,7 @@ self.addEventListener("fetch", async event =>
 ```
 
 4. Register the service worker in a script on your main page like this
-   _This example uses our [sdk](https://github.com/ProxyHaven/sdk); allowing you to safely manage deployments of multiple proxies, and supports dynamic config updates_
+   _This example uses our [sdk](https://github.com/NebulaServices/aero-sdk); allowing you to safely manage deployments of multiple proxies, and supports dynamic config updates_
 
 ```js
 import { proxyApi } from "./aero/config.js";
