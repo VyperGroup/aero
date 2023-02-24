@@ -1,6 +1,6 @@
 # aero
 
-aero an innovative, first of its kind, interception-based web proxy from, has now been open-sourced! It has full site compatibility and is the fastest proxy by far. To see a deployable version of aero, see {aero-deploy}(https://github.com/NebulaServices/aero-deploy)
+aero an innovative, first of its kind, interception-based web proxy from, has now been open-sourced! It has full site compatibility and is the fastest proxy by far. To see a deployable version of aero, see [aero-deploy](https://github.com/NebulaServices/aero-deploy)
 
 # How to use aero
 
