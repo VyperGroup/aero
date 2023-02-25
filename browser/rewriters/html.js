@@ -21,9 +21,7 @@ $aero.rewrite = async (el, attr) => {
 
 	// CSP Testing
 	function allow(dir) {
-		if ($aero.config.flags.corsEmulation) return true;
-
-		if ($aero.checkCsp(dir)) {
+		if (!$aero.config.flags.corsEmulation && $aero.checkCsp(dir)) {
 			el.remove();
 			return false;
 		}
@@ -54,7 +52,7 @@ $aero.rewrite = async (el, attr) => {
 			cloner.clone();
 			cloner.cleanup();
 		}
-	} else if ((tag === "a" || tag === "area") && el.href)
+	} else if ((tag === "a" || tag === "area" || tag === "base") && el.href)
 		$aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
 	else if (
 		tag === "form" &&
@@ -118,6 +116,10 @@ $aero.rewrite = async (el, attr) => {
 		cloner.clone();
 		cloner.cleanup();
 	}
+
+	// TODO: Proxify the getters and setters too
+	if (el.onload) $aero.set(el, "onload", $aero.scope(el.onload));
+	if (el.onerror) $aero.set(el, "onerror", $aero.scope(el.onerror));
 
 	el.observed = true;
 };
