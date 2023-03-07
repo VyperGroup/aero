@@ -1,22 +1,25 @@
 // Only supported on Chromium
 if ("PaymentRequest" in window) {
-	/*
-	FIXME: Don't use these interfaces
+	PaymentRequest = new Proxy(PaymentRequest, {
+		construct(_target, _prop, args) {
+			let [methods] = args;
 
-	PaymentRequestEvent = new Proxy(PaymentRequestEvent, {
-		get(_that, prop) {
-			if (prop === "validationURL") return $aero.proxyLocation.origin;
-			return Reflect.get(...arguments);
+			args[0] = methods.map(method => $aero.rewriteSrc(method));
+
+			return Reflect.construct(...arguments);
 		},
 	});
 
-	MerchantValidationEvent = new Proxy(PaymentRequestEvent, {
-		get(_that, prop) {
-			const ret = Reflect.get(...arguments);
+	if ($aero.config.flags.legacy && "MerchantValidationEvent" in window)
+		MerchantValidationEvent = new Proxy(PaymentRequestEvent, {
+			get(_that, prop) {
+				const ret = Reflect.get(...arguments);
 
-			if (prop === "validationURL") return $aero.afterPrefix(ret);
-			return Reflect.get(...arguments);
-		},
-	});
-	*/
+				if (prop === "validationURL") return $aero.afterPrefix(ret);
+
+				return Reflect.get(...arguments);
+			},
+		});
+
+	// https://w3c.github.io/payment-handler/#dom-paymentrequestevent-toporigin
 }

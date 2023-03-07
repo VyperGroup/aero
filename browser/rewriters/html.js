@@ -1,9 +1,9 @@
 $aero.set = (el, attr, val) => {
 	// Backup element
 	// For Element hooks
-	el[`_${attr}`] = val;
+	el.setAttribute(`_${attr}`, val);
 
-	el[attr] = val;
+	el.setAttribute(attr, val);
 };
 
 /**
@@ -52,9 +52,15 @@ $aero.rewrite = async (el, attr) => {
 			cloner.clone();
 			cloner.cleanup();
 		}
-	} else if ((tag === "a" || tag === "area" || tag === "base") && el.href)
-		$aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
-	else if (
+	} else if (tag === "a" || tag === "area" || tag === "base") {
+		if (el.href) $aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
+		if (el.hasAttribute("xlink:href"))
+			$aero.set(
+				el,
+				"xlink:href",
+				$aero.rewriteHtmlSrc(el.getAttribute("xlink:href"))
+			);
+	} else if (
 		tag === "form" &&
 		// Don't rewrite again
 		!el._action &&
@@ -69,6 +75,7 @@ $aero.rewrite = async (el, attr) => {
 			// Embed the origin the origin as an attribute, so that the frame can reference it to do its checks
 			/// TODO: Conceal this
 			el.parentProxyOrigin = $aero.proxyLocation.origin;
+			$aero.set(el, "src");
 
 			// Inject aero imports if applicable then rewrite the Src
 			$aero.set(

@@ -1,6 +1,6 @@
-if ($aero.config.nestedWorkers) {
-	// This api is only exposed in secure contexts
+if ($aero.config.nestedWorkers)
 	if ("serviceWorker" in navigator) {
+		// This api is only exposed in secure contexts
 		navigator.serviceWorker.register = new Proxy(
 			navigator.serviceWorker.register,
 			{
@@ -43,16 +43,3 @@ if ($aero.config.nestedWorkers) {
 			}
 		);
 	}
-
-	Worker = new Proxy(Worker, {
-		construct() {
-			return Reflect.construct(...arguments);
-		},
-	});
-
-	SharedWorker = new Proxy(SharedWorker, {
-		construct() {
-			return Reflect.construct(...arguments);
-		},
-	});
-}

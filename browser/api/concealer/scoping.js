@@ -1,19 +1,12 @@
 // Scope Checking
-if ($aero.config.flags.advancedScoping) {
-	// In case a function overwrites the value of location in its parameters
-	$aero.isLocation = val => val === location;
-
-	$aero.check = val => (val == location ? $aero.location : val);
-}
+// In case a function overwrites the value of location in its parameters
+$aero.isLocation = val => val === location;
+$aero.check = val => (val == location ? $aero.location : val);
 
 // Evals
 $aero.eval = new Proxy(eval, {
 	apply(_target, _that, args) {
-		args[0] = $aero.scope(
-			args[0],
-			$aero.config.flags.advancedScoping,
-			$aero.config.debug.scoping
-		);
+		args[0] = $aero.scope(args[0]);
 
 		return Reflect.apply(...arguments);
 	},
@@ -26,27 +19,20 @@ Function = new Proxy(Function, {
 
 		if (typeof func === "string") {
 			bak = func;
-			func = $aero.scope(
-				func,
-				$aero.config.flags.advancedScoping,
-				$aero.config.debug.scoping
-			);
+			func = $aero.scope(func);
 		} else if (
 			typeof func === "function" &&
 			!func.toString() !== `function ${func.name}() { [native code] }"`
 		) {
 			bak = func.toString();
-			func = $aero.scope(
-				func.toString(),
-				$aero.config.flags.advancedScoping,
-				$aero.config.debug.scoping
-			);
+			func = $aero.scope(func.toString());
 		}
 
 		args[0] = func;
 
 		const inst = Reflect.construct(...arguments);
 
+		// Use Object.defined to conceal the getter
 		inst.bak = bak;
 
 		// Hide the changes from the site

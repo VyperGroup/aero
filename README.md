@@ -1,10 +1,11 @@
 # aero
 
-Aero is a developer friendly and innovative interception proxy. Aero provides a good balance of excellent site support speed, while also having a clean and organized codebase.
+Aero is a safe, developer friendly, and innovative interception proxy. Aero provides a good balance of excellent site support speed, while also having a clean and organized codebase. A deployable version can be found [here](https://github.com/ProxyHaven/aero-deploy)
 
 # How to use aero
 
-1. Make sure your backend serves an aero [backend](https://github.com/aero-backends) correctly
+1. Make sure your backend serves an [aero](https://github.com/ProxyHaven/aero-backends) _recommended_ or a [TompHTTP Compatible Backend](https://github.com/tomphttp)
+    > If you are using bare, run bare.sh
 2. Make sure you included aero into your site
 3. Create a service worker like this in the topmost directory
 
@@ -22,7 +23,7 @@ self.addEventListener("fetch", async event =>
 ```
 
 4. Register the service worker in a script on your main page like this
-   _This example uses our [sdk](https://github.com/ProxyHaven/sdk); allowing you to safely manage deployments of multiple proxies, and supports dynamic config updates_
+   _This example uses our [sdk](https://github.com/ProxyHaven/aero-sdk); allowing you to safely manage deployments of multiple proxies, and supports dynamic config updates_
 
 ```js
 import { proxyApi } from "./aero/config.js";
@@ -34,7 +35,7 @@ const proxyManager = new ProxyManager();
 proxyManager.add("/sw.js", proxyApi);
 ```
 
-# The difference from other proxies
+# How aero works
 
 ## Precedence
 
@@ -42,7 +43,7 @@ Previously, proxies could barely handle more than one person, this was due to al
 
 ## Interception
 
-aero takes a different approach by not only completely avoiding rewrites, but also by doing all the rewrites on the frontend with no parsers! This allows the response times to be O(1) with no speed delay. It does this by intercepting requests through a service worker, where the request is routed to the while also injecting important scripts. This prevents the need to hook into code that previously needed to be rewritten to redirect requests saving time and resources. All of its conceptual methods are optimal.
+aero takes a different approach by not only completely avoiding rewrites, but also by doing all the rewrites on the frontend with no parsers! This allows aero to avoid speed delays. It does this by intercepting requests through a service worker, where the request is routed to the while also injecting important scripts. This prevents the need to hook into code that previously needed to be rewritten to redirect requests saving time and resources. All of its conceptual methods are optimal.
 
 ## Extensibility
 
@@ -52,7 +53,7 @@ One of our strengths is Extensibility. This is done by making aero readable and 
 
 HTML is intercepted and rewritten through a Mutation Observer where important elements are rewritten. Script elements with inline code and elements with integrity values set need to be cloned due to the browser's security restrictions.
 
-## Deep Scope Property Checking
+## Deep Scope Property Checking DSPC
 
 Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using our scope function that evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is integrated into Eval, Function Class, and Reflect interceptors. _Support for this feature is enabled in flags_
 
@@ -80,8 +81,8 @@ aero has interceptors in other SWs to adhere to cache emulation and hide the fac
 
 ### Cors Testing
 
-Aero sends an real request to the proxy site in order to check if they allow us to use it
+Aero sends an request to the site without the proxy in order to check if they would allow it
 
 ### Trusted Types
 
-We support trusted types through interceptors. Aero simply do nothing because it alreadys know the origin secure.
+We support trusted types through interceptors. Aero simply do nothing because it already knows the is origin secure.

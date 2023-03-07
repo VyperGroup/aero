@@ -1,6 +1,6 @@
-import getStore from "./this/dynamic/getStore.js";
+import getStore from "../dynamic/getStore.js";
 
-import { dynamicConfig, flags } from "./config.js";
+import { dynamicConfig, flags } from "../../config.js";
 
 const { dbName, id } = dynamicConfig;
 

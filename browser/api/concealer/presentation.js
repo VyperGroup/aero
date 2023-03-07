@@ -4,22 +4,20 @@ if ("Presentation" in window) {
 			// Could either be a string or an array
 			let [urls] = args;
 
-			if (Array.isArray(urls)) {
-				for (let url of urls) url = $aero.rewriteSrc(urls);
-			} else urls = $aero.rewriteSrc(urls);
+			if (Array.isArray(urls))
+				urls = urls.map(url => $aero.rewriteSrc(url));
+			else urls = $aero.rewriteSrc(urls);
 
 			args[0] = urls;
 
 			return Reflect.construct(...arguments);
 		},
 	});
-	/*
-	// FIXME: Undefined
-	PresentationConnnection = new Proxy(PresentationConnnection, {
+	PresentationConnnection = new Proxy(PresentationConnection, {
 		get(target, prop) {
 			if (prop === "url") return $aero.afterPrefix(target.url);
+
 			return Reflect.get(...arguments);
 		},
 	});
-	*/
 }

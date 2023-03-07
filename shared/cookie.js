@@ -1,26 +1,26 @@
-import { prefix } from "../config.js";
-
-// For module scripts
+// For the SW
+import * as config from "../config.js";
 if (typeof $aero === "undefined")
 	var $aero = {
-		config: {
-			prefix: prefix,
-		},
+		config: config,
 	};
 
 function rewriteGetCookie(cookie) {
-	return (
-		cookie
-			// TODO: Finish getter
-			.replace(
-				new RegExp(
-					`(?<=path\=)${$aero.config.prefix}${$aero.location.origin}.*(?= )`,
-					"g"
-				),
-				match => null
-			)
-			.replace(/_path\=.*(?= )/g, "")
-	);
+	return cookie
+		.replace(
+			new RegExp(
+				`(?<=path\=)${$aero.config.prefix}${$aero.location.origin}.*(?= )`,
+				"g"
+			),
+			match =>
+				match.replace(
+					new RegExp(
+						`^(${$aero.config.prefix}${$aero.location.origin})`
+					),
+					""
+				)
+		)
+		.replace(/_path\=.*(?= )/g, "");
 }
 function rewriteSetCookie(cookie) {
 	return cookie.replace(

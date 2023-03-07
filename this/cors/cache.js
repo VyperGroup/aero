@@ -17,7 +17,7 @@ export default class {
 			])
 		)
 			this.mode = "no-store";
-		else this.mode = headers["X-Aero-Cache"] ?? "";
+		else this.mode = headers["x-aero-cache"] ?? "";
 	}
 
 	get bypass() {

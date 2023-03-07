@@ -4,9 +4,9 @@ if (
 	// Only supported on Chromium
 	"navigation" in window
 ) {
-	Object.defineProperty($aero, "navigationEntry", {
+	$aero.navigationEntry = {
 		get: () => $aero.proxyLocation.href,
-	});
+	};
 
 	// Entries
 	navigation.currentEntry.url = $aero.navigationEntry;
@@ -54,12 +54,19 @@ if (
 	if (navigation.transition)
 		navigation.transition.from = $aero.navigationEntry;
 
-	navigation.addEventListener = (type, listener) => event => {
-		if (type === "currententrychange")
-			Object.defineProperty(event.from, "url", {
-				get: () => $aero.afterPrefix(event.from.url),
-			});
+	navigation.addEventListener = new Proxy(navigation.addEventListener, {
+		apply(_target, _that, args) {
+			const [type, listener] = args;
 
-		return listener(event);
-	};
+			if (type === "currententrychange")
+				args[1] = event => {
+					if (event instanceof NavigationCurrentEntryChangeEvent)
+						event.from.url = $aero.afterPrefix(event.from.url);
+
+					listener(event);
+				};
+
+			return Reflect.apply(...arguments);
+		},
+	});
 }

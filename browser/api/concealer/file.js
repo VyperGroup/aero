@@ -6,3 +6,5 @@ File = new Proxy(File, {
 		return ret;
 	},
 });
+
+// TODO: Finish all interecptors for functions that create new files

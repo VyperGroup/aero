@@ -3,7 +3,9 @@
  * @param {string} - The url to rewrite
  */
 $aero.rewriteHtmlSrc = src => {
-	const url = src.replace(new RegExp(`^(${location.origin})`, "g"), "");
+	const url = $aero.proto.get(
+		src.replace(new RegExp(`^(${location.origin})`, "g"), "")
+	);
 
 	if (/^javascript:/g.test(url)) return $aero.scope(url);
 	if (

@@ -12,36 +12,40 @@ Storage.prototype.removeItem = new Proxy(
 	$aero.storageNomenclature
 );
 
-{
-	Storage.prototype.clear = new Proxy(Storage.prototype.clear, {
-		apply() {
-			for (let i = 0; i < localStorage.length; i++) {
-				const key = keyBak(i);
-
-				if (key.startsWith(prefix)) localStorage.removeItem(key);
-			}
-		},
-	});
-}
-
-/*
-Storage.prototype.key = new Proxy(Storage.prototype.key, {
-	apply(target, that, args) {
-		const [index] = args;
-
-		let keys = [];
-
-		for (let i = 0; i < localStorage.length; i++) {
-			// FIXME: Illegal invocation
-			const key = target(i);
-
-		if (key.startsWith(prefix))
-			keys.append(key.slice(str.indexOf(prefix) + prefix.length));
-		}
-
-		return keys[index];
+Storage.prototype.clear = new Proxy(Storage.prototype.clear, {
+	apply(target) {
+		for (const key of Object.keys(target))
+			if (key.startsWith($aero.storagePrefix)) target.remove(key);
 	},
 });
-*/
 
-// TODO: Rewrite StorageEvent
+Storage.prototype.key = new Proxy(Storage.prototype.key, {
+	apply(target, _that, args) {
+		const [i] = args;
+
+		let proxyKeys = [];
+
+		for (const key of Object.keys(target))
+			if (key.startsWith($aero.storagePrefix))
+				proxyKeys.push(
+					key.slice(
+						str.indexOf($aero.storagePrefix) +
+							$aero.storagePrefix.length
+					)
+				);
+
+		return proxyKeys[i];
+	},
+});
+
+Storage = new Proxy(Storage, {
+	getOwnPropertyDescriptor: () => ({
+		enumerable: true,
+		configurable: true,
+	}),
+	ownKeys(target) {
+		const keys = Reflect.ownKeys(target);
+
+		return $aero.storageKeys(keys);
+	},
+});

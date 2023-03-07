@@ -1,7 +1,6 @@
 import { prefix } from "../../config.js";
 
-import aero from "../../shared/src.js";
-const { rewriteRelativeUrl } = aero;
+import processRelativeUrl from "../../shared/relativeUrl.js";
 
 /*
 This is an old standard that has been deprecated
@@ -14,16 +13,19 @@ export default (body, isFirefox) => {
 	 */
 	function rewritePath(path) {
 		// Firefox needs the protocol before the wildcard
+		// TODO: Support wildcards elsewhere
 		if (!isFirefox && path === "*") return location.origin + prefix + path;
+
+		// If absolute
 		const protoWildcard = /({a-zA-Z}+):\/\/\*/.exec(path);
 		if (protoWildcard !== null) {
 			const proto = protoWildcard[1];
 
 			// TODO: Rewrite
 		}
-		// TODO: Support wildcards elsewhere
 
-		return rewriteRelativeUrl(path);
+		// If relative
+		return processRelativeUrl(location.origin, path);
 	}
 
 	const lines = body.split("/n");

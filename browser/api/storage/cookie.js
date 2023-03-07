@@ -24,6 +24,27 @@ if ($aero.config.flags.experimental && "cookieStore" in window) {
 			);
 		},
 	});
+
+	cookieStore.addEventListener = new Proxy(cookieStore.addEventListener, {
+		apply(_target, _that, args) {
+			const [type, listener] = args;
+
+			if (type === "change")
+				args[1] = event => {
+					if (event instanceof CookieChangeEvent) {
+						/*
+						TODO: Rewrite
+						event.changed
+						event.deleted
+						*/
+					}
+
+					event.listener(event);
+				};
+
+			return Reflect.apply(...arguments);
+		},
+	});
 }
 
 $aero.cookie = document.cookie;

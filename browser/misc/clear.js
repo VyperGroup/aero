@@ -1,14 +1,5 @@
-/*
-CORS Emulation
-Emulates the Clear Site Data header
-https://w3c.github.io/webappsec-clear-site-data
+// Emulates the Clear Site Data header
 
-*/
-
-/*
-For some reason unbeknownst to me, this api isn't support in any major browser although it is standard
-https://www.w3.org/TR/clear-site-data/#grammardef-executioncontexts
-*/
 if ($aero.config.flags.nonstandard)
 	navigator.serviceWorker.addEventListener("message", event => {
 		if (event.data === "clearExecutionContext") location.reload();
@@ -49,6 +40,7 @@ if ($aero.config.flags.nonstandard)
 					indexedDB.deleteDatabase(name);
 			});
 
+			// Storage
 			function clearStore(name) {
 				if (name in window) {
 					const storage = window[name];
@@ -63,8 +55,9 @@ if ($aero.config.flags.nonstandard)
 			clearStore("localStorage");
 			clearStore("sessionStorage");
 
+			// WebDatabase
 			if ($aero.config.flags.legacy && "openDatabase" in window) {
-				function clearDb(name) {
+				for (const name of localStorage.getItem("dbNames")) {
 					openDatabase(name).transaction(tx => {
 						tx.executeSql(
 							'SELECT name FROM sqlite_master WHERE type="table"',
@@ -81,12 +74,6 @@ if ($aero.config.flags.nonstandard)
 							}
 						);
 					});
-				}
-
-				// TODO: Get all the DB names to delete
-				// Possibly record all the DB names using a openDatabase interceptor storing into WebSQL to get the list of databases to clear
-				for (const name of localStorage.getItem("dbNames")) {
-					clearDb(name);
 				}
 			}
 

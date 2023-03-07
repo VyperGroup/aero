@@ -1,5 +1,5 @@
 // Routes
-import routes from "./routes.js";
+import routes from "./this/internal/routes.js";
 
 // Dynamic Config
 import getConfig from "./this/dynamic/getConfig.js";
@@ -7,6 +7,7 @@ import getConfig from "./this/dynamic/getConfig.js";
 import { prefix, aeroPrefix, debug, flags } from "./config.js";
 
 // Utility
+import BareClient from "./this/misc/bare/dist/BareClient.js";
 import ProxyFetch from "./this/misc/ProxyFetch.js";
 import sharedModule from "./this/misc/sharedModule.js";
 import getRequestUrl from "./this/misc/getRequestUrl.js";
@@ -24,7 +25,7 @@ import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
 import rewriteRespHeaders from "./this/rewriters/respHeaders.js";
 import rewriteCacheManifest from "./this/rewriters/cacheManifest.js";
 import rewriteManifest from "./this/rewriters/manifest.js";
-import scope from "./shared/scope.js";
+import scope from "./shared/scopeRegExp.js";
 
 /**
  * Handles the requests
@@ -39,10 +40,15 @@ async function handle(event) {
 
 	// Separate the prefix from the url to get the proxy url isolated
 	const afterPrefix = url =>
-		url.replace(new RegExp(`^(${self.location.origin}${prefix})`, "g"), "");
+		url.replace(new RegExp(`^(${location.origin}${prefix})`, "g"), "");
+
+	const useBare = BareClient || typeof BareClient === "function";
 
 	// Construct proxy fetch instance
-	const proxyFetch = new ProxyFetch(backends);
+	const proxyFetch = useBare
+		? // The bare client doesn't support proxy switching
+		  new BareClient(backends[0])
+		: new ProxyFetch(backends);
 
 	const reqUrl = new URL(req.url);
 
@@ -68,8 +74,11 @@ async function handle(event) {
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
 	const homepage = req.mode === "navigate" && req.destination === "document";
-	// This is used for determining the request url and
+
+	// This is used for determining the request url
 	const iFrame = req.destination === "iframe";
+
+	const navigate = homepage || iFrame;
 
 	// Parse the request url to get the url to proxy
 	// FIXME: Breaks on https://soundcloud.com; I think this is a subdomain-related error
@@ -156,7 +165,7 @@ async function handle(event) {
 
 	// Make the request to the proxy
 	const resp = await proxyFetch.fetch(proxyUrl.href, opts);
-	
+
 	if (resp instanceof Error)
 		return new Response(resp, {
 			status: 500,
@@ -188,7 +197,8 @@ async function handle(event) {
 	// For modules
 	const isMod = new URLSearchParams(location.search).mod === "true";
 
-	if ((homepage || iFrame) && html) {
+	// TODO: Support XML/XSLT
+	if (navigate && html) {
 		body = await resp.text();
 
 		if (body !== "") {
@@ -247,10 +257,24 @@ async function handle(event) {
     <!-- Injected Aero code -->
     ${unwrapImports(routes)}
 </head>
-
 ${body}
 `;
 		}
+	} else if (
+		navigate &&
+		(text.startsWith("text/xml") || text.startsWith("application/xml"))
+	) {
+		body = await resp.text();
+
+		`
+<config>
+{
+	prefix: ${prefix}
+}
+</config>
+<?xml-stylesheet type="text/xsl" href="/aero/browser/xml/intercept.xsl"?>
+${body}
+		`;
 	} else if (req.destination === "script") {
 		body = "";
 
@@ -258,7 +282,7 @@ ${body}
 			// Integrity check
 			body += `
 (async () => {
-	if (document.currentScript.integrity) {
+	if (document.currentScript.hasAttribute("integrity")) {
 		const [rawAlgo, hash] = document.currentScript.integrity.split("-");
 
 		const algo = rawAlgo.replace(/^sha/g, "SHA-");
@@ -283,7 +307,7 @@ ${body}
 `;
 
 		// Scope the scripts
-		body += scope(await resp.text(), flags.advancedScoping, debug.scoping);
+		body += scope(await resp.text());
 	} else if (req.destination === "manifest") {
 		// Safari exclusive
 		if (flags.legacy && type.contains("text/cache-manifest")) {

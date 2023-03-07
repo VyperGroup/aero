@@ -1,13 +1,10 @@
 // Gets the sources in the CSP with directive
 $aero.cspSrc = dir => {
-	const [rawSources] = $aero.cors.csp.match(
-		new RegExp(`${dir} ([^;]*)`),
-		"g"
-	);
+	const [sources] = $aero.cors.csp.match(new RegExp(`${dir} ([^;]*)`), "g");
 
-	if (typeof rawSources === "undefined") return;
+	if (typeof sources === "undefined") return;
 
-	return rawSources.split(" ");
+	return sources.split(" ");
 };
 
 // If CSP blocked
@@ -21,11 +18,21 @@ $aero.checkCsp = dir => {
 
 		if (!sources.includes("'none'"))
 			for (const source of sources) {
-				/*
-                    TODO: Actually check for proper sources like urls with wildcards
-                    This is just a hacky solution for now
-                    */
-				if ($aero.proxyLocation.contains(source)) allowed = true;
+				if ($aero.proxyLocation.href.startsWith(source)) {
+					allowed = true;
+					break;
+				}
+
+				const wc = source.split("*");
+
+				if (
+					// Wildcard found
+					wc.length > 1 &&
+					$aero.proxyLocation.href.startsWith(wc[0])
+				) {
+					allowed = true;
+					break;
+				}
 			}
 
 		if (!allowed) blocked = true;

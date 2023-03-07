@@ -1,13 +1,13 @@
 const aeroPrefix = "/aero/";
 const prefix = "/go/";
 
-const cacheKey = "HTTP_";
+const cacheKey = "httpCache";
 
 const backends = ["/fetch"];
 const wsBackends = ["/fetchws"];
 // Not implemented yet
 const wrtcBackends = {
-	// I recommend using your TURN servers from https://www.metered.ca/tools/openrelay/
+	// I recommend using the TURN servers from https://www.metered.ca/tools/openrelay/
 	ice: ["stun:stun.l.google.com:19302"],
 };
 
@@ -28,7 +28,6 @@ const flags = {
 	ws: true, // Recommended
 	misc: false, // Experimental features that haven't been tested, and aren't significant enough to earn a flag
 	safariSupport: false, // Safari has limited support of SW, so there may be some workarounds
-	advancedScoping: true, // May impair performance
 	nestedWorkers: false, // Not finished
 };
 

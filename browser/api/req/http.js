@@ -1,5 +1,5 @@
 fetch = new Proxy(fetch, {
-	async apply(_target, _that, args) {
+	apply(_target, _that, args) {
 		[opts] = args;
 
 		if (
