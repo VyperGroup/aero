@@ -1,44 +1,87 @@
-// TODO: Only perform the escapes on the correct element
 {
+	// TODO: Only perform the escapes on the correct element
+	const escapeAttrs = ["href", "integrity"];
+
 	const escape = {
 		get: attr => {
 			return attr
-				.replace($aero.escape("href"), "_$&")
-				.replace($aero.escape("integrity"), "_$&");
-		},
-		set: attr => {
-			if (attr === "_href") return "href";
-			if (attr === "_integrity") return "integrity";
-			return attr;
+				.replace($aero.escape(escapeAttrs[0]), "_$&")
+				.replace($aero.escape(escapeAttrs[1]), "_$&");
 		},
 	};
 
-	window.Element.prototype.getAttribute = new Proxy(
-		Element.prototype.getAttribute,
-		{
-			apply(_target, _that, args) {
-				const [attr] = args;
+	const attr = {
+		apply(_target, _that, args) {
+			const [, name] = args;
 
-				args[0] = escape.get(attr);
+			args[0] = escape.get(name);
 
-				return Reflect.apply(...arguments);
-			},
-		}
+			return Reflect.apply(...arguments);
+		},
+	};
+	const attrNS = {
+		apply(_target, _that, args) {
+			const [, name] = args;
+
+			args[1] = escape.get(name);
+
+			return Reflect.apply(...arguments);
+		},
+	};
+	const removeAttr = {
+		apply(_target, _that, args) {
+			// Remove
+			Reflect.apply(...arguments);
+
+			// Remove the backup too
+			const [name] = args;
+			if (name.includes(escapeAttrs)) args[0] = `_${name}`;
+
+			Reflect.apply(...arguments);
+		},
+	};
+	const removeAttrNS = {
+		apply(_target, _that, args) {
+			// Remove
+			Reflect.apply(...arguments);
+
+			// Remove the backup too
+			const [, name] = args;
+			if (name.includes(escapeAttrs)) args[1] = `_${name}`;
+
+			Reflect.apply(...arguments);
+		},
+	};
+
+	window.Element.hasAttribute = new Proxy(
+		Element.prototype.hasAttribute,
+		attr
 	);
-	window.Element.prototype.removeAttribute = new Proxy(
-		Element.prototype.getAttribute,
-		{
-			apply(_target, _that, args) {
-				const [attr] = args;
-
-				args[0] = escape.set(attr);
-
-				return Reflect.apply(...arguments);
-			},
-		}
+	window.Element.hasAttribute = new Proxy(
+		Element.prototype.hasAttribute,
+		attr
 	);
-
-	window.Element.prototype.getAttributeNames = new Proxy(
+	window.Element.hasAttributeNS = new Proxy(
+		Element.prototype.hasAttribute,
+		attrNS
+	);
+	window.Element.getAttribute = new Proxy(
+		Element.prototype.getAttribute,
+		attr
+	);
+	window.Element.getAttributeNode = new Proxy(
+		Element.prototype.getAttributeNode,
+		attr
+	);
+	window.Element.getAttributeNS = new Proxy(
+		Element.prototype.getAttribute,
+		attrNS
+	);
+	window.Element.getAttributeNodeNS = new Proxy(
+		Element.prototype.getAttribute,
+		attrNS
+	);
+	window.Element.getAttributeNames = new Proxy(
 		Element.prototype.getAttributeNames,
 		{
 			apply(target) {
@@ -55,12 +98,25 @@
 			},
 		}
 	);
+	window.Element.toggleAttribute = new Proxy(
+		window.Element.toggleAttribute,
+		removeAttr
+	);
+	window.Element.removeAttribute = new Proxy(
+		window.Element.removeAttribute,
+		removeAttr
+	);
+	window.Element.removeAttributeNS = new Proxy(
+		window.Element.removeAttribute,
+		removeAttrNS
+	);
 
 	function conceal(attr) {
-		Object.defineProperty(window.Element.prototype, attr, {
+		Object.defineProperty(window.Element, attr, {
 			get: () => undefined,
 		});
 	}
 	conceal("_href");
+	conceal("_xlink:href");
 	conceal("_integrity");
 }
