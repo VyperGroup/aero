@@ -98,16 +98,17 @@
 			},
 		}
 	);
-	window.Element.toggleAttribute = new Proxy(
-		window.Element.toggleAttribute,
+	// Element.toggleAttribute
+	window.Element.prototype.toggleAttribute = new Proxy(
+		window.Element.prototype.toggleAttribute,
 		removeAttr
 	);
-	window.Element.removeAttribute = new Proxy(
-		window.Element.removeAttribute,
+	window.Element.prototype.removeAttribute = new Proxy(
+		window.Element.prototype.removeAttribute,
 		removeAttr
 	);
-	window.Element.removeAttributeNS = new Proxy(
-		window.Element.removeAttribute,
+	window.Element.prototype.removeAttributeNS = new Proxy(
+		window.Element.prototype.removeAttribute,
 		removeAttrNS
 	);
 
