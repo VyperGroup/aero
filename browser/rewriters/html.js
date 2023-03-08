@@ -40,11 +40,7 @@ $aero.rewrite = async (el, attr) => {
 				el.type === "text/javascript" ||
 				el.type === "application/javascript")
 		) {
-			$aero.set(
-				el,
-				el.innerHTML,
-				$aero.safeText($aero.scope(el.innerText))
-			);
+			el.innerHTML = $aero.safeText($aero.scope(el.innerText));
 
 			// The inline code is read-only, so the element must be cloned
 			const cloner = new $aero.Cloner(el);
