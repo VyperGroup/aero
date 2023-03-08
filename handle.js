@@ -25,7 +25,7 @@ import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
 import rewriteRespHeaders from "./this/rewriters/respHeaders.js";
 import rewriteCacheManifest from "./this/rewriters/cacheManifest.js";
 import rewriteManifest from "./this/rewriters/manifest.js";
-import scope from "./shared/scopeRegExp.js";
+import scope from "./shared/scope.js";
 
 /**
  * Handles the requests
