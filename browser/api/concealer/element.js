@@ -1,12 +1,15 @@
+// Private scope
 {
-	// TODO: Only perform the escapes on the correct element
 	const escapeAttrs = ["href", "integrity"];
 
 	const escape = {
 		get: attr => {
-			return attr
-				.replace($aero.escape(escapeAttrs[0]), "_$&")
-				.replace($aero.escape(escapeAttrs[1]), "_$&");
+			return (
+				attr
+					// TODO: Only perform the escapes on the correct element
+					.replace($aero.escape(escapeAttrs[0]), "_$&")
+					.replace($aero.escape(escapeAttrs[1]), "_$&")
+			);
 		},
 	};
 
@@ -98,7 +101,6 @@
 			},
 		}
 	);
-	// Element.toggleAttribute
 	window.Element.prototype.toggleAttribute = new Proxy(
 		window.Element.prototype.toggleAttribute,
 		removeAttr
@@ -112,12 +114,31 @@
 		removeAttrNS
 	);
 
-	function conceal(attr) {
-		Object.defineProperty(window.Element, attr, {
-			get: () => undefined,
-		});
+	// Conceal
+	const concealedAttrs = ["href", "xlink:href", "integrity"];
+	function valid(el, attr) {
+		return (
+			[
+				...concealedAttrs,
+				...concealedAttrs.filter(attr => `_${attr}`),
+			].includes(attr) &&
+			// href
+			(el instanceof HTMLAnchorElement ||
+				el instanceof HTMLAreaElement ||
+				// integrity
+				el instanceof HTMLScriptElement)
+		);
 	}
-	conceal("_href");
-	conceal("_xlink:href");
-	conceal("_integrity");
+	window.Element = new Proxy(Element, {
+		get(target, prop) {
+			if (valid(target, prop)) prop = `_${prop}`;
+
+			return Reflect.get(...arguments);
+		},
+		set(target, prop) {
+			if (valid(target, prop)) prop = `_${prop}`;
+
+			return Reflect.set(...arguments);
+		},
+	});
 }
