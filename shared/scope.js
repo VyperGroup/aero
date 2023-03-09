@@ -2,7 +2,7 @@
 import * as config from "../config.js";
 if (typeof $aero === "undefined")
 	var $aero = {
-		config: config,
+		config,
 	};
 
 /**

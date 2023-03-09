@@ -1,12 +1,11 @@
 // Dynamically update location using a function getters
-$aero.proxyLocation = {
+Object.defineProperty($aero, "proxyLocation", {
 	get: () => new URL($aero.afterPrefix(location.href)),
-};
+});
 
-$aero.upToProxyOrigin = {
+Object.defineProperty($aero, "upToProxyOrigin", {
 	get: () => $aero.config.prefix + $aero.proxyLocation.origin,
-};
-
+});
 // Private scope
 {
 	// Prevent detection by instanceof

@@ -81,7 +81,6 @@ async function handle(event) {
 	const navigate = homepage || iFrame;
 
 	// Parse the request url to get the url to proxy
-	// FIXME: Breaks on https://soundcloud.com; I think this is a subdomain-related error
 	const proxyUrl = new URL(
 		getRequestUrl(
 			reqUrl.origin,

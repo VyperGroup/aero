@@ -1,6 +1,6 @@
-$aero.storagePrefix = {
+Object.defineProperty($aero, "storagePrefix", {
 	get: () => `${$aero.proxyLocation.origin}_`,
-};
+});
 
 $aero.storageNomenclature = {
 	apply(_target, _that, args) {

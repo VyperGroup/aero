@@ -1,7 +1,5 @@
 $aero.location = $aero.locationProxy;
-$aero.location["Symbol.toStringTag"] = {
-	get: () => "Location",
-};
+$aero.location["Symbol.toStringTag"] = "Location";
 
 Object.defineProperty(document, "domain", {
 	get: () => $aero.proxyLocation.hostname,

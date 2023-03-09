@@ -1,9 +1,8 @@
 export default {
 	// Used by both the inject code and this service worker
-	shared: ["cookie", "scope", "relativeUrl", "src"],
+	shared: ["cookie", "scope", "src"],
 	"browser/misc": [
 		"escape",
-		"proxyLocation",
 		"proto",
 		"storage",
 		// CORS Emulation

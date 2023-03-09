@@ -4,9 +4,9 @@ if (
 	// Only supported on Chromium
 	"navigation" in window
 ) {
-	$aero.navigationEntry = {
+	Object.defineProperty($aero, "navigationEntry", {
 		get: () => $aero.proxyLocation.href,
-	};
+	});
 
 	// Entries
 	navigation.currentEntry.url = $aero.navigationEntry;

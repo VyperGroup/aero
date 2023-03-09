@@ -1,7 +1,5 @@
 import { prefix } from "../../config.js";
 
-import processRelativeUrl from "../../shared/relativeUrl.js";
-
 /*
 This is an old standard that has been deprecated
 It has been removed from all major browsers except for Safari
@@ -25,7 +23,7 @@ export default (body, isFirefox) => {
 		}
 
 		// If relative
-		return processRelativeUrl(location.origin, path);
+		return new URL(location.origin, path).href;
 	}
 
 	const lines = body.split("/n");
