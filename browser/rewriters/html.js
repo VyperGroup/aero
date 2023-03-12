@@ -63,7 +63,7 @@ $aero.rewrite = async (el, attr) => {
 		// Action is automatically created
 		el.action !== null
 	)
-		$aero.set(el, "action", $aero.rewriteHtmlSrc(el.href));
+		$aero.set(el, "action", $aero.rewriteHtmlSrc(el.action));
 	else if (tag === "iframe") {
 		if (el.csp) $aero.set(el, "csp", rewriteCSP(el.csp));
 
