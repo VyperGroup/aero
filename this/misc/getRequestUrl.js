@@ -56,7 +56,7 @@ function getRequestUrl(
 			const protoSplit = noPrefix.split("https://");
 			const noPrefixProto = protoSplit[1];
 
-			return noPrefix.startsWith(proxyOrigin) || isIframe
+			return protoSplit.length > 1 || isIframe
 				? retUrl
 				: `${proxyOrigin}/${noPrefixProto}`;
 		} else return proxyOrigin + path;
