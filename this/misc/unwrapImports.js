@@ -7,7 +7,7 @@ export default (cats, escape) => {
 	var ret = "\n";
 
 	// The src rewriter needs proxyLocation early
-	ret += createScript(`${aeroPrefix}/browser/misc/proxyLocation.js`);
+	ret += createScript(`${aeroPrefix}browser/misc/proxyLocation.js`) + "\n";
 
 	for (const cat in cats)
 		ret +=
