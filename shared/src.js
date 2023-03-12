@@ -14,12 +14,10 @@ if (typeof $aero === "undefined")
  * @param {string} - The url to rewrite
  */
 $aero.rewriteSrc = (url, proxyUrl = $aero.proxyLocation.href) => {
-	// Prepare first part
-	let rewrittenUrl = new URL(url, proxyUrl).href;
-
 	// Protocol
-	if (/^(https?:\/\/)/g.test(rewrittenUrl))
-		rewrittenUrl = $aero.config.prefix + rewrittenUrl;
+	const rewrittenUrl = /^(https?:\/\/)/g.test(url)
+		? $aero.config.prefix + url
+		: new URL(url, proxyUrl).href;
 
 	if ($aero.config.debug.src) console.info(`${url} ➜ ${rewrittenUrl}`);
 
