@@ -16,7 +16,7 @@ if ($aero.config.flags.legacy) {
 	};
 
 	if ("openDatabase" in window)
-		window.openDatabase = new Proxy(openDatabase, handler);
+		openDatabase = new Proxy(openDatabase, handler);
 	if ("openDatabaseSync" in window)
-		window.openDatabaseSync = new Proxy(openDatabaseSync, handler);
+		openDatabaseSync = new Proxy(openDatabaseSync, handler);
 }

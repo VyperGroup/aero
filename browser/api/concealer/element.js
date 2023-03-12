@@ -56,61 +56,43 @@
 		},
 	};
 
-	window.Element.hasAttribute = new Proxy(
-		Element.prototype.hasAttribute,
-		attr
-	);
-	window.Element.hasAttribute = new Proxy(
-		Element.prototype.hasAttribute,
-		attr
-	);
-	window.Element.hasAttributeNS = new Proxy(
-		Element.prototype.hasAttribute,
-		attrNS
-	);
-	window.Element.getAttribute = new Proxy(
-		Element.prototype.getAttribute,
-		attr
-	);
-	window.Element.getAttributeNode = new Proxy(
+	Element.hasAttribute = new Proxy(Element.prototype.hasAttribute, attr);
+	Element.hasAttribute = new Proxy(Element.prototype.hasAttribute, attr);
+	Element.hasAttributeNS = new Proxy(Element.prototype.hasAttribute, attrNS);
+	Element.getAttribute = new Proxy(Element.prototype.getAttribute, attr);
+	Element.getAttributeNode = new Proxy(
 		Element.prototype.getAttributeNode,
 		attr
 	);
-	window.Element.getAttributeNS = new Proxy(
+	Element.getAttributeNS = new Proxy(Element.prototype.getAttribute, attrNS);
+	Element.getAttributeNodeNS = new Proxy(
 		Element.prototype.getAttribute,
 		attrNS
 	);
-	window.Element.getAttributeNodeNS = new Proxy(
-		Element.prototype.getAttribute,
-		attrNS
-	);
-	window.Element.getAttributeNames = new Proxy(
-		Element.prototype.getAttributeNames,
-		{
-			apply(target) {
-				return Reflect.apply(...arguments)
-					.filter(attr => attr === "_href")
-					.map(attr =>
-						(target instanceof HTMLAnchorElement &&
-							$aero.escape("href").test(attr)) ||
-						(target instanceof HTMLScriptElement &&
-							$aero.escape("integrity").test(attr))
-							? attr.slice(1)
-							: attr
-					);
-			},
-		}
-	);
-	window.Element.prototype.toggleAttribute = new Proxy(
-		window.Element.prototype.toggleAttribute,
+	Element.getAttributeNames = new Proxy(Element.prototype.getAttributeNames, {
+		apply(target) {
+			return Reflect.apply(...arguments)
+				.filter(attr => attr === "_href")
+				.map(attr =>
+					(target instanceof HTMLAnchorElement &&
+						$aero.escape("href").test(attr)) ||
+					(target instanceof HTMLScriptElement &&
+						$aero.escape("integrity").test(attr))
+						? attr.slice(1)
+						: attr
+				);
+		},
+	});
+	Element.prototype.toggleAttribute = new Proxy(
+		Element.prototype.toggleAttribute,
 		removeAttr
 	);
-	window.Element.prototype.removeAttribute = new Proxy(
-		window.Element.prototype.removeAttribute,
+	Element.prototype.removeAttribute = new Proxy(
+		Element.prototype.removeAttribute,
 		removeAttr
 	);
-	window.Element.prototype.removeAttributeNS = new Proxy(
-		window.Element.prototype.removeAttribute,
+	Element.prototype.removeAttributeNS = new Proxy(
+		Element.prototype.removeAttribute,
 		removeAttrNS
 	);
 
@@ -129,7 +111,7 @@
 				el instanceof HTMLScriptElement)
 		);
 	}
-	window.Element = new Proxy(Element, {
+	Element = new Proxy(Element, {
 		get(target, prop) {
 			if (valid(target, prop)) prop = `_${prop}`;
 

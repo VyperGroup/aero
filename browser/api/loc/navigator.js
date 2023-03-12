@@ -76,7 +76,7 @@ Navigator.prototype.sendBeacon = new Proxy(Navigator.prototype.sendBeacon, {
 		);
 	}
 
-	window.navigator.setAppBadge = new Proxy(navigator.clearAppBadge, {
+	navigator.setAppBadge = new Proxy(navigator.clearAppBadge, {
 		apply(_target, _that, args) {
 			[contents] = args;
 
@@ -85,7 +85,7 @@ Navigator.prototype.sendBeacon = new Proxy(Navigator.prototype.sendBeacon, {
 			updateCount();
 		},
 	});
-	window.navigator.clearAppBadge = new Proxy(navigator.clearAppBadge, {
+	navigator.clearAppBadge = new Proxy(navigator.clearAppBadge, {
 		apply() {
 			badge.i = 0;
 
