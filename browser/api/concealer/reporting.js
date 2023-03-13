@@ -1,5 +1,4 @@
 // Only supported on chromium
-// https://w3c.github.io/reporting/#dom-reportingobserver-reportingobserver
 if ("ReportingObserver" in window) {
 	async function rewriteReports(reports) {
 		for (let report of reports) {

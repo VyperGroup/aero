@@ -21,5 +21,5 @@ if ("PaymentRequest" in window) {
 			},
 		});
 
-	// https://w3c.github.io/payment-handler/#dom-paymentrequestevent-toporigin
+	// TODO: https://w3c.github.io/payment-handler/#dom-paymentrequestevent-toporigin
 }

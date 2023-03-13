@@ -4,8 +4,8 @@ const prefix = "/go/";
 const cacheKey = "httpCache";
 
 const backends = ["/fetch"];
+// Don't set this if you are using bare
 const wsBackends = ["/fetchws"];
-// Not implemented yet
 const wrtcBackends = {
 	// I recommend using the TURN servers from https://www.metered.ca/tools/openrelay/
 	ice: ["stun:stun.l.google.com:19302"],
