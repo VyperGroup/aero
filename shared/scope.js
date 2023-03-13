@@ -5,30 +5,39 @@ if (typeof $aero === "undefined")
 		config,
 	};
 
+// TODO: Conceal $aero with DPCS
 /**
- * Deep property check scoping
+ * Deep Property Check Scoping
  * @param {string} - The script to be rewritten
  * @return {string} - The rewritten script
  */
 $aero.scope = script => {
+	return script;
+
+	// Escapes (i means inside)
+	// Quotes
 	// '
 	let iSQ = false;
 	// "
 	let iDQ = false;
 	// `
 	let iTQ = false;
+	// Comments
+	let iSLC = false;
+	let iDLC = false;
 
-	// These need start and end since they aren't uniform
-	// ${...}
+	// ${...}; These need start and end since they aren't uniform
 	let sT;
 	// Normal start braces; This is used so we can ignore scopes which may've been confused with the end of a template quote
 	let sBc = [];
 	// This could contain either the closing braces of scopes or templates
 	let eBc = [];
-	// Brackets; This is what we are looking to rewrite
-	// [...]
+	// [...]; This is what we are looking to check
 	let sBr = [];
 	let eBr = [];
+	// (...)
+	let sP = [];
+	let eP = [];
 
 	for (var i = 0; i < script.length; i++) {
 		// Previous char
@@ -64,71 +73,133 @@ $aero.scope = script => {
 					eBc = [];
 				}
 			}
-		} else if (!iSQ && !iDQ) {
-			// Inside code
+		} else if (iSLC) {
+			if (c === "\n") iSLC = false;
+		} else if (c === "/" && nC == "/") iSLC = true;
+		else if (iDLC) {
+			if (c == "*" && nC === "/") iDLC = false;
+		} else if (c === "/" && nC == "*") iDLC = true;
+		else if (
+			// Quotes
+			!iSQ &&
+			!iDQ &&
+			!iTQ
+		) {
 			if (isVarChar(c)) {
 				// Inside word
 				const [word, sWordI] = getCurrentWordStr(script, i);
 
-				if (word === "location") {
-					// Ensure that the location in the current scope wasn't overwritten
-					var { i, script } = replace(
-						script,
-						sWordI,
-						i,
-						() =>
-							"($aero.isLocation(location) ? $aero.location : location)"
-					);
-				} else if (
-					word === "document\\.domain" ||
-					word === "document\\.url"
-				)
-					var { i, script } = insert(script, "$aero.", sWordI);
-			} else {
-				// Check for brackets that are property accessors not destructors
+				// Don't rewrite function parameters
+				let s1 = sP[0];
+				let e1 = eP[eP.slice(-1)];
 				if (
-					c === "[" &&
-					// Be able to match chained property accessors
-					nC !== "]" &&
-					// Ensure that the starting brace is for a property accessor by checking if an object name is given
-					isVarChar(c)
-				)
-					sBr.push(i);
-				else if (
-					c === "]" &&
-					// Ensure that the starting brace is for a property accessor not a destructor by making sure there isn't any equal sign
-					(() => {
-						for (let j = i; j < script.length; j++)
-							// Whitespace can be ignored we are only looking for the equals
-							if (j !== " ")
-								// Return if it is not a destructor
-								return j !== "=";
-					})()
+					!(
+						// Ensure that whatever this is, it is surrounded by ()
+						(
+							sP.length === eP.length - 1 &&
+							// Normal function
+							((s1.hasFunction && e1.hasBrace && !e1.hasArrow) ||
+								// Arrow Function
+								(!s1.hasFunction &&
+									!e1.hasBrace &&
+									e1.hasArrow))
+						)
+					)
 				) {
-					eBr.push(i);
-
-					// The brace and its nested braces (if applicable) have been closed
-					if (eBr.length === sBr.length)
-						// Now it's time to scope them all
-						// Go through all the pairs
-						while (eBr.length >= 0) {
-							// Get indices of [ and ]
-							const sI = sBr.pop();
-							const eI = eBr.pop();
-
-							const [word, sWordI] = getCurrentWordStr(
-								script,
-								sI
-							);
-
-							var { i, script } = replace(
-								script,
-								sWordI,
-								eI,
-								match => `aero.scope(${word + match})`
-							);
-						}
+					if (word === "location") {
+						// Ensure that the location in the current scope wasn't overwritten
+						var { i, script } = replace(
+							sWordI,
+							i + 1,
+							script,
+							() =>
+								"($aero.isLocation(location) ? $aero.location : location)"
+						);
+					} else if (
+						word === "document\\.domain" ||
+						word === "document\\.url"
+					)
+						var { i, script } = insert(script, "$aero.", sWordI);
 				}
+			} else if (c === "(") {
+				let hasFunction = false;
+				for (let j = sP; j >= 0; j--)
+					// Look for the function keyword at the start of the last parentheses
+					if (script[j] !== " ") {
+						const [word] = getCurrentWordStr(script, i);
+						if (word === "function") hasFunction = true;
+					}
+
+				sP.push({
+					i,
+					hasFunction,
+				});
+			} else if (c === ")") {
+				// Arrow function after )
+				let hasArrow = false;
+				for (let j = i; j < script.length; j++) {
+					// Look for =>
+					const ch = script[j];
+					if (ch !== " ")
+						hasArrow = ch === "=" && script[j + 1] === ">";
+				}
+
+				// Closing function
+				let hasBrace = false;
+				for (let j = i; j < script.length; j++) {
+					const ch = script[j];
+					if (ch !== " ") hasBrace = ch === "{";
+				}
+
+				eP.push({
+					i,
+					hasArrow,
+					hasBrace,
+				});
+
+				// Ignore
+				const { hasFunction: openingHasFunction } = sP[0];
+				if (
+					sP.length === eP.length &&
+					!hasArrow &&
+					!hasBrace &&
+					!openingHasFunction
+				) {
+					// Remove the first level
+					sP.shift();
+					eP.pop();
+				}
+			}
+			// Check for brackets that are property accessors not destructors
+			else if (
+				c === "[" &&
+				// Be able to match chained property accessors
+				nC !== "]" &&
+				// Ensure that the starting brace is for a property accessor by checking if an object name is given
+				isVarChar(c)
+			)
+				sBr.push(i);
+			else if (c === "]") {
+				eBr.push(i);
+
+				// The brace and its nested braces (if applicable) have been closed
+				if (eBr.length === sBr.length)
+					// Now it's time to scope them all
+					// Go through all the pairs
+					while (eBr.length >= 0) {
+						// Get indices of [ and ]
+						const sI = sBr.pop();
+						const eI = eBr.pop();
+
+						const [word, sWordI] = getCurrentWordStr(script, sI);
+
+						var { i, script } = replace(
+							script,
+							sWordI,
+							eI,
+							match => `aero.scope(${word + match})`
+						);
+					}
 			}
 		}
 	}
@@ -158,13 +229,13 @@ function getCurrentWordStr(str, i) {
 function replace(sI, eI, str, func) {
 	const match = str.substring(sI, eI);
 
-	const replace = func(match);
+	let newStr = func(match);
 
 	// Splice can't be used on strings
 	return {
-		script: str.slice(0, sI) + replace + str.substring(eI),
+		script: str.slice(0, sI) + newStr + str.substring(eI),
 		// Used to offset the index to reflect the replacement
-		i: sI + replace.length,
+		i: sI + newStr.length,
 	};
 }
 
