@@ -132,7 +132,7 @@ async function handle(event) {
 	}
 
 	// Get the cache age before we start rewriting
-	let cacheAge = cache.getAge(
+	const cacheAge = cache.getAge(
 		reqHeaders["cache-control"],
 		reqHeaders["expires"]
 	);
@@ -178,10 +178,6 @@ async function handle(event) {
 		respHeaders
 	);
 
-	// Backup headers to later conceal in http request api interceptors
-	if (req.destination === "")
-		rewriteGetCookie["x-aero-headers"] = JSON.stringify(respHeaders);
-
 	const type = respHeaders["content-type"];
 
 	const html =
@@ -214,9 +210,7 @@ async function handle(event) {
     -->
     <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon">
     <!-- If not defined already, manually set the favicon -->
-    <link href="${
-		prefix + proxyUrl.origin
-	}/favicon.ico" rel="icon" type="image/x-icon">
+    <link href="/favicon.ico" rel="icon" type="image/x-icon">
     
     <script>
         // Update the service worker
@@ -232,29 +226,40 @@ async function handle(event) {
             .catch(err => console.error(err.message));
 
         // Aero's global namespace
-        var $aero = {
-            config: {
-                prefix: "${prefix}",
-                wsBackends: "${wsBackends}",
-                wrtcBackends: "${wrtcBackends}",
-                debug: ${JSON.stringify(debug)},
-                flags: ${JSON.stringify(flags)},
-            },
-            cors: ${JSON.stringify(injectHeaders)},
-            // This is used to later copy into an iFrame's srcdoc; this is for an edge case
-            imports: \`${unwrapImports(routes, true)}\`,
-            afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
-        };
+        Object.defineProperty(window, "$aero", {
+            value: {
+				config: {
+					prefix: "${prefix}",
+					wsBackends: ${JSON.stringify(wsBackends)},
+					wrtcBackends: ${JSON.stringify(wrtcBackends)},
+					debug: ${JSON.stringify(debug)},
+					flags: ${JSON.stringify(flags)},
+				},
+				useBare: ${useBare},
+				cors: ${JSON.stringify(injectHeaders)},
+				// This is used to later copy into an iFrame's srcdoc; this is for an edge case
+				imports: \`${unwrapImports(routes, true)}\`,
+				afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
+			},
+			writable: false
+		});
+		Object.freeze($aero.config);
     </script>
 
 	<script>
 	// Sanity check
-	if (!("$aero" in window))
-		document.write("Unable to initalize $aero");
+	if (!("$aero" in window)) {
+		// Clear site
+		document.head.innerHTML = "";
+		document.write("<h1>Unable to initalize $aero</h1>");
+	}
 	</script>
 
     <!-- Injected Aero code -->
     ${unwrapImports(routes)}
+	<script>
+		Object.freeze($aero);
+	</script>
 </head>
 ${body}
 `;
@@ -299,7 +304,6 @@ ${body}
 
 		// Exit script
 		if (blocked)
-			// TODO: Error emulation
 			throw new Error("Script blocked")
 	}
 })();
