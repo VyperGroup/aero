@@ -56,9 +56,12 @@ function getRequestUrl(
 			const protoSplit = noPrefix.split("https://");
 			const noPrefixProto = protoSplit[1];
 
-			return protoSplit.length > 1 || isIframe
-				? retUrl
-				: `${proxyOrigin}/${noPrefixProto}`;
+			// TODO: Do this without searching for labels (There could be a directory with them or it could be an unqualified domain)
+			// Determine if it is a path or a domain
+			return noPrefixProto.split("/")[0].split(".").length === 1 ||
+				isIframe
+				? `${proxyOrigin}/${noPrefixProto}`
+				: retUrl;
 		} else return proxyOrigin + path;
 	}
 }
