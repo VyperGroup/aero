@@ -31,6 +31,8 @@ function rewriteLocation(url) {
 export default (corsEmulation, headers) => {
 	const rewrittenHeaders = {};
 
+	rewrittenHeaders["x-headers"] = JSON.stringify({ ...headers });
+
 	Object.keys(headers).forEach(key => {
 		function set(val) {
 			rewrittenHeaders[key] = val;

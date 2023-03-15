@@ -19,7 +19,6 @@ export default {
 		"event",
 		"file",
 		"fs",
-		"http",
 		"manifest",
 		"navigation",
 		"payment",

@@ -45,14 +45,14 @@ export default class {
 					console.warn(
 						backend.startsWith("/")
 							? "The main backend is down"
-							: `Backend " + ${new URL(backend).hostname} is down`
+							: `Backend ${new URL(backend).hostname} is down`
 					);
 			}
 
-		if (!resp)
-			return new Error(
-				"Can't find any available backends. You may be offline."
-			);
-		return resp;
+		return !resp
+			? new Error(
+					"Can't find any available backends. You may be offline."
+			  )
+			: resp;
 	}
 }
