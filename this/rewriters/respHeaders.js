@@ -6,9 +6,11 @@ const ignoredHeaders = [
 	"clear-site-data",
 	"content-encoding",
 	"content-length",
+	"content-security-policy",
 	"cross-origin-opener-policy",
 	"cross-origin-opener-policy-report-only",
 	"report-to",
+	// TODO: Emulate
 	"strict-transport-security",
 	"x-content-type-options",
 	"x-frame-options",
