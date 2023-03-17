@@ -24,9 +24,8 @@ if (
 				const newEntry = entry;
 
 				// The original property is a getter property, as the value will be changed dynamically
-				const tempBak = entry.url;
 				Object.defineProperty(newEntry, "url", {
-					get: () => tempBak.replace($aero.afterPrefix, ""),
+					get: () => entry.url.replace($aero.afterPrefix, ""),
 				});
 
 				try {
