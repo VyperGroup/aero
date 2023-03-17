@@ -41,7 +41,7 @@ if ("ReportingObserver" in window) {
 		construct(_that, args) {
 			const [callback] = args;
 
-			args[1] = async reports => {
+			args[1] = async function (reports) {
 				reports = await rewriteReports(reports);
 
 				callback(...arguments);

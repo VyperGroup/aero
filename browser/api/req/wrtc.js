@@ -17,11 +17,12 @@ if ($aero.config.flags.wrtc) {
 
 			return ret;
 		},
-		get: (_target, prop) =>
-			$aero.escape("iceServers").test(prop)
+		get(_target, prop) {
+			return $aero.escape("iceServers").test(prop)
 				? `_${prop}`
-				: Reflect.get(...arguments),
-		set: (_target, prop, value) => {
+				: Reflect.get(...arguments);
+		},
+		set(_target, prop, value) {
 			$aero.escape("iceServers").test(prop)
 				? (target[`_${prop}`] = value)
 				: Reflect.set(...arguments);
