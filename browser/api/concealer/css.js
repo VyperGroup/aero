@@ -8,7 +8,6 @@ function getSheet(sheet) {
 	return sheet;
 }
 
-let bak = document.styleSheets;
 Object.defineProperty(document, "styleSheets", {
 	get: () => {
 		// StyleSheetList is read-only so the getter itself needs to be proxified
