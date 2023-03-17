@@ -1,15 +1,17 @@
 const aeroPrefix = "/aero/";
 const prefix = "/go/";
 
-const cacheKey = "httpCache";
-
 const backends = ["/fetch"];
-// Don't set this if you are using bare
+// Don't set these, if you are using bare
 const wsBackends = ["/fetchws"];
 const wrtcBackends = {
 	// I recommend using the TURN servers from https://www.metered.ca/tools/openrelay/
 	ice: ["stun:stun.l.google.com:19302"],
 };
+
+const cacheKey = "httpCache";
+
+const ignoreClass = null;
 
 const dynamicConfig = {
 	// The database name
@@ -18,17 +20,25 @@ const dynamicConfig = {
 	id: "update",
 };
 
-// For experimental features
 const flags = {
+	// Features
+	dynamicUpdates: false, // Recommended
+
+	// Security
+	corsEmulation: true, // Recommended
+
+	// Support
+	safari: false, // Safari has limited support of SWs, so there may be some workarounds
 	legacy: true, // Recommended
 	nonstandard: true, // Browser-specific code. Recommended
-	dynamicUpdates: false, // Recommended
-	corsEmulation: true, // Recommended
+	misc: false, // Experimental features that haven't been tested, and aren't significant enough to earn a flag
+
+	// Protcol support
 	wrtc: true, // Recommended
 	ws: true, // Recommended
-	misc: false, // Experimental features that haven't been tested, and aren't significant enough to earn a flag
-	safariSupport: false, // Safari has limited support of SW, so there may be some workarounds
-	nestedWorkers: false, // Not finished
+
+	// Not complete
+	workers: false,
 };
 
 // Ignore these if you are not a programmer
@@ -42,10 +52,11 @@ const debug = {
 export {
 	aeroPrefix,
 	prefix,
-	cacheKey,
 	backends,
 	wsBackends,
 	wrtcBackends,
+	cacheKey,
+	ignoreClass,
 	dynamicConfig,
 	flags,
 	debug,

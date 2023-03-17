@@ -33,6 +33,7 @@ $aero.rewrite = async (el, attr) => {
 	if (isNew && tag === "script" && !el.rewritten) {
 		if (el.src) $aero.set(el, "src", $aero.rewriteHtmlSrc(el.src));
 		if (
+			el.classList.contains($aero.config.ignoreClass) &&
 			typeof el.innerHTML === "string" &&
 			el.innerHTML !== "" &&
 			// Make sure the script has a js type
