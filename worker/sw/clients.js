@@ -1,12 +1,13 @@
-// TODO: Finish all the apis
+// TODO: Finish all the properties
 
-var oldClientsGet = Clients.get;
-Clients.get = async id => {
-	const client = await oldClientsGet(id);
+Clients.get = new Proxy(Clients.get, {
+	apply() {
+		let ret = Reflect.target(...arguments);
 
-	client.url = client.url.match(
-		new RegExp(`^(${$aero.config.prefix})/*`, "g")
-	)[0];
+		ret.url = ret.url.match(
+			new RegExp(`^(${$aero.config.prefix})/*`, "g")
+		)[0];
 
-	return client;
-};
+		return ret;
+	},
+});
