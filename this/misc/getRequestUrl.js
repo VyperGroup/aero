@@ -58,8 +58,7 @@ function getRequestUrl(
 
 			// TODO: Do this without searching for labels (There could be a directory with them or it could be an unqualified domain)
 			// Determine if it is a path or a domain
-			return noPrefixProto.split("/")[0].split(".").length === 1 ||
-				isIframe
+			return noPrefixProto.split("/")[0].contains(".") || isIframe
 				? `${proxyOrigin}/${noPrefixProto}`
 				: retUrl;
 		} else return proxyOrigin + path;
