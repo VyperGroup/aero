@@ -11,6 +11,6 @@ $aero.proto = {
 
 		split.splice(1, 0, `${$aero.proxyLocation.origin}+`);
 
-		return split.join();
+		return split.join("");
 	},
 };
