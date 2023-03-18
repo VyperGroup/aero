@@ -26,6 +26,7 @@ export default {
 		"push",
 		"reporting",
 		"scoping",
+		"secure",
 		"timing",
 		"xml",
 	],

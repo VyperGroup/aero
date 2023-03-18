@@ -25,6 +25,7 @@ const flags = {
 	dynamicUpdates: false, // Recommended
 
 	// Security
+	emulateSecureContext: true, // Secure-only features would still be broken; this is only to mask the site as secure
 	corsEmulation: true, // Recommended
 
 	// Support
