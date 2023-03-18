@@ -41,9 +41,4 @@ export default {
 	"browser/api/req": ["http", "ws", "wrtc"],
 	"browser/api/storage": ["cookie", "idb", "sql", "storage"],
 	"browser/api/worker": ["workers"],
-	/*
-	Miscellaneous injected code
-	Don't put anything after dom
-	*/
-	"browser/injects": ["dom"],
 };

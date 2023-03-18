@@ -12,7 +12,7 @@ import ProxyFetch from "./this/misc/ProxyFetch.js";
 import sharedModule from "./this/misc/sharedModule.js";
 import getRequestUrl from "./this/misc/getRequestUrl.js";
 import headersToObject from "./this/misc/headersToObject.js";
-import unwrapImports from "./this/misc/unwrapImports.js";
+import { unwrapImport, unwrapImports } from "./this/misc/unwrapImports.js";
 
 // Cors Emulation
 import block from "./this/cors/test.js";
@@ -192,12 +192,11 @@ async function handle(event) {
 	// For modules
 	const isMod = new URLSearchParams(location.search).mod === "true";
 
-	// TODO: Support XML/XSLT
 	if (navigate && html) {
 		body = await resp.text();
 
 		if (body !== "") {
-			body = `
+			let base = `
 <!DOCTYPE html>
 <head>
     <!-- Fix encoding issue -->
@@ -206,7 +205,7 @@ async function handle(event) {
     <!-- Favicon -->
     <!--
     Delete favicon if /favicon.ico isn't found
-    This is needed because the browser will cache the favicon from the previous site
+    This is needed because the browser caches the favicon from the previous site
     -->
     <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon">
     <!-- If not defined already, manually set the favicon -->
@@ -226,43 +225,50 @@ async function handle(event) {
             .catch(err => console.error(err.message));
 
         // Aero's global namespace
-        Object.defineProperty(window, "$aero", {
-            value: {
-				config: {
-					prefix: "${prefix}",
-					wsBackends: ${JSON.stringify(wsBackends)},
-					wrtcBackends: ${JSON.stringify(wrtcBackends)},
-					debug: ${JSON.stringify(debug)},
-					flags: ${JSON.stringify(flags)},
-				},
-				useBare: ${useBare},
-				cors: ${JSON.stringify(injectHeaders)},
-				// This is used to later copy into an iFrame's srcdoc; this is for an edge case
-				imports: \`${unwrapImports(routes, true)}\`,
-				afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
+        var $aero = {
+			config: {
+				prefix: "${prefix}",
+				wsBackends: ${JSON.stringify(wsBackends)},
+				wrtcBackends: ${JSON.stringify(wrtcBackends)},
+				debug: ${JSON.stringify(debug)},
+				flags: ${JSON.stringify(flags)},
 			},
-			writable: false
-		});
+			useBare: ${useBare},
+			cors: ${JSON.stringify(injectHeaders)},
+			// This is used to later copy into an iFrame's srcdoc; this is for an edge case
+			init: \`_IMPORT_\`,
+			afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
+		};
 		Object.freeze($aero.config);
     </script>
 
 	<script>
-	// Sanity check
-	if (!("$aero" in window)) {
-		// Clear site
-		document.head.innerHTML = "";
-		document.write("<h1>Unable to initalize $aero</h1>");
-	}
+		// Sanity check
+		if (!("$aero" in window))
+			console.warn("Unable to initalize $aero");
 	</script>
 
-    <!-- Injected Aero code -->
+	<!-- Libs -->
+	${useBare ? unwrapImport("this/misc/dist/BareClient.cjs") : ""}
+    <!-- The src rewriter needs proxyLocation early -->
+	${unwrapImport("browser/misc/proxyLocation")}
+	<!-- Injected Aero code -->
     ${unwrapImports(routes)}
 	<script>
+		// Protect from overwriting, in case $aero scoping failed
 		Object.freeze($aero);
 	</script>
+	${unwrapImport("browser/injects/dom")}
 </head>
-${body}
 `;
+			body =
+				base.replace(
+					/_IMPORT_/g,
+					base
+						.replace(/\`/g, "\\`")
+						.replace(/\${/g, "\\${")
+						.replace(/<\/script>/g, "<\\/script>")
+				) + body;
 		}
 	} else if (
 		navigate &&
@@ -320,7 +326,7 @@ ${body}
 		} else body = rewriteManifest(await resp.text());
 	}
 	// Nests
-	else if (flags.nestedWorkers && req.destination === "worker")
+	else if (flags.workers && req.destination === "worker")
 		body = isMod
 			? `
 import { proxyLocation } from "${aeroPrefix}worker/worker.js";
@@ -331,7 +337,7 @@ importScripts("${aeroPrefix}worker/worker.js");
 
 ${body}
 		`;
-	else if (flags.nestedWorkers && req.destination === "sharedworker")
+	else if (flags.workers && req.destination === "sharedworker")
 		body = isMod
 			? `
 import { proxyLocation } from "${aeroPrefix}worker/worker.js";
@@ -343,7 +349,7 @@ importScripts("${aeroPrefix}worker/sharedworker.js");
 	
 ${body}
 		`;
-	else if (flags.nestedWorkers && req.destination === "serviceworker")
+	else if (flags.workers && req.destination === "serviceworker")
 		body = isMod
 			? `
 import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";

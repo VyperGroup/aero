@@ -83,13 +83,13 @@ $aero.rewrite = async (el, attr) => {
 				el,
 				"src",
 				$aero.rewriteHtmlSrc(
-					el.src.replace(/data:text\/html/g, "$&" + $aero.imports)
+					el.src.replace(/data:text\/html/g, "$&" + $aero.init)
 				)
 			);
 		}
 		if (el.srcdoc)
 			// Inject aero imports
-			$aero.set(el, "srcdoc", $aero.imports + el.srcdoc);
+			$aero.set(el, "srcdoc", $aero.init + el.srcdoc);
 		if (el.allow)
 			// TODO: Emulate Permissions policy using $aero.cors.perms
 			null;
