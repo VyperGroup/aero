@@ -42,7 +42,7 @@ async function handle(event) {
 	const afterPrefix = url =>
 		url.replace(new RegExp(`^(${location.origin}${prefix})`, "g"), "");
 
-	const useBare = BareClient || typeof BareClient === "function";
+	const useBare = BareClient && typeof BareClient === "function";
 
 	// Construct proxy fetch instance
 	const proxyFetch = useBare
