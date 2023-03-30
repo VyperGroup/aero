@@ -4,9 +4,9 @@ Aero is a safe, developer friendly, and innovative interception proxy. Aero prov
 
 # How to use aero
 
-1. Make sure your backend serves an [aero](https://github.com/ProxyHaven/aero-backends) _recommended_ or a [TompHTTP Compatible Backend](https://github.com/tomphttp)
+1. Make sure your backend serves an [aero](https://github.com/ProxyHaven/aero-backends) _(recommended)_ or a [TompHTTP Compatible](https://github.com/tomphttp) Backend
     > If you are using bare, run bare.sh
-2. Make sure you included aero into your site
+2. Make sure you have included aero into your site
 3. Create a service worker like this in the topmost directory
 
 ```js
