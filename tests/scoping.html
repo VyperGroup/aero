@@ -29,10 +29,12 @@ function overwriteCheck(loc) {
     if (loc !== ${char})
         fail();
 }
+
 // Default parameters
 ((${loc} = ${char}) => overwriteCheck(${loc}))(); 
 // Arguments
 (${loc} => overwriteCheck(${loc}))(${char}); 
+
 { 
     const [${loc}] = [${char}];
 
@@ -44,15 +46,15 @@ function overwriteCheck(loc) {
 	function appendScript(script) {
 		const el = document.createElement("script");
 
+		console.log(script);
+
 		el.text = script;
 
 		document.body.appendChild(el);
-
-		alert(script);
 	}
 </script>
 <script type="module">
-	var script = genTest("location", "~");
+	const script = genTest("location", "~");
 
 	import scope from "../shared/scope.js";
 

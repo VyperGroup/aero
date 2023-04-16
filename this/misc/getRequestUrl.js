@@ -16,7 +16,7 @@ function getRequestUrl(
 	proxyUrl,
 	path,
 	isHomepage,
-	isIframe
+	isiFrame
 ) {
 	const noPrefix = path.split(prefix)[1];
 
@@ -26,9 +26,8 @@ function getRequestUrl(
 	// Don't hardcode origins
 	const absoluteUrl = origin !== workerOrigin;
 
-	if (absoluteUrl) {
-		return origin + path;
-	} else {
+	if (absoluteUrl) return origin + path;
+	else {
 		const proxyOrigin = proxyUrl?.origin;
 		const proxyPath = proxyUrl?.pathname;
 
@@ -36,14 +35,18 @@ function getRequestUrl(
 			let retUrl = noPrefix;
 
 			const proxyPathSlashes = proxyPath?.split("/");
-			const proxyEndingPath = proxyPathSlashes?.at(-1);
+			//const proxyEndingPath = proxyPathSlashes?.at(-1);
 
 			// Correct relative urls that don't end with a slash; this is an edge case
+			/*
 			if (
 				proxyPathSlashes?.at(-2) !== proxyOrigin &&
 				proxyEndingPath.length > 0
 			) {
 				let noPrefixSplit = noPrefix?.split("/");
+
+				console.log(proxyEndingPath);
+				console.log(noPrefixSplit);
 
 				noPrefixSplit.splice(
 					noPrefixSplit.length - 1,
@@ -51,16 +54,19 @@ function getRequestUrl(
 					proxyEndingPath
 				);
 				retUrl = noPrefixSplit.join("/");
-			}
 
-			const protoSplit = noPrefix.split("https://");
-			const noPrefixProto = protoSplit[1];
+				console.log(noPrefixSplit);
+			}
+			*/
+
+			let protoSplit = noPrefix.split(/^(https?:\/\/)/g);
+			const noPrefixProto = protoSplit.slice(2).join();
 
 			// TODO: Do this without searching for labels (There could be a directory with them or it could be an unqualified domain)
 			// Determine if it is a path or a domain
-			return noPrefixProto.split("/")[0].contains(".") || isIframe
-				? `${proxyOrigin}/${noPrefixProto}`
-				: retUrl;
+			return noPrefixProto.split("/")[0].includes(".") || isiFrame
+				? retUrl
+				: `${proxyOrigin}/${noPrefixProto}`;
 		} else return proxyOrigin + path;
 	}
 }

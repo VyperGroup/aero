@@ -1,5 +1,6 @@
-const aeroPrefix = "/aero/";
 const prefix = "/go/";
+// The name of the folder aero is hosted on
+const aeroPrefix = "/aero/";
 
 const backends = ["/fetch"];
 // Don't set these, if you are using bare
@@ -25,7 +26,7 @@ const flags = {
 	dynamicUpdates: false, // Recommended
 
 	// Security
-	emulateSecureContext: true, // Secure-only features would still be broken; this is only to mask the site as secure
+	emulateSecureContext: false, // Secure-only features would still be broken; this is only to mask the site as secure
 	corsEmulation: true, // Recommended
 
 	// Support
@@ -34,11 +35,16 @@ const flags = {
 	nonstandard: true, // Browser-specific code. Recommended
 	misc: false, // Experimental features that haven't been tested, and aren't significant enough to earn a flag
 
-	// Protcol support
+	// Protocol support
 	wrtc: true, // Recommended
 	ws: true, // Recommended
 
-	// Not complete
+	// Misc
+	// This is to prevent sites from detecting the proxy by searching for $aero
+	concealNamespace: true,
+
+	// Incomplete
+	JSScoping: false,
 	workers: false,
 };
 

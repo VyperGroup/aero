@@ -1,5 +1,5 @@
-$aero.cors.csp = $aero.cors.headers.csp;
-if ($aero.cors.clear)
-	$aero.cors.clear = JSON.parse(`[${$aero.cors.headers.clear}]`);
+$aero.sec.csp = $aero.sec.headers.csp;
+if ($aero.sec.clear)
+	$aero.sec.clear = JSON.parse(`[${$aero.sec.headers.clear}]`);
 // TODO: Parse and use in perms.js
-$aero.cors.perms = $aero.cors.perms.split(";");
+$aero.sec.perms = $aero.sec.perms.split(";");

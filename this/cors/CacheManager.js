@@ -1,10 +1,14 @@
 import { cacheKey } from "../../config.js";
 
-export default class {
+import Cache from "./Cache.js";
+
+export default class extends Cache {
 	/**
 	 * @param {headers} - Req headers used to get the cache mode
 	 */
 	constructor(headers) {
+		super();
+
 		// https://fetch.spec.whatwg.org/#concept-request-cache-mode
 		if (
 			this.mode === "default" &&
@@ -18,18 +22,6 @@ export default class {
 		)
 			this.mode = "no-store";
 		else this.mode = headers["x-aero-cache"] ?? "";
-	}
-
-	get bypass() {
-		return this.mode === "no-store" || this.mode === "reload";
-	}
-
-	get #getTime() {
-		return Date.now() / 1000;
-	}
-
-	async #getCache() {
-		return await caches.open(cacheKey);
 	}
 
 	/**
@@ -55,8 +47,9 @@ export default class {
 				.split("=")
 				.pop();
 
-			return secs + this.#getTime;
-		} else if (expiry) return Date.parse(expiry).getTime() / 1000;
+			return secs + this.getTime;
+		} else if (expiry) return this.#parseAge(expiry);
+
 		return false;
 	}
 	/**
@@ -76,7 +69,7 @@ export default class {
 			this.mode === "force-cache" ||
 			this.mode === "only-if-cached" ||
 			// Check the freshness
-			age < getTime()
+			this.isFresh(age)
 		) {
 			const resp = cache.match(path);
 
@@ -88,11 +81,28 @@ export default class {
 	/**
 	 * @param {string} - Proxy path
 	 * @param {string} - Proxy resp
+	 * @param {string} - Vary header
 	 */
-	async set(path, resp) {
+	async set(path, resp, vary) {
 		const cache = await this.#getCache();
 
-		if (this.mode !== "no-store" && this.mode !== "only-if-cached")
+		if (
+			this.mode !== "no-store" &&
+			this.mode !== "only-if-cached" &&
+			vary === "*"
+		)
 			await cache.put(path, resp);
+	}
+
+	async #getCache() {
+		return await caches.open(cacheKey);
+	}
+	// Convert expiry date to seconds
+	#parseAge(expiry) {
+		return (Date.parse(expiry).getTime() / 1000) | 0;
+	}
+
+	get bypass() {
+		return this.mode === "no-store" || this.mode === "reload";
 	}
 }

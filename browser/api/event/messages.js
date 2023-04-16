@@ -13,8 +13,6 @@ postMessage = new Proxy(postMessage, {
 			args[0] = data;
 		}
 
-		console.log(args);
-
 		return Reflect.apply(...arguments);
 	},
 });

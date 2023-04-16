@@ -11,7 +11,7 @@ if ($aero.config.nestedWorkers)
 						opts.type === "module"
 					}`;
 
-					console.log(
+					console.error(
 						`Registering a nested service worker\n${path} ➜ ${args[0]}`
 					);
 

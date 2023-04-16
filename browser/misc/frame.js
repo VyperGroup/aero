@@ -9,7 +9,7 @@ if (frameElement) {
 	if (parentOrigin)
 		throw new Error("The parent's proxy origin wasn't given to the frame");
 
-	const frameOptions = $aero.cors.headers.frame;
+	const frameOptions = $aero.sec.headers.frame;
 
 	if (frameOptions === "DENY") block();
 	else if (frameOptions === "SAMEORIGIN") {

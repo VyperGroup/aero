@@ -27,9 +27,11 @@ XMLHttpRequest.prototype.getResponseHeader = new Proxy(
 	XMLHttpRequest.prototype.getResponseHeader,
 	{
 		apply(target, that, args) {
-			[name] = args;
+			if (args.length > 0) {
+				let [name] = args;
 
-			return JSON.parse(target("x-headers"))[name];
+				return JSON.parse(target.bind(that)("x-headers"))[name];
+			} else return Reflect.target(...arguments);
 		},
 	}
 );
@@ -40,10 +42,10 @@ XMLHttpRequest.prototype.getAllResponseHeaders = new Proxy(
 			let ret = "";
 
 			// CRLF
-			for (const [key, value] of Object.entries(
-				JSON.parse(target("x-headers"))
+			for (const [key, val] of Object.entries(
+				JSON.parse(target.bind(that)("x-headers"))
 			))
-				ret += `${key}: ${value}\r\n`;
+				ret += `${key}: ${val}\r\n`;
 
 			return ret;
 		},
@@ -56,7 +58,7 @@ XMLHttpRequest.prototype.setResp = new Proxy(
 		apply(target, that, args) {
 			[name] = args;
 
-			return JSON.parse(target("x-headers"))[name];
+			return JSON.parse(target.bind(that)("x-headers"))[name];
 		},
 	}
 );

@@ -14,18 +14,27 @@ import getRequestUrl from "./this/misc/getRequestUrl.js";
 import headersToObject from "./this/misc/headersToObject.js";
 import { unwrapImport, unwrapImports } from "./this/misc/unwrapImports.js";
 
-// Cors Emulation
+// Security
+// CORS Emulation
 import block from "./this/cors/test.js";
+import STS from "./this/cors/STS.js";
+// Integrity check
+import integral from "./this/embeds/integral.js";
 
 // Cache Emulation
-import CacheManager from "./this/cors/cache.js";
+import CacheManager from "./this/cors/CacheManager.js";
 
 // Rewriters
 import rewriteReqHeaders from "./this/rewriters/reqHeaders.js";
 import rewriteRespHeaders from "./this/rewriters/respHeaders.js";
 import rewriteCacheManifest from "./this/rewriters/cacheManifest.js";
 import rewriteManifest from "./this/rewriters/manifest.js";
-import scope from "./shared/scope.js";
+import rewriteScript from "./shared/script.js";
+
+// RegExps
+// FIXME: Breaks often
+//const escapeJS = str => str.replace(/`/g, String.raw`\``).replace(/\${/g, String.raw`\${`);
+const escapeJS = str => btoa(unescape(encodeURIComponent(str)));
 
 /**
  * Handles the requests
@@ -52,13 +61,35 @@ async function handle(event) {
 
 	const reqUrl = new URL(req.url);
 
-	const path = reqUrl.pathname + reqUrl.search;
+	const params = reqUrl.searchParams;
+
+	function getPassthroughParam(param) {
+		param = params.get(param);
+
+		if (param) {
+			params.getAll(`_${param}`).forEach(v => params.append(param, v));
+			params.delete(`_${param}`);
+		}
+
+		return param;
+	}
+
+	let isMod;
+	const isScript = req.destination === "script";
+	if (isScript) {
+		isMod = getPassthroughParam("isMod") === "true";
+	}
+
+	let frameSec = getPassthroughParam("frameSec");
 
 	// Remove the module components
-	if (path.startsWith(aeroPrefix + "shared/") && path.endsWith(".js"))
+	if (
+		reqUrl.pathname.startsWith(aeroPrefix + "shared/") &&
+		reqUrl.pathname.endsWith(".js")
+	)
 		return await sharedModule(event);
 	// Don't rewrite requests for aero library files
-	if (path.startsWith(aeroPrefix))
+	if (reqUrl.pathname.startsWith(aeroPrefix))
 		// Proceed with the request like normal
 		return await fetch(req.url);
 
@@ -73,12 +104,11 @@ async function handle(event) {
 	}
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
-	const homepage = req.mode === "navigate" && req.destination === "document";
+	const isHomepage =
+		req.mode === "navigate" && req.destination === "document";
 
 	// This is used for determining the request url
-	const iFrame = req.destination === "iframe";
-
-	const navigate = homepage || iFrame;
+	const isiFrame = req.destination === "iframe";
 
 	// Parse the request url to get the url to proxy
 	const proxyUrl = new URL(
@@ -86,9 +116,9 @@ async function handle(event) {
 			reqUrl.origin,
 			location.origin,
 			clientUrl,
-			path,
-			homepage,
-			iFrame
+			reqUrl.pathname + reqUrl.search,
+			isHomepage,
+			isiFrame
 		)
 	);
 
@@ -98,7 +128,7 @@ async function handle(event) {
 
 	// Log requests
 	if (debug.url)
-		console.log(
+		console.debug(
 			req.destination == ""
 				? `${req.method} ${proxyUrl.href}`
 				: `${req.method} ${proxyUrl.href} (${req.destination})`
@@ -107,19 +137,36 @@ async function handle(event) {
 	// Rewrite the request headers
 	const reqHeaders = headersToObject(req.headers);
 
-	// Cache mode emulation
-	const cache = new CacheManager(reqHeaders);
-
-	let injectHeaders = {};
+	let sec = {};
 	if (flags.corsEmulation) {
-		injectHeaders = {
-			// Cache Emulation
-			timing: reqHeaders["timing-allow-origin"],
-			// CORS Emulation
+		// False
+		if (false && proxyUrl.protocol === "http:") {
+			const sts = new STS(
+				reqHeaders["strict-transport-security"],
+				proxyUrl.origin
+			);
+
+			if (await sts.redirect()) {
+				const redir = proxyUrl;
+
+				redir.protocol = "https:";
+
+				return new Response("", {
+					status: 307,
+					headers: {
+						location: prefix + redir,
+					},
+				});
+			}
+		}
+
+		sec = {
 			clear: reqHeaders["clear-site-data"]
 				? JSON.parse(`[${reqHeaders["clear-site-data"]}]`)
 				: undefined,
-			// TODO: Respect the permissions policy
+			// TODO: Emulate
+			timing: reqHeaders["timing-allow-origin"],
+			permsFrame: frameSec?.["perms"],
 			perms: reqHeaders["permissions-policy"],
 			// These are parsed later in frame.js if needed
 			frame: reqHeaders["x-frame-options"],
@@ -127,36 +174,21 @@ async function handle(event) {
 			csp: reqHeaders["content-security-policy"],
 		};
 
-		if (injectHeaders.clear)
-			await clear(injectHeaders.clear, event.clientId);
+		if (sec.clear) await clear(sec.clear, event.clientId);
 	}
 
-	// Get the cache age before we start rewriting
-	const cacheAge = cache.getAge(
-		reqHeaders["cache-control"],
-		reqHeaders["expires"]
-	);
-
-	const cacheResp = await cache.get(reqUrl, cacheAge);
-
-	if (cacheResp) return cacheResp;
+	// Cache mode emulation
+	const cache = new CacheManager(reqHeaders);
 
 	if (cache.mode === "only-if-cached")
-		// TODO: Properly emulate the network error
-		return new Response("Can't find a cache", {
+		// TODO: Emulate network error
+		return new Response("Can't find a cached response for this", {
 			status: 500,
 		});
 
-	const rewrittenReqHeaders = rewriteReqHeaders(
-		prefix,
-		reqHeaders,
-		clientUrl,
-		afterPrefix
-	);
-
 	let opts = {
 		method: req.method,
-		headers: rewrittenReqHeaders,
+		headers: rewriteReqHeaders(reqHeaders, clientUrl, afterPrefix),
 	};
 
 	// A request body should only be created under a post request
@@ -173,10 +205,16 @@ async function handle(event) {
 	// Rewrite the response headers
 	const respHeaders = headersToObject(resp.headers);
 
-	const rewrittenRespHeaders = rewriteRespHeaders(
-		flags.corsEmulation,
-		respHeaders
+	const cacheAge = cache.getAge(
+		reqHeaders["cache-control"],
+		reqHeaders["expires"]
 	);
+
+	const cachedResp = await cache.get(reqUrl, cacheAge, respHeaders["vary"]);
+
+	if (cachedResp) return cachedResp;
+
+	const rewrittenRespHeaders = rewriteRespHeaders(respHeaders);
 
 	const type = respHeaders["content-type"];
 
@@ -184,15 +222,17 @@ async function handle(event) {
 		// Not all sites respond with a type
 		typeof type === "undefined" || type.startsWith("text/html");
 
-	// Rewrite the body
-
 	/** @type {string | ReadableStream} */
 	let body;
 
 	// For modules
-	const isMod = new URLSearchParams(location.search).mod === "true";
+	const isModWorker =
+		new URLSearchParams(location.search).get("isMod") === "true";
 
-	if (navigate && html) {
+	const isNavigate = isHomepage || isiFrame;
+
+	// Rewrite the body
+	if (isNavigate && html) {
 		body = await resp.text();
 
 		if (body !== "") {
@@ -210,7 +250,10 @@ async function handle(event) {
     <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon">
     <!-- If not defined already, manually set the favicon -->
     <link href="/favicon.ico" rel="icon" type="image/x-icon">
-    
+
+	<!-- Third party libs -->
+	${useBare ? unwrapImport("this/misc/dist/BareClient.cjs") : ""}
+
     <script>
         // Update the service worker
         navigator.serviceWorker
@@ -222,23 +265,30 @@ async function handle(event) {
             })
             // Update service worker
             .then(reg => reg.update())
-            .catch(err => console.error(err.message));
+            .catch(err => console.error);
+
+		if (!window.sec)
+			window.sec = {};
 
         // Aero's global namespace
         var $aero = {
 			config: {
 				prefix: "${prefix}",
+				aeroPrefix: "${aeroPrefix}",
 				wsBackends: ${JSON.stringify(wsBackends)},
 				wrtcBackends: ${JSON.stringify(wrtcBackends)},
 				debug: ${JSON.stringify(debug)},
 				flags: ${JSON.stringify(flags)},
 			},
 			useBare: ${useBare},
-			cors: ${JSON.stringify(injectHeaders)},
+			// Security
+			sec:  { ...sec, ...${JSON.stringify(sec)} },
 			// This is used to later copy into an iFrame's srcdoc; this is for an edge case
 			init: \`_IMPORT_\`,
 			afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${$aero.config.prefix})\`, "g"), ""),
+			afterOrigin: url => url.replace(new RegExp(\`^(\${location.origin})\`, "g"), "")
 		};
+		delete window.sec;
 		Object.freeze($aero.config);
     </script>
 
@@ -249,7 +299,6 @@ async function handle(event) {
 	</script>
 
 	<!-- Libs -->
-	${useBare ? unwrapImport("this/misc/dist/BareClient.cjs") : ""}
     <!-- The src rewriter needs proxyLocation early -->
 	${unwrapImport("browser/misc/proxyLocation")}
 	<!-- Injected Aero code -->
@@ -261,18 +310,19 @@ async function handle(event) {
 	${unwrapImport("browser/injects/dom")}
 </head>
 `;
+			// Recursion
 			body =
 				base.replace(
-					/_IMPORT_/g,
-					base
-						.replace(/\`/g, "\\`")
-						.replace(/\${/g, "\\${")
-						.replace(/<\/script>/g, "<\\/script>")
+					/_IMPORT_/,
+					escapeJS(base).replace(
+						/<\/script>/g,
+						String.raw`<\/script>`
+					)
 				) + body;
 		}
 	} else if (
-		navigate &&
-		(text.startsWith("text/xml") || text.startsWith("application/xml"))
+		isNavigate &&
+		(type.startsWith("text/xml") || type.startsWith("application/xml"))
 	) {
 		body = await resp.text();
 
@@ -285,41 +335,24 @@ async function handle(event) {
 <?xml-stylesheet type="text/xsl" href="/aero/browser/xml/intercept.xsl"?>
 ${body}
 		`;
-	} else if (req.destination === "script") {
-		body = "";
+	} else if (isScript) {
+		const script = await resp.text();
 
-		if (flags.corsEmulation)
-			// Integrity check
-			body += `
-(async () => {
-	if (document.currentScript.hasAttribute("integrity")) {
-		const [rawAlgo, hash] = document.currentScript.integrity.split("-");
-
-		const algo = rawAlgo.replace(/^sha/g, "SHA-");
-
-		alert(algo);
-
-		const buf = new TextEncoder().encode(document.currentScript.innerHTML);
-
-		const calcHashBuf = await crypto.subtle.digest(algo, buf);
-
-		const calcHash = new TextDecoder().decode(calcHashBuf);
-
-		// If mismatched hash
-		const blocked = hash === calcHash;
-
-		// Exit script
-		if (blocked)
-			throw new Error("Script blocked")
-	}
-})();
-`;
-
-		// Scope the scripts
-		body += scope(await resp.text());
+		if (flags.corsEmulation) {
+			body = rewriteScript(
+				script,
+				isMod,
+				`
+{
+	const bak = decodeURIComponent(escape(atob(\`${escapeJS(script)}\`)));
+	${integral(isMod)}
+}			
+`
+			);
+		} else body = rewriteScript(script, isMod);
 	} else if (req.destination === "manifest") {
 		// Safari exclusive
-		if (flags.legacy && type.contains("text/cache-manifest")) {
+		if (flags.legacy && type.includes("text/cache-manifest")) {
 			const isFirefox = reqHeaders["user-agent"].includes("Firefox");
 
 			body = rewriteCacheManifest(isFirefox);
@@ -327,7 +360,7 @@ ${body}
 	}
 	// Nests
 	else if (flags.workers && req.destination === "worker")
-		body = isMod
+		body = isModWorker
 			? `
 import { proxyLocation } from "${aeroPrefix}worker/worker.js";
 self.location = proxyLocation;
@@ -338,7 +371,7 @@ importScripts("${aeroPrefix}worker/worker.js");
 ${body}
 		`;
 	else if (flags.workers && req.destination === "sharedworker")
-		body = isMod
+		body = isModWorker
 			? `
 import { proxyLocation } from "${aeroPrefix}worker/worker.js";
 self.location = proxyLocation;
@@ -350,7 +383,7 @@ importScripts("${aeroPrefix}worker/sharedworker.js");
 ${body}
 		`;
 	else if (flags.workers && req.destination === "serviceworker")
-		body = isMod
+		body = isModWorker
 			? `
 import { proxyLocation } from "${aeroPrefix}workerApis/worker.js";
 self.location = proxyLocation;
@@ -378,7 +411,7 @@ ${body}
 		// TODO: x-aero-size-encbody
 	}
 
-	const proxyResp = new Response(body, {
+	const proxyResp = new Response(resp.status === 204 ? null : body, {
 		status: resp.status ?? 200,
 		headers: rewrittenRespHeaders,
 	});

@@ -1,14 +1,14 @@
 /**
  * Tests to see if the request would be blocked due to cors rules
- * @param {String} - url The url that is being tested
+ * @param {String} - The url that is being tested
  * @return {Boolean} The result
  */
-export default async url => {
+export default async proxyUrl => {
 	try {
 		const controller = new AbortController();
 		const signal = controller.signal;
 
-		await fetch(url, {
+		await fetch(proxyUrl, {
 			mode: "no-cors",
 			signal,
 		});

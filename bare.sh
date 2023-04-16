@@ -1,3 +1,5 @@
+# TODO: Support disabling bare
+
 cd this/misc
 
 if [ ! -d bare ]

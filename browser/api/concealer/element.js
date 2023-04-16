@@ -98,27 +98,29 @@
 
 	// Conceal
 	const concealedAttrs = ["href", "xlink:href", "integrity"];
-	function valid(el, attr) {
-		return (
-			[
+	function invalid(el, attr) {
+		return !(
+			([
 				...concealedAttrs,
 				...concealedAttrs.filter(attr => `_${attr}`),
 			].includes(attr) &&
-			// href
-			(el instanceof HTMLAnchorElement ||
-				el instanceof HTMLAreaElement ||
-				// integrity
-				el instanceof HTMLScriptElement)
+				// href
+				(el instanceof HTMLAnchorElement ||
+					el instanceof HTMLAreaElement ||
+					// integrity
+					el instanceof HTMLScriptElement)) ||
+			(el instanceof HTMLIFrameElement && attr === "parentProxyOrigin") ||
+			attr === onload
 		);
 	}
 	Element = new Proxy(Element, {
 		get(target, prop) {
-			if (valid(target, prop)) prop = `_${prop}`;
+			if (invalid(target, prop)) prop = `_${prop}`;
 
 			return Reflect.get(...arguments);
 		},
 		set(target, prop) {
-			if (valid(target, prop)) prop = `_${prop}`;
+			if (invalid(target, prop)) prop = `_${prop}`;
 
 			return Reflect.set(...arguments);
 		},

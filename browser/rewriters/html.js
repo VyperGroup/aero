@@ -1,7 +1,6 @@
-$aero.set = (el, attr, val) => {
-	// Backup element
-	// For Element hooks
-	el.setAttribute(`_${attr}`, val);
+$aero.set = (el, attr, val = "", backup = true) => {
+	// Backup element (for element hooks)
+	if (backup) el.setAttribute(`_${attr}`, el.getAttribute(attr));
 
 	el.setAttribute(attr, val);
 };
@@ -29,23 +28,49 @@ $aero.rewrite = async (el, attr) => {
 		return true;
 	}
 
-	// TODO: Finish CSP emulation
 	if (isNew && tag === "script" && !el.rewritten) {
-		if (el.src) $aero.set(el, "src", $aero.rewriteHtmlSrc(el.src));
+		if (el.src) {
+			if (allow("script-src")) {
+				let url = new URL(el.src);
+
+				const isMod = el.type === "module";
+
+				// TODO: Refactor the params system
+				const params = url.searchParams;
+
+				params.getAll("isMod").forEach(v => {
+					params.append("_isMod", v);
+				});
+				params.delete("isMod");
+				params.append("isMod", isMod);
+
+				if (isMod && el.integrity) {
+					params
+						.getAll("integrity")
+						.forEach(v => url.searchParams.append("_integrity", v));
+
+					params.set("integrity", el.integrity);
+				}
+
+				$aero.set(el, "src", $aero.rewriteHtmlSrc(url.href));
+			} else $aero.set(el, "src", "");
+		}
+
 		if (
-			el.classList.contains($aero.config.ignoreClass) &&
+			!el.src &&
+			!el.classList.contains($aero.config.ignoreClass) &&
 			typeof el.innerHTML === "string" &&
 			el.innerHTML !== "" &&
-			// Make sure the script has a js type
+			// Ensure the script has a js type
 			(el.type === "" ||
 				el.type === "text/javascript" ||
 				el.type === "application/javascript")
 		) {
-			/*
-			FIXME: Fix safeText
-			el.innerHTML = $aero.safeText($aero.scope(el.innerText));
-			*/
-			el.innerHTML = $aero.scope(el.innerText);
+			// FIXME: Fix safeText so that it could be used here
+			el.innerHTML = $aero.rewriteScript(
+				el.innerText,
+				el.type === "module"
+			);
 
 			// The inline code is read-only, so the element must be cloned
 			const cloner = new $aero.Cloner(el);
@@ -53,9 +78,18 @@ $aero.rewrite = async (el, attr) => {
 			cloner.clone();
 			cloner.cleanup();
 		}
+	} else if (el instanceof SVGAElement) {
+		if (el.href)
+			$aero.set(el, "href", $aero.rewriteHtmlSrc(el.href.baseVal));
+		else if (el.hasAttribute("xlink:href"))
+			$aero.set(
+				el,
+				"xlink:href",
+				$aero.rewriteHtmlSrc(el.getAttribute("xlink:href").href)
+			);
 	} else if (tag === "a" || tag === "area" || tag === "base") {
 		if (el.href) $aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
-		if (el.hasAttribute("xlink:href"))
+		else if (el.hasAttribute("xlink:href"))
 			$aero.set(
 				el,
 				"xlink:href",
@@ -74,7 +108,6 @@ $aero.rewrite = async (el, attr) => {
 
 		if (el.src && allow("frame-src")) {
 			// Embed the origin the origin as an attribute, so that the frame can reference it to do its checks
-			/// TODO: Conceal this
 			el.parentProxyOrigin = $aero.proxyLocation.origin;
 			$aero.set(el, "src");
 
@@ -90,11 +123,34 @@ $aero.rewrite = async (el, attr) => {
 		if (el.srcdoc)
 			// Inject aero imports
 			$aero.set(el, "srcdoc", $aero.init + el.srcdoc);
-		if (el.allow)
-			// TODO: Emulate Permissions policy using $aero.cors.perms
-			null;
+
+		// Emulate CSP
+		const sec = {};
+		if (el.csp) {
+			sec.csp = el.csp;
+			$aero.set(el, "csp", "", false);
+		}
+		if (el.allow) {
+			sec.perms = el.allow;
+			$aero.set(el, "allow", "", false);
+		}
+		if (el.allowpaymentrequest) {
+			sec.pr = el.allowpaymentrequest;
+			$aero.set(el, "allowpaymentrequest", "", false);
+		}
+		el.addEventListener(
+			"load",
+			() => (el.contentWindow.sec = JSON.stringify(sec))
+		);
 	} else if (tag === "portal" && el.src)
 		$el.set(el, "src", $aero.rewriteHtmlSrc(el.src));
+	else if (tag === "img" && el.src && !allow("img-src"))
+		$aero.set(el, "src", "");
+	else if (
+		tag === "audio" ||
+		(tag === "video" && el.autoplay && $aero.blockPerm("autoplay"))
+	)
+		$aero.set(el, "autoplay");
 	else if (tag === "meta") {
 		switch (el.httpEquiv) {
 			case "content-security-policy":
@@ -125,9 +181,10 @@ $aero.rewrite = async (el, attr) => {
 		cloner.cleanup();
 	}
 
-	// TODO: Proxify the getters and setters too
-	if (el.onload) $aero.set(el, "onload", $aero.scope(el.onload));
-	if (el.onerror) $aero.set(el, "onerror", $aero.scope(el.onerror));
+	if (typeof el.onload === "string")
+		$aero.set(el, "onload", $aero.scope(el.getAttribute("onload")));
+	if (typeof el.error === "string")
+		$aero.set(el, "onerror", $aero.scope(el.getAttribute("onload")));
 
 	el.observed = true;
 };

@@ -6,6 +6,7 @@ Object.defineProperty($aero, "proxyLocation", {
 Object.defineProperty($aero, "upToProxyOrigin", {
 	get: () => $aero.config.prefix + $aero.proxyLocation.origin,
 });
+
 // Private scope
 {
 	// Prevent detection by instanceof
@@ -18,7 +19,7 @@ Object.defineProperty($aero, "upToProxyOrigin", {
 		get(target, prop) {
 			if (typeof target[prop] === "function") {
 				const props = {
-					toString: $aero.proxyLocation.toString,
+					toString: () => $aero.proxyLocation.toString(),
 					assign: url => location.assign(wrap(url)),
 					replace: $aero.proxyLocation.replace,
 				};

@@ -1,16 +1,17 @@
 export default {
 	// Used by both the inject code and this service worker
-	shared: ["cookie", "scope", "src"],
+	shared: ["meta", "cookie", "scope", "script", "src"],
 	"browser/misc": [
 		"escape",
 		"proto",
 		"storage",
 		// CORS Emulation
 		"frame",
+		"policy",
 		"perms",
 		"clear",
 	],
-	"browser/rewriters": ["cors", "csp", "cspSrc", "cloner", "htmlSrc", "html"],
+	"browser/rewriters": ["tt", "csp", "cloner", "htmlSrc", "html"],
 	// Hide the true origin
 	"browser/api/concealer": [
 		"css",

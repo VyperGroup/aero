@@ -1,5 +1,5 @@
 /*
-FIXME: Don't use this interface
+	FIXME: Don't use this interface
 FileSystemEntry = new Proxy(FileSystemEntry, {
 	construct() {
 		const ret = target.construct(...arguments);

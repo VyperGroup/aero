@@ -16,7 +16,7 @@ if ($aero.config.flags.ws) {
 				}://${location.host}${$aero.rewriteSrc(backend)}?url=${url}`;
 
 				if ($aero.config.debug.url)
-					console.log(`WS ${url} ➜ ${rewrittenUrl}`);
+					console.debug(`WS ${url} ➜ ${rewrittenUrl}`);
 
 				args[0] = rewrittenUrl;
 

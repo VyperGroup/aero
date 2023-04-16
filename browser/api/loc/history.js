@@ -1,3 +1,4 @@
+// Breaks on https://search.brave.com
 var historyState = {
 	apply(_target, _that, args) {
 		const [, , url = ""] = args;

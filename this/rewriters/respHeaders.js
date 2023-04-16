@@ -1,3 +1,5 @@
+import { flags } from "../../config.js";
+
 // Rewriters
 import { rewriteSetCookie } from "../../shared/cookie.js";
 
@@ -7,10 +9,12 @@ const ignoredHeaders = [
 	"content-encoding",
 	"content-length",
 	"content-security-policy",
+	"content-security-policy-report-only",
+	"cross-origin-resource-policy",
 	"cross-origin-opener-policy",
 	"cross-origin-opener-policy-report-only",
 	"report-to",
-	// TODO: Emulate
+	// TODO: Emulate this
 	"strict-transport-security",
 	"x-content-type-options",
 	"x-frame-options",
@@ -30,7 +34,7 @@ function rewriteLocation(url) {
  * @param {object}
  * @return {string} The rewritten headers
  */
-export default (corsEmulation, headers) => {
+export default headers => {
 	const rewrittenHeaders = {};
 
 	rewrittenHeaders["x-headers"] = JSON.stringify({ ...headers });
@@ -40,12 +44,7 @@ export default (corsEmulation, headers) => {
 			rewrittenHeaders[key] = val;
 		}
 
-		if (
-			ignoredHeaders.includes(key) ||
-			(!corsEmulation && key === "content-security-policy")
-		) {
-			return;
-		}
+		if (ignoredHeaders.includes(key)) return;
 
 		const value = headers[key];
 

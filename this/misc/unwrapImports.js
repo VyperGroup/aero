@@ -12,7 +12,7 @@ function unwrapImport(path) {
 }
 
 function unwrapImports(cats) {
-	let ret = `\n${createScript("browser/misc/proxyLocation")}`;
+	let ret = "";
 
 	for (const cat in cats)
 		ret +=

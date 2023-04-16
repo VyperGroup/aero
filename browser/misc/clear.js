@@ -7,8 +7,8 @@ if ($aero.config.flags.nonstandard)
 
 // Private scope
 {
-	if ($aero.cors.clear) {
-		const clear = JSON.parse($aero.cors.clear);
+	if ($aero.sec.clear) {
+		const clear = JSON.parse($aero.sec.clear);
 
 		const all = clear.includes("'*'");
 

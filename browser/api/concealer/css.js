@@ -8,6 +8,7 @@ function getSheet(sheet) {
 	return sheet;
 }
 
+/*
 Object.defineProperty(document, "styleSheets", {
 	get: () => {
 		// StyleSheetList is read-only so the getter itself needs to be proxified
@@ -20,5 +21,6 @@ Object.defineProperty(document, "styleSheets", {
 		return ret;
 	},
 });
+*/
 
 // TODO: Support XML ProcessingInstruction.sheet

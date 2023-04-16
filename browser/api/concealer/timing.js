@@ -1,10 +1,13 @@
 /*
-There are 2 ways to detect proxies using the Performance API
+There are 3 ways to detect proxies using the Performance API
+Using entry.name to expose the url 
 If the site was rewritten or the headers were modified, the size would be different than what is intended. You can think of this as a form of hash checking
 If you make a request to two different proxy origins on the site that are both cached and one has the Clear-Site-Data clearing both proxy origins, the proxy can be detected
 */
+
+// Private scope
 {
-	const info = new Map();
+	const resInfo = new Map();
 
 	const broadcast = new BroadcastChannel("resCached");
 
@@ -17,7 +20,9 @@ If you make a request to two different proxy origins on the site that are both c
 	};
 
 	function isCached(url) {
-		return url in info.get(url);
+		let res = resInfo.get(url);
+
+		return res ? url in res : false;
 	}
 
 	async function getHeader(name) {
@@ -30,37 +35,76 @@ If you make a request to two different proxy origins on the site that are both c
 		return await getHeader(url, "x-aero-size-body");
 	}
 
-	PerformanceResourceTiming = new Proxy(PerformanceResourceTiming, {
-		async get(target, prop) {
-			const url = target.name;
-			const size = target[prop];
+	performance.getEntries = new Proxy(performance.getEntries, {
+		apply() {
+			let entries = Reflect.apply(...arguments);
 
-			const resCached = isCached(url);
-			const resCrossOrigin = url.startsWith($aero.upToProxyOrigin);
-			const isZero =
-				resCached || resCrossOrigin || "timing" in $aero.cors.headers;
+			return (
+				entries
+					// Hide aero's injections
+					.filter(
+						entry =>
+							!entry.name.startsWith(
+								location.origin + $aero.config.aeroPrefix
+							)
+					)
+					.map(async entry => {
+						if (entry.name) {
+							Object.defineProperty(entry, "name", {
+								value: $aero.afterPrefix(entry.name),
+								writable: false,
+							});
 
-			// These represent the size of the response
-			if (prop === "transferSize") {
-				if (isZero) return 0;
+							const size = target[prop];
 
-				return await getHeader(url, "x-aero-size-transfer");
-			}
-			if (prop === "encodedBodySize") {
-				if (isZero) return 0;
+							const resCached = isCached(url);
+							const resCrossOrigin = !url.startsWith(
+								$aero.upToProxyOrigin
+							);
+							const isZero =
+								resCached ||
+								resCrossOrigin ||
+								"timing" in $aero.sec.headers;
 
-				const decodeSize = prop.decodedBodySize;
+							Object.defineProperty(entry, "transferSize", {
+								value: isZero
+									? 0
+									: await getHeader(
+											url,
+											"x-aero-size-transfer"
+									  ),
+								writable: false,
+							});
+							Object.defineProperty(entry, "encodedBodySize", {
+								value: async () => {
+									if (isZero) return 0;
 
-				// There is no encoding
-				if (size === decodeSize) return await getBodySize(url);
-				else return await getHeader(url, "x-aero-size-encbody");
-			}
-			if (prop === "decodedBodySize") {
-				if (isZero) return 0;
+									const decodeSize = prop.decodedBodySize;
 
-				return await getBodySize(url);
-			}
-			return Reflect.get(...arguments);
+									// There is no encoding
+									if (size === decodeSize)
+										return await getBodySize(url);
+									else
+										return await getHeader(
+											url,
+											"x-aero-size-encbody"
+										);
+								},
+								writable: false,
+							});
+							Object.defineProperty(entry, "decodedBodySize", {
+								value: async () => {
+									if (isZero) return 0;
+
+									return await getBodySize(url);
+								},
+								writable: false,
+							});
+						}
+
+						return entry;
+					})
+			);
 		},
 	});
 }
