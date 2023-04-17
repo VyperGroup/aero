@@ -6,7 +6,7 @@ const backends = ["/fetch"];
 // Don't set these, if you are using bare
 const wsBackends = ["/fetchws"];
 const wrtcBackends = {
-	// I recommend using the TURN servers from https://www.metered.ca/tools/openrelay/
+	// I recommend using the TURN servers from https://www.metered.ca/tools/openrelay/, or hosting your own with https://github.com/coturn/coturn
 	ice: ["stun:stun.l.google.com:19302"],
 };
 
