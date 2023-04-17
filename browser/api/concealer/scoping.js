@@ -67,13 +67,18 @@ Object.getOwnPropertyDescriptor = new Proxy(Object.getOwnPropertyDescriptor, {
 	apply(_target, _that, args) {
 		let [obj, prop] = args;
 
-		//console.log(prop);
-
 		if (obj === location || (obj === window && prop === "location"))
 			obj = $aero.location;
 
 		args[0] = obj;
 
 		return Reflect.apply(...arguments);
+	},
+});
+
+// Conceal $aero from in operator
+window = new Proxy(window, {
+	has(_target, key) {
+		return key !== "$aero" && Reflect.has(...arguments);
 	},
 });
