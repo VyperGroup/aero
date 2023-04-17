@@ -1,14 +1,18 @@
 fetch = new Proxy(fetch, {
 	apply(_target, _that, args) {
-		[opts] = args;
+		[opts, headers] = args;
 
 		if (
 			opts.cache &&
 			// only-if-cached requires the mode to be same origin
 			!(opts.mode !== "same-origin" && opts.cache === "only-if-cached")
-		)
-			// Emulate cache mode
-			args[1].headers.add("x-aero-cache", opts.cache);
+		) {
+			if (!headers) headers = [];
+			else if (headers instanceof Headers)
+				// Emulate cache mode
+				headers.add("x-aero-cache", opts.cache);
+			else headers["x-aero-cache"] = opts.cache;
+		}
 
 		return Reflect.apply(...arguments).then(resp => {
 			const rawHeaders = resp.headers.get("x-headers");
