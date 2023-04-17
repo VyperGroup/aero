@@ -12,40 +12,37 @@ export default class extends Cache {
 
 			const req = indexedDB.open("sts", 1);
 
-			new Promise(resolve => {
+			const db = new Promise(resolve => {
 				req.onsuccess = () => {
-					const db = req.result;
-
-					let tx = db.transaction(proxyHostname, "readwrite");
-					let store = tx.objectStore(proxyHostname);
-
-					const ages = dirs.filter(dir => dir.startsWith("max-age"));
-					const subdomains = dirs.filter(
-						dir => dir === includeSubdomain
-					);
-
-					if (ages.length > 1 || subdomains > 1) resolve();
-
-					const age = ages[0]?.split("=")?.[1];
-
-					if (!age) return resolve();
-
-					if (age === 0) {
-						this.#delete();
-						resolve();
-					}
-
-					store.put({
-						age: age,
-						subdomains: subdomains.length > 0,
-					});
-
-					tx.complete = () => {
-						db.close();
-						resolve();
-					};
+					resolve(req.result);
 				};
 			});
+
+			let tx = db.transaction(proxyHostname, "readwrite");
+			let store = tx.objectStore(proxyHostname);
+
+			const ages = dirs.filter(dir => dir.startsWith("max-age"));
+			const subdomains = dirs.filter(dir => dir === includeSubdomain);
+
+			if (ages.length > 1 || subdomains > 1) resolve();
+
+			const age = ages[0]?.split("=")?.[1];
+
+			if (!age) return resolve();
+
+			if (age === 0) {
+				this.#delete();
+				resolve();
+			}
+
+			store.put({
+				age: age,
+				subdomains: subdomains.length > 0,
+			});
+
+			tx.complete = () => {
+				db.close();
+			};
 		}
 	}
 	async redirect() {
@@ -69,21 +66,21 @@ export default class extends Cache {
 	async #getSec(hostname) {
 		const req = indexedDB.open("sts", 1);
 
-		return (sec = new Promise(resolve => {
+		const db = new Promise(resolve => {
 			req.onsuccess = () => {
-				const db = req.result;
-
-				let tx = db.transaction(hostname, "readwrite");
-				let store = tx.objectStore(hostname);
-
-				let sec = store.get();
-
-				tx.complete = () => {
-					db.close();
-
-					return resolve(sec);
-				};
+				resolve(req.result);
 			};
-		}));
+		});
+
+		let tx = db.transaction(hostname, "readwrite");
+		let store = tx.objectStore(hostname);
+
+		let sec = store.get();
+
+		tx.complete = () => {
+			db.close();
+		};
+
+		return sec;
 	}
 }
