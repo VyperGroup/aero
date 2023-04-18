@@ -17,7 +17,7 @@ $aero.rewriteSrc = (url, proxyUrl = $aero.proxyLocation.href) => {
 	// Protocol
 	const rewrittenUrl = /^(https?:\/\/)/g.test(url)
 		? $aero.config.prefix + url
-		: new URL(url, proxyUrl).href;
+		: $aero.config.prefix + new URL(url, proxyUrl).href;
 
 	if ($aero.config.debug.src) console.info(`${url} ➜ ${rewrittenUrl}`);
 
