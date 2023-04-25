@@ -44,6 +44,7 @@ export default class extends Cache {
 
 			const secs = dirs
 				.find(dir => dir.startsWith("max-age"))
+				// FIXME: Breaks on https://dailymail.com
 				.split("=")
 				.pop();
 

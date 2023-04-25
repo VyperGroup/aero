@@ -11,9 +11,12 @@ if ($aero.config.flags.ws) {
 			let ret;
 
 			for (const backend of $aero.config.wsBackends) {
-				const rewrittenUrl = `${
+				const wsUrl = new URL(location.origin);
+				wsUrl.protocol = `${
 					location.protocol === "https:" ? "wss" : "ws"
-				}://${location.host}${$aero.rewriteSrc(backend)}?url=${url}`;
+				}:`;
+				const rewrittenUrl = `${new URL("/fetch", wsUrl)}
+				)}?url=${url}`;
 
 				if ($aero.config.debug.url)
 					console.debug(`WS ${url} ➜ ${rewrittenUrl}`);

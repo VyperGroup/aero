@@ -4,7 +4,7 @@ import routes from "./this/internal/routes.js";
 // Dynamic Config
 import getConfig from "./this/dynamic/getConfig.js";
 // Standard Config
-import { prefix, aeroPrefix, debug, flags } from "./config.js";
+import { prefix, aeroPrefix, agLists, flags, debug } from "./config.js";
 
 // Utility
 import BareClient from "./this/misc/bare/dist/BareClient.js";
@@ -12,6 +12,7 @@ import ProxyFetch from "./this/misc/ProxyFetch.js";
 import sharedModule from "./this/misc/sharedModule.js";
 import getRequestUrl from "./this/misc/getRequestUrl.js";
 import headersToObject from "./this/misc/headersToObject.js";
+import isHtml from "./shared/isHtml.js";
 import { unwrapImport, unwrapImports } from "./this/misc/unwrapImports.js";
 
 // Security
@@ -31,9 +32,23 @@ import rewriteCacheManifest from "./this/rewriters/cacheManifest.js";
 import rewriteManifest from "./this/rewriters/manifest.js";
 import rewriteScript from "./shared/script.js";
 
+// Libs
+// TODO: Compile a bundle for SWs
+/*
+import * as ag from "https://cdn.jsdelivr.net/npm/@adguard/tsurlfilter/+esm";
+const agE = new ag.Engine(
+	...agLists.map(
+		list =>
+			new ag.RuleStorage([new ag.StringRuleList("0", list, false, false)])
+	)
+);
+const agRedir = new ag.RedirectsService();
+await agRedir.init();
+*/
+
 // RegExps
 // FIXME: Breaks often
-//const escapeJS = str => str.replace(/`/g, String.raw`\``).replace(/\${/g, String.raw`\${`);
+//const escapeJS = str => str.replace(/`/g, String.raw`\``).replace(/\${/g, String.raw`\${`).replace(/<\/script>/g, String.raw`<\/script>`);
 const escapeJS = str => btoa(unescape(encodeURIComponent(str)));
 
 /**
@@ -74,14 +89,6 @@ async function handle(event) {
 		return param;
 	}
 
-	let isMod;
-	const isScript = req.destination === "script";
-	if (isScript) {
-		isMod = getPassthroughParam("isMod") === "true";
-	}
-
-	let frameSec = getPassthroughParam("frameSec");
-
 	// Remove the module components
 	if (
 		reqUrl.pathname.startsWith(aeroPrefix + "shared/") &&
@@ -92,6 +99,14 @@ async function handle(event) {
 	if (reqUrl.pathname.startsWith(aeroPrefix))
 		// Proceed with the request like normal
 		return await fetch(req.url);
+
+	let isMod;
+	const isScript = req.destination === "script";
+	if (isScript) {
+		isMod = getPassthroughParam("isMod") === "true";
+	}
+
+	let frameSec = getPassthroughParam("frameSec");
 
 	var clientUrl;
 	// Get the origin from the user's window
@@ -122,6 +137,35 @@ async function handle(event) {
 		)
 	);
 
+	// AdGuard
+	/*
+	let agReq;
+	if (agLists.length > 0) {
+		agReq = new ag.Request(
+			proxyUrl.href,
+			null,
+			agE.RequestType.find(
+				type => type.toLowerCase() === req.destination
+			) ?? "Document"
+		);
+		const res = agE.matchRequest(agReq);
+		const blocked = res.basicRule && !res.basicRule.isAllowlist();
+		if (blocked)
+			return new Response("Blocked by AdGuard", {
+				status: 500,
+			});
+
+		if (res.isOptionEnabled(ag.NetworkRuleOption.Redirect))
+			return redir(
+				agRedir.createRedirectUrl(
+					res.getBasicResult().getAdvancedModifierValue()
+				)
+			);
+
+		// TODO: Cookie filtering
+	}
+	*/
+
 	// Ensure the request isn't blocked by CORS
 	if (flags.corsEmulation && (await block(proxyUrl.href)))
 		return new Response("Blocked by CORS", { status: 500 });
@@ -137,28 +181,36 @@ async function handle(event) {
 	// Rewrite the request headers
 	const reqHeaders = headersToObject(req.headers);
 
+	const isNavigate = isHomepage || isiFrame;
+
+	// Bing AI on all browsers
+	if (isNavigate && proxyUrl.origin === "https://www.bing.com") {
+		const ua = reqHeaders["user-agent"];
+
+		if (!/EdgA?\//.test(ua))
+			reqHeaders["user-agent"] +=
+				(ua.contains("Mobile") ? "Edg/" : "EdgA/") + "0.0";
+	}
+
 	let sec = {};
 	if (flags.corsEmulation) {
-		// False
-		if (false && proxyUrl.protocol === "http:") {
+		// FIXME:
+		/*
+		if (proxyUrl.protocol === "http:") {
 			const sts = new STS(
 				reqHeaders["strict-transport-security"],
 				proxyUrl.origin
 			);
 
 			if (await sts.redirect()) {
-				const redir = proxyUrl;
+				const redirUrl = proxyUrl;
 
-				redir.protocol = "https:";
+				redirUrl.protocol = "https:";
 
-				return new Response("", {
-					status: 307,
-					headers: {
-						location: prefix + redir,
-					},
-				});
+				return redir(redirUrl);
 			}
 		}
+		*/
 
 		sec = {
 			clear: reqHeaders["clear-site-data"]
@@ -182,7 +234,7 @@ async function handle(event) {
 
 	if (cache.mode === "only-if-cached")
 		// TODO: Emulate network error
-		return new Response("Can't find a cached response for this", {
+		return new Response("Can't find a cached response", {
 			status: 500,
 		});
 
@@ -220,7 +272,7 @@ async function handle(event) {
 
 	const html =
 		// Not all sites respond with a type
-		typeof type === "undefined" || type.startsWith("text/html");
+		typeof type === "undefined" || isHtml(type);
 
 	/** @type {string | ReadableStream} */
 	let body;
@@ -229,11 +281,31 @@ async function handle(event) {
 	const isModWorker =
 		new URLSearchParams(location.search).get("isMod") === "true";
 
-	const isNavigate = isHomepage || isiFrame;
-
 	// Rewrite the body
 	if (isNavigate && html) {
 		body = await resp.text();
+
+		let agHide = "";
+		let agHideScript = "";
+		/*
+		if (agReq) {
+			const cosRes = agE.getCosmeticResult(
+				agReq,
+				ag.CosmeticOption.CosmeticOptionAll
+			);
+			agHide += (
+				[
+					...cosRes.elementHiding.generic,
+					...cosRes.elementHiding.specific,
+				].join(", ") + "{ display: none!important; }"
+			).join("\n\n");
+
+			agHideScript = cosmeticResult
+				.getScriptRules()
+				.map(rule => rule.getScript())
+				.join("\r\n");
+		}
+		*/
 
 		if (body !== "") {
 			let base = `
@@ -291,14 +363,12 @@ async function handle(event) {
 		delete window.sec;
 		Object.freeze($aero.config);
     </script>
-
 	<script>
 		// Sanity check
 		if (!("$aero" in window))
 			console.warn("Unable to initalize $aero");
 	</script>
 
-	<!-- Libs -->
     <!-- The src rewriter needs proxyLocation early -->
 	${unwrapImport("browser/misc/proxyLocation")}
 	<!-- Injected Aero code -->
@@ -308,17 +378,18 @@ async function handle(event) {
 		Object.freeze($aero);
 	</script>
 	${unwrapImport("browser/injects/dom")}
+
+	<!-- AdGuard cosmetic filters -->
+	<style>
+	${agHide}
+	</style>
+	<script>
+	${agHideScript}
+	</script>
 </head>
 `;
 			// Recursion
-			body =
-				base.replace(
-					/_IMPORT_/,
-					escapeJS(base).replace(
-						/<\/script>/g,
-						String.raw`<\/script>`
-					)
-				) + body;
+			body = base.replace(/_IMPORT_/, escapeJS(base)) + body;
 		}
 	} else if (
 		isNavigate &&

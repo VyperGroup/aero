@@ -1,3 +1,5 @@
+// FIXME: Some part of this, which I don't know breaks on Google Search
+/*
 // Local Storage
 Storage.prototype.setItem = new Proxy(
 	Storage.prototype.setItem,
@@ -19,6 +21,7 @@ Storage.prototype.clear = new Proxy(Storage.prototype.clear, {
 	},
 });
 
+// I think this is the culprit
 Storage.prototype.key = new Proxy(Storage.prototype.key, {
 	apply(target, _that, args) {
 		const [i] = args;
@@ -49,3 +52,4 @@ Storage = new Proxy(Storage, {
 		return $aero.storageKeys(keys);
 	},
 });
+*/

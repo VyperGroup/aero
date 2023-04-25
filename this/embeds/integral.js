@@ -22,12 +22,15 @@ export default isMod =>
 	${
 		isMod
 			? `
+	// FIXME: Doesn't work on sites like https://www.aquarium.ru/en and https://radon.games
 	const integrity = import.meta.url.searchParams.get("integrity");
 	
 	if (integrity) await calc(integrity, body);
 	`
 			: `
 	if (
+		// FIXME: Doesn't work in async scripts like found on https://discord.com/
+		document.currentScript &&
 		document.currentScript.hasAttribute("_integrity")
 	)
 		await calc(

@@ -35,6 +35,8 @@ If you make a request to two different proxy origins on the site that are both c
 		return await getHeader(url, "x-aero-size-body");
 	}
 
+	// FIXME:
+	/*
 	performance.getEntries = new Proxy(performance.getEntries, {
 		apply() {
 			let entries = Reflect.apply(...arguments);
@@ -107,4 +109,5 @@ If you make a request to two different proxy origins on the site that are both c
 			);
 		},
 	});
+	*/
 }

@@ -6,13 +6,21 @@ const backends = ["/fetch"];
 // Don't set these, if you are using bare
 const wsBackends = ["/fetchws"];
 const wrtcBackends = {
-	// I recommend using the TURN servers from https://www.metered.ca/tools/openrelay/, or hosting your own with https://github.com/coturn/coturn
+	/*
+	I recommend using the TURN servers from https://www.metered.ca/tools/openrelay/, or hosting your own with https://github.com/coturn/coturn
+	By default the STUN server here won't proxy your connections
+	*/
 	ice: ["stun:stun.l.google.com:19302"],
 };
+// Time to resort backends
+const sortInterval = null;
 
 const cacheKey = "httpCache";
 
 const ignoreClass = null;
+
+// AdGuard filter lists
+const agLists = [];
 
 const dynamicConfig = {
 	// The database name
@@ -23,11 +31,13 @@ const dynamicConfig = {
 
 const flags = {
 	// Features
+	sortBackends: true, // Recommended
 	dynamicUpdates: false, // Recommended
+	recorder: false, // Archive functionality; Only enable this, if you know what your doing
 
 	// Security
 	emulateSecureContext: false, // Secure-only features would still be broken; this is only to mask the site as secure
-	corsEmulation: true, // Recommended
+	corsEmulation: true, // Obey security features, rather than ignore them; Recommended
 
 	// Support
 	safari: false, // Safari has limited support of SWs, so there may be some workarounds
@@ -42,9 +52,10 @@ const flags = {
 	// Misc
 	// This is to prevent sites from detecting the proxy by searching for $aero
 	concealNamespace: true,
+	// Prevent extensions from blocking by checking the request url
+	foolExtensions: false,
 
 	// Incomplete
-	JSScoping: false,
 	workers: false,
 };
 
@@ -62,8 +73,10 @@ export {
 	backends,
 	wsBackends,
 	wrtcBackends,
+	sortInterval,
 	cacheKey,
 	ignoreClass,
+	agLists,
 	dynamicConfig,
 	flags,
 	debug,

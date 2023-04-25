@@ -1,6 +1,8 @@
 // TODO: Rename this to window.js and move it to concealer
 
 // Sender
+// FIXME: Breaks on Google
+/*
 postMessage = new Proxy(postMessage, {
 	apply(_target, _that, args) {
 		let [data, origin] = args;
@@ -16,6 +18,7 @@ postMessage = new Proxy(postMessage, {
 		return Reflect.apply(...arguments);
 	},
 });
+*/
 
 function eventInterceptor(type, listener) {
 	if (type === "message" || type === "messageerror")
@@ -29,7 +32,7 @@ function eventInterceptor(type, listener) {
 	if (type === "storage") {
 		return event => {
 			if (event instanceof StorageEvent) {
-				event.url = $aero.afterPrefix(url);
+				event.url = $aero.afterPrefix(event.url);
 
 				// Ensure the event isn't a clear event
 				if (event.key !== null) {

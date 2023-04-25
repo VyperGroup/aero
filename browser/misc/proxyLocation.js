@@ -17,27 +17,35 @@ Object.defineProperty($aero, "upToProxyOrigin", {
 
 	$aero.locationProxy = new Proxy(inheritedObject, {
 		get(target, prop) {
-			if (typeof target[prop] === "function") {
-				const props = {
-					toString: () => $aero.proxyLocation.toString(),
-					assign: url => location.assign(wrap(url)),
-					replace: $aero.proxyLocation.replace,
+			function a() {
+				if (typeof target[prop] === "function") {
+					const props = {
+						toString: () => $aero.proxyLocation.toString(),
+						assign: url => location.assign(wrap(url)),
+						replace: $aero.proxyLocation.replace,
+					};
+
+					return prop in props ? props[prop] : target[prop];
+				}
+
+				const fakeUrl = $aero.proxyLocation;
+
+				const customProps = {
+					ancestorOrigins: location.ancestorOrigins,
 				};
 
-				return prop in props ? props[prop] : target[prop];
+				if (prop in customProps) return customProps[prop];
+
+				if (prop in fakeUrl) return fakeUrl[prop];
+
+				return location[prop];
 			}
 
-			const fakeUrl = $aero.proxyLocation;
+			const ret = a();
 
-			const customProps = {
-				ancestorOrigins: location.ancestorOrigins,
-			};
+			//console.log(`@Loc ${prop}: ${ret}`);
 
-			if (prop in customProps) return customProps[prop];
-
-			if (prop in fakeUrl) return fakeUrl[prop];
-
-			return location[prop];
+			return ret;
 		},
 		set(target, prop, value) {
 			if (

@@ -1,6 +1,6 @@
 export default {
 	// Used by both the inject code and this service worker
-	shared: ["meta", "cookie", "scope", "script", "src"],
+	shared: ["meta", "isHtml", "cookie", "scope", "script", "src"],
 	"browser/misc": [
 		"escape",
 		"proto",
@@ -26,10 +26,10 @@ export default {
 		"presentation",
 		"push",
 		"reporting",
-		"scoping",
 		"secure",
 		"timing",
 		"xml",
+		"scoping",
 	],
 	"browser/api/event": ["messages"],
 	"browser/api/loc": [
@@ -41,6 +41,6 @@ export default {
 	],
 	// Alt protocols
 	"browser/api/req": ["http", "ws", "wrtc"],
-	"browser/api/storage": ["cookie", "idb", "sql", "storage"],
+	//"browser/api/storage": ["cookie", "idb", "sql", "storage"],
 	"browser/api/worker": ["workers"],
 };

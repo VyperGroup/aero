@@ -12,12 +12,13 @@ const divC = String.raw`[a-zA-Z\d]`;
 const esc = String.raw`(?<!\\)(\\\\)`;
 const ignoreStrings = [
 	// Division operations; used to differentiate from RegExp
-	String.raw`[${divC}\s*\/\s*${divC}|`,
+	//String.raw`[${divC}\s*\/\s*${divC}`,
 	// RegExp
 	String.raw`([\/])(?!\s*${divC}).*?${esc}*\1`,
 	// Quotes
 	String.raw`(["'\/]).*?${esc}*\3`,
-	String.raw`([\`]).*?${esc}*\5`,
+	// FIXME: Causes "Catastrophic Backticking"
+	//String.raw`([\`]).*?${esc}*\5`,
 ];
 const ignoreComments = [
 	String.raw`^\/\/.+`,
@@ -41,7 +42,7 @@ const r = v =>
 	new RegExp(
 		[
 			...ignoreStrings,
-			...ignoreComments,
+			//...ignoreComments,
 			...ignoreFuncParams,
 			isVar(v),
 		].join("|"),
@@ -79,12 +80,16 @@ const scope = (m, ...rest) => {
 const exp = {
 	// TODO: Don't let $aero precede: var, let, const
 	concealNamespace: r(String.raw`\$aero"`),
+	/*
+	FIXME: { ..., location }
+	The :{ stuff after the | is a temporary patch for Discord Login
+	*/
 	scope: r(
-		String.raw`[${varC}.]+(?:\([${varC}.]*\))*\.(?<!window\.)location|location`
+		String.raw`[${varC}.]+(?:\([${varC}.]*\))*\.location|:{(?:\s+)?location`
 	),
 };
 
-//console.debug(exp.scope);
+console.log(exp.scope);
 
 /**
  * Deep Property Check Scoping
@@ -98,6 +103,8 @@ $aero.scope = script => {
 		});
 
 	script = script.replace(exp.scope, scope);
+
+	//console.log(script);
 
 	return script;
 };

@@ -1,6 +1,7 @@
 # aero
 
-Aero is a safe, developer friendly, and innovative interception proxy. Aero provides full site support without much delay, while also having a clean and organized codebase. A deployable version can be found [here](https://github.com/ProxyHaven/aero-deploy).
+Aero is a safe, developer friendly, and innovative interception proxy with many features. Aero provides full site support without much delay, while also having a clean and organized codebase. Aero was made for me to have a place to experiment with my ideas
+A deployable version can be found [here](https://github.com/ProxyHaven/aero-deploy).
 
 # Why doesn't aero work on iOS?
 
@@ -10,7 +11,7 @@ The bug is Apple's fault not ours, since Safari doesn't fully support the Servic
 
 1. Make sure your backend serves an [aero](https://github.com/ProxyHaven/aero-backends) _(recommended)_ or a [TompHTTP Compatible](https://github.com/tomphttp) Backend
     > If you are using bare, run bare.sh
-2. # Make sure you have included aero into your site
+2. Make sure you have included aero into your site
 3. Ensure your backend serves an [aero](https://github.com/ProxyHaven/aero-backends) _recommended_ or a [TompHTTP Compatible Backend](https://github.com/tomphttp)
     > If you are using bare, run bare.sh
 4. Ensure you included aero into your site

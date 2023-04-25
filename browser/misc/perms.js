@@ -45,5 +45,15 @@ $aero.blockPerm = perm => $aero.block($aero.perms.get(perm));
 				throw new DOMException("", "SecurityError");
 			},
 		});
-	// TODO: ...
+	if ($aero.blockPerm("encrypted-media"))
+		block(navigator.mediaDevices.getUserMedia);
+	// TODO: execution-while-not-rendered
+	// TODO: execution-while-out-of-viewport
+	if ($aero.blockPerm("fullscreen"))
+		Element.requestFullscreen = Promise.reject(new TypeError());
+	if ($aero.blockPerm("gamepad"))
+		Navigator.getGamepads = () => {
+			throw new DOMException("SecurityError");
+		};
+	// ...
 }

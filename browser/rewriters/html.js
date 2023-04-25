@@ -35,7 +35,6 @@ $aero.rewrite = async (el, attr) => {
 
 				const isMod = el.type === "module";
 
-				// TODO: Refactor the params system
 				const params = url.searchParams;
 
 				params.getAll("isMod").forEach(v => {
@@ -52,7 +51,7 @@ $aero.rewrite = async (el, attr) => {
 					params.set("integrity", el.integrity);
 				}
 
-				$aero.set(el, "src", $aero.rewriteHtmlSrc(url.href));
+				$aero.set(el, "src", url.href);
 			} else $aero.set(el, "src", "");
 		}
 
@@ -61,7 +60,7 @@ $aero.rewrite = async (el, attr) => {
 			!el.classList.contains($aero.config.ignoreClass) &&
 			typeof el.innerHTML === "string" &&
 			el.innerHTML !== "" &&
-			// Ensure the script has a js type
+			// Ensure the script has a JS type
 			(el.type === "" ||
 				el.type === "text/javascript" ||
 				el.type === "application/javascript")
@@ -88,8 +87,9 @@ $aero.rewrite = async (el, attr) => {
 				$aero.rewriteHtmlSrc(el.getAttribute("xlink:href").href)
 			);
 	} else if (tag === "a" || tag === "area" || tag === "base") {
-		if (el.href) $aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
-		else if (el.hasAttribute("xlink:href"))
+		if (el.href) {
+			$aero.set(el, "href", $aero.rewriteHtmlSrc(el.href));
+		} else if (el.hasAttribute("xlink:href"))
 			$aero.set(
 				el,
 				"xlink:href",
@@ -104,21 +104,16 @@ $aero.rewrite = async (el, attr) => {
 	)
 		$aero.set(el, "action", $aero.rewriteHtmlSrc(el.action));
 	else if (tag === "iframe") {
-		if (el.csp) $aero.set(el, "csp", rewriteCSP(el.csp));
+		// TODO: Enforce the CSP instead of deleting it
+		if (el.csp) $aero.set(el, "csp", "");
 
 		if (el.src && allow("frame-src")) {
-			// Embed the origin the origin as an attribute, so that the frame can reference it to do its checks
+			// Embed the origin as an attribute, so that the frame can reference it to do its checks
 			el.parentProxyOrigin = $aero.proxyLocation.origin;
 			$aero.set(el, "src");
 
 			// Inject aero imports if applicable then rewrite the Src
-			$aero.set(
-				el,
-				"src",
-				$aero.rewriteHtmlSrc(
-					el.src.replace(/data:text\/html/g, "$&" + $aero.init)
-				)
-			);
+			$aero.set(el, "src", el.src);
 		}
 		if (el.srcdoc)
 			// Inject aero imports
@@ -128,15 +123,15 @@ $aero.rewrite = async (el, attr) => {
 		const sec = {};
 		if (el.csp) {
 			sec.csp = el.csp;
-			$aero.set(el, "csp", "", false);
+			$aero.set(el, "csp", "");
 		}
 		if (el.allow) {
 			sec.perms = el.allow;
-			$aero.set(el, "allow", "", false);
+			$aero.set(el, "allow", "");
 		}
 		if (el.allowpaymentrequest) {
 			sec.pr = el.allowpaymentrequest;
-			$aero.set(el, "allowpaymentrequest", "", false);
+			$aero.set(el, "allowpaymentrequest", "");
 		}
 		el.addEventListener(
 			"load",
@@ -154,7 +149,8 @@ $aero.rewrite = async (el, attr) => {
 	else if (tag === "meta") {
 		switch (el.httpEquiv) {
 			case "content-security-policy":
-				$aero.set(el, "content", $aero.rewriteCSP(el.content));
+				// TODO: Enforce the CSP instead of deleting it
+				$aero.set(el, "content", "");
 				break;
 			case "refresh":
 				$aero.set(

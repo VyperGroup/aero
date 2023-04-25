@@ -113,6 +113,8 @@
 			attr === onload
 		);
 	}
+	/*
+	// TODO: Fix
 	Element = new Proxy(Element, {
 		get(target, prop) {
 			if (invalid(target, prop)) prop = `_${prop}`;
@@ -125,4 +127,5 @@
 			return Reflect.set(...arguments);
 		},
 	});
+	*/
 }

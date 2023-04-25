@@ -1,4 +1,4 @@
-import { debug } from "../../config.js";
+import { sortInterval, flags, debug } from "../../config.js";
 
 import headersToObject from "./headersToObject.js";
 
@@ -31,6 +31,15 @@ export default class {
 		}
 
 		let resp;
+
+		if (flags.sortBackends) {
+			/*
+			TODO: Sort backends like this; this will require new backend code
+				(By Importance)
+				1. Region
+				2. # of active connections 
+			*/
+		}
 
 		for (const backend of this.backends)
 			try {

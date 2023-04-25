@@ -1,5 +1,13 @@
 if ($aero.config.nestedWorkers)
 	if ("serviceWorker" in navigator) {
+		// FIXME: Somehow unregisters all service workers, and then reloads on https://radon.games
+		// Patch
+		Object.defineProperty(navigator, "serviceWorker", {
+			get() {
+				return undefined;
+			},
+		});
+		/*
 		// This api is only exposed in secure contexts
 		navigator.serviceWorker.register = new Proxy(
 			navigator.serviceWorker.register,
@@ -42,4 +50,5 @@ if ($aero.config.nestedWorkers)
 				apply: async target => rewriteReg(await target()),
 			}
 		);
+		*/
 	}
