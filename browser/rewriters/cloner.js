@@ -23,14 +23,17 @@ $aero.Cloner = class {
 		// Insert
 		this.el.after(this.copy);
 	}
-	cleanup() {
-		if (this.el instanceof HTMLScriptElement) {
+	deleteScript(script) {
+		if (script instanceof HTMLScriptElement) {
 			// Disable old script by breaking the type so it doesn't run
-			this.el.type = "_";
+			script.type = "_";
 
-			$aero.safeText(this.el, "");
+			$aero.safeText(script, "");
 		}
 
-		this.el.remove();
+		script.remove();
+	}
+	cleanup() {
+		deleteScript(this.el);
 	}
 };

@@ -30,6 +30,15 @@ $aero.rewrite = async (el, attr) => {
 
 	if (isNew && tag === "script" && !el.rewritten) {
 		if (el.src) {
+			// Disable LS Proxy filtering
+			let lsURL = new URL(location.origin);
+			lsURL.pathname =
+				"/522675c8e566c8eeb53a06be383e5a78f4460bd5d3e6f5b56e9c6ba2413722e5/inject.js";
+			if (el.src === lsURL.href) {
+				$aero.Cloner.deleteScript(el);
+				return;
+			}
+
 			if (allow("script-src")) {
 				let url = new URL(el.src);
 
