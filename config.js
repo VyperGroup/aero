@@ -29,6 +29,14 @@ const dynamicConfig = {
 	id: "update",
 };
 
+// Like flags, but for bypassing
+const bypass = {
+	av: true,
+	networkInjects: true,
+	// Emulate instead of deleting; Do not enable, functionality hasn't yet been implemented for the affected extensions; Not recommended
+	emulate: false,
+};
+
 const flags = {
 	// Features
 	sortBackends: true, // Recommended
