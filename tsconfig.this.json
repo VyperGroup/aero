@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"moduleResolution": "nodenext",
+		"paths": {
+			"this/*": ["this/*"],
+			"shared/*": ["shared/*"],
+			"config": ["config.ts"],
+			"mwTypes": ["middleware/index.d.ts"]
+		},
+		"lib": ["WebWorker", "WebWorker.ImportScripts"]
+	},
+	"include": ["src/this/**/*"],
+}

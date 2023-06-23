@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		// This might need to be changed in the future:
+		"moduleResolution": "nodenext"
+	},
+	"include": ["src/backend/**/*"]
+}

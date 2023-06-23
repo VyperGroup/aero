@@ -1,2 +1,13 @@
-config.js
-this/misc/bare/BareClient.js
+# NPM
+package-lock.json
+node_modules/
+
+# Webpack
+dist/
+
+# Middleware
+src/middleware/*
+
+# Unreleased features (Not finished) 👀
+backend/
+tests/

@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"moduleResolution": "nodenext",
+		"paths": {
+			"shared/*": ["shared/*"],
+			"config": ["config.ts"]
+		},
+		"lib": ["DOM", "DOM.Iterable"]
+	},
+	"include": ["src/shared/**/*", "./config.ts"]
+}

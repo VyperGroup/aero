@@ -1,3 +1,7 @@
+# NOTICE
+Don't follow any of this advice; it is very out of date
+TODO: Include instructions for V2
+
 # How to use aero
 
 1. Ensure your backend serves an [aero](https://github.com/ProxyHaven/aero-backends) _(recommended)_ or a [TompHTTP Compatible](https://github.com/tomphttp) Backend

@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		// For Webpack
+		"lib": ["ESNext", "DOM", "WebWorker"],
+		"types": ["node", "webpack-env"],
+		"target": "ESNext",
+		"strict": true,
+		"noImplicitAny": false,
+		"forceConsistentCasingInFileNames": true,
+		"downlevelIteration": true,
+		"sourceMap": true,
+		"baseUrl": "src"
+	},
+	"include": [],
+	"references": [
+		/*{ "path": "tsconfig.backend.json" },*/
+		{ "path": "tsconfig.this.json" },
+		{ "path": "tsconfig.browser.json" },
+		{ "path": "tsconfig.shared.json" },
+		{ "path": "src/middleware/Userscripts/tsconfig.json" }
+	]
+}

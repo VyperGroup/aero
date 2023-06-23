@@ -16,7 +16,6 @@ One of our strengths is Extensibility. This is done by making aero readable and 
 
 ### Request Interception
 
-REWRITE THIS WELL
 It does this by intercepting requests through a service worker, where the request is routed to the while also injecting important scripts. This prevents the need to hook into code that previously needed to be rewritten to redirect requests saving time and resources. All of its conceptual methods are optimal.
 
 ### HTML Interception

@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"moduleResolution": "nodenext",
+		"paths": {
+			"browser/*": ["browser/*"],
+			"shared/*": ["shared/*"],
+			"this/*": ["this/*"],
+			"config": ["config.ts"]
+		},
+		"lib": ["WebWorker", "DOM", "DOM.Iterable"]
+	}
+}
