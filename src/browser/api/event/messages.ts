@@ -94,4 +94,5 @@ setHandler("storage");
 setHandler("hashchange");
 
 // Reciever concealer
-proxy("addEventListener", new Map(1, eventInterceptor);
+// @ts-ignore
+proxy("addEventListener", new Map(1, eventInterceptor));

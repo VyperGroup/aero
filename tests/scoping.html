@@ -30,6 +30,13 @@ function overwriteCheck(loc) {
         fail();
 }
 
+/*
+// You can't simply ignore everything in a function's parameters
+(({href} = location) => {
+
+})();
+*/
+
 // Default parameters
 ((${loc} = ${char}) => overwriteCheck(${loc}))(); 
 // Arguments
@@ -46,7 +53,7 @@ function overwriteCheck(loc) {
 	function appendScript(script) {
 		const el = document.createElement("script");
 
-		console.log(script);
+		console.info(script);
 
 		el.text = script;
 
@@ -54,14 +61,14 @@ function overwriteCheck(loc) {
 	}
 </script>
 <script type="module">
-	const script = genTest("location", "~");
+	const test = genTest("location", "~");
 
-	import scope from "../shared/scope.js";
+	import script from "shared/script.js";
 
 	console.group("JS scoping");
 
 	{
-		const rewrite = time(scope, script);
+		const rewrite = time(script, test);
 
 		appendScript(rewrite);
 	}

@@ -9,8 +9,8 @@ It is highly recommended that you install [aero middleware](https://github.com/P
 
 ## Read the docs!
 
-You can find the documentation in /docs
-If you are interested in contributing, I recommend installing [https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree]; aero's issues and ideas are documented by TODOs. It should be easy to determine the future direction of the project. You could always [email me](mailto:inbox@ryanwilson.space) with questions.
+You can find the documentation in /docs. If you are not a proxy site dev or a contributor, you don't need to read the docs under "For devs only"
+You could always [email me](mailto:inbox@ryanwilson.space) with questions. You will never be denied support
 
 ## Directories
 
@@ -26,7 +26,9 @@ If you are interested in contributing, I recommend installing [https://marketpla
 
 # Notable Contributions
 
--   [Divide](https://github.com/e9x) for [TompHTTP](https://github.com/tomphttp/bare-server-node)
+-   [Divide](https://github.com/e9x) for standardizing interception proxies with [TompHTTP](https://github.com/tomphttp/bare-server-node)
 
 Don't be afraid to help 😄
+Nobody is unqualified to work on aero
+Don't worry, you will figure out how aero works with our amazing dev docs. Remember if you have ideas for how to improve the docs, please suggest them
 I appreciate all of you 💖

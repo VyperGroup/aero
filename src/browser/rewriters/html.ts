@@ -12,7 +12,7 @@ import { proxyLocation } from "browser/misc/proxyLocation";
 
 import block from "browser/misc/policy";
 
-function set(el: HTMLElement, attr: string, val = "", backup = true): void {
+function set(el: HTMLElement, attr: string, val = "", backup = true) {
 	// Backup element (for element hooks)
 	if (backup) el.setAttribute(`_${attr}`, el.getAttribute(attr));
 
@@ -150,7 +150,7 @@ export default (el: HTMLElement, attr?: String) => {
 		}
 		if (el.srcdoc)
 			// Inject aero imports
-			set(el, "srcdoc", globalThis.$aero.init + el.srcdoc);
+			set(el, "srcdoc", $aero.init + el.srcdoc);
 
 		// Emulate CSP
 		// Delete

@@ -2,7 +2,7 @@
 
 import { flags } from "config";
 
-import proxy from "shared/autoproxy/autoproxy"
+import proxy from "shared/autoProxy/autoProxy";
 
 import afterPrefix from "shared/afterPrefix";
 
@@ -24,8 +24,7 @@ if (
 			// We may delete some entries, so we will update the index with the new index
 			let i = 0;
 
-			/** @const {string[]} */
-			const newEntries = [];
+			const newEntries: any[] = [];
 
 			for (let entry of entries) {
 				const newEntry = entry;
@@ -36,10 +35,7 @@ if (
 				});
 
 				try {
-					if (
-						new URL(newEntry.url).origin !==
-						proxyLocation().origin
-					)
+					if (new URL(newEntry.url).origin !== proxyLocation().origin)
 						// The site is not supposed to see this entry
 						continue;
 				} catch {
@@ -60,14 +56,17 @@ if (
 	if (navigation.transition)
 		navigation.transition.from = proxyLocation().href;
 
-	proxy("navigation.addEventListener", new Map().set(1, (_type, listener) => {
-		return event => {
-			if (event) {
-				if (event instanceof NavigationCurrentEntryChangeEvent)
-					event.from.url = afterPrefix(event.from.url);
+	proxy(
+		"navigation.addEventListener",
+		new Map().set(1, (_type, listener) => {
+			return event => {
+				if (event) {
+					if (event instanceof NavigationCurrentEntryChangeEvent)
+						event.from.url = afterPrefix(event.from.url);
 
-				listener(event);
-			} else listener();
-		};
-	}))
+					listener(event);
+				} else listener();
+			};
+		})
+	);
 }

@@ -27,7 +27,7 @@ module.exports = {
 		},
 		browser: {
 			import: `${config.src}browser/bundle.ts`,
-			dependOn: "config"
+			dependOn: "config",
 		},
 		sw: {
 			import: `${config.src}this/handle.ts`,
@@ -44,7 +44,7 @@ module.exports = {
 		rules: [
 			{
 				test: /\.ts?$/,
-				use: "ts-loader",
+				use: "esbuild-loader",
 				exclude: /node_modules/,
 			},
 		],

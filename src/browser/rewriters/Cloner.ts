@@ -30,7 +30,7 @@ export default class {
 		// Insert
 		this.el.after(this.copy);
 	}
-	static deleteScript(script: HTMLElement): void {
+	static deleteScript(script: HTMLElement) {
 		if (script instanceof HTMLScriptElement) {
 			// Disable old script by breaking the type so it doesn't run
 			script.type = "_";

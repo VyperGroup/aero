@@ -65,7 +65,7 @@ export default class extends Cache {
 	async #delete(): Promise<void> {
 		indexedDB.deleteDatabase(this.proxyHostname);
 	}
-	async #getSec(hostname: string): Promise<string> {
+	async #getSec(hostname: string): Promise<object> {
 		const req = indexedDB.open("sts", 1);
 
 		const db = new Promise(resolve => {

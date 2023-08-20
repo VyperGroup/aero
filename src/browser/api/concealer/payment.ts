@@ -1,9 +1,6 @@
 import { flags } from "config";
 
-import {
-	proxyConstruct,
-	proxyGetString,
-} from "shared/autoProxy/autoProxy";
+import { proxyConstruct, proxyGetString } from "shared/autoProxy/autoProxy";
 
 import rewriteSrc from "shared/src";
 

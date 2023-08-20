@@ -9,9 +9,8 @@
 		"forceConsistentCasingInFileNames": true,
 		"downlevelIteration": true,
 		"sourceMap": true,
-		"baseUrl": "src"
 	},
-	"include": [],
+	"include": ["types/*.d.ts"],
 	"references": [
 		/*{ "path": "tsconfig.backend.json" },*/
 		{ "path": "tsconfig.this.json" },

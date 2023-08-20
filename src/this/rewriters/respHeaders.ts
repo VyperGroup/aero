@@ -1,6 +1,7 @@
 import { prefix } from "config";
 
 import { rewriteSetCookie } from "shared/cookie";
+import { rewriteAuthServer } from "./auth";
 
 const ignoredHeaders = [
 	"cache-control",
@@ -38,7 +39,7 @@ export default (headers: object, proxyUrl: URL): HeadersInit => {
 	rewrittenHeaders["x-headers"] = JSON.stringify({ ...headers });
 
 	Object.keys(headers).forEach(key => {
-		function set(val: string): void {
+		function set(val: string) {
 			rewrittenHeaders[key] = val;
 		}
 
@@ -48,6 +49,7 @@ export default (headers: object, proxyUrl: URL): HeadersInit => {
 
 		if (key === "location") set(rewriteLocation(value));
 		else if (key === "set-cookie") set(rewriteSetCookie(value, proxyUrl));
+		else if (key === "www-authenticate") rewriteAuthServer(val, proxyUrl);
 		else set(value);
 	});
 

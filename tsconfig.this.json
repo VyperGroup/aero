@@ -1,14 +1,16 @@
 {
 	"compilerOptions": {
+		"target": "ESNext",
+		"lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
 		"composite": true,
 		"moduleResolution": "nodenext",
+		"baseUrl": "src",
 		"paths": {
 			"this/*": ["this/*"],
 			"shared/*": ["shared/*"],
-			"config": ["config.ts"],
+			"config": ["./config.ts"],
 			"mwTypes": ["middleware/index.d.ts"]
 		},
-		"lib": ["WebWorker", "WebWorker.ImportScripts"]
 	},
-	"include": ["src/this/**/*"],
+	"include": ["src/this/**/*.ts", "types/*.d.ts"]
 }

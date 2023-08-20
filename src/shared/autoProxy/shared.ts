@@ -1,3 +1,3 @@
-import { proxyString } from "./autoProxy"
+import { proxyString } from "./autoProxy";
 
 proxyString(BroadcastChannel);

@@ -16,7 +16,7 @@ if (flags.misc && "cookieStore" in window) {
 		apply(target, that, args) {
 			const [cookie] = args;
 
-			cookie.domain = globalThis.$location.domain;
+			cookie.domain = $location.domain;
 			cookie.path = upToProxyOrigin() + cookie.path;
 
 			args[0] = cookie;

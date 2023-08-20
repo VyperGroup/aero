@@ -2,7 +2,7 @@ import { prefix, flags } from "config";
 
 export default async (
 	clear: string[],
-	id: string,
+	client,
 	proxyUrl: URL
 ): Promise<void> => {
 	if (clear.includes("'*'") || clear.includes("'cache'"))
@@ -12,8 +12,6 @@ export default async (
 		(flags.misc && clear.includes("'*'")) ||
 		clear.includes("executionContexts")
 	) {
-		const client = await clients.get(id);
-
 		const clientOrigin = new URL(
 			client.url.replace(new RegExp(`^(${prefix})`, "g"), "")
 		).origin;

@@ -1,5 +1,5 @@
 // A safe astraction to get the actual config store that aero needs
-export default (dbName: string, func: Function): void => {
+export default (dbName: string, func: Function) => {
 	const req = indexedDB.open(dbName);
 
 	req.onsuccess = () => {

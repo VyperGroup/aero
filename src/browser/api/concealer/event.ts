@@ -1,3 +1,3 @@
-import { proxyConstructString} from "shared/autoProxy/autoProxy";
+import { proxyConstructString } from "shared/autoProxy/autoProxy";
 
 proxyConstructString("EventSource", [1]);

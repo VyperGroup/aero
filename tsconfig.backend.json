@@ -2,7 +2,8 @@
 	"compilerOptions": {
 		"composite": true,
 		// This might need to be changed in the future:
-		"moduleResolution": "nodenext"
+		"moduleResolution": "nodenext",
+		"baseUrl": "src",
 	},
-	"include": ["src/backend/**/*"]
+	"include": ["src/backend/**/*.ts", "types/*.d.ts"]
 }

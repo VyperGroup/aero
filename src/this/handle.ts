@@ -18,11 +18,11 @@ import escapeJS from "./misc/escapeJS";
 // Security
 // CORS Emulation
 import block from "./cors/test";
-import STS from "./cors/STS";
+//import STS from "./cors/STS";
 // Integrity check
 import integral from "./embeds/integral";
 // Cache Emulation
-import CacheManager from "./cors/CacheManager";
+//import CacheManager from "./cors/CacheManager";
 
 // Rewriters
 import rewriteReqHeaders from "./rewriters/reqHeaders";
@@ -39,7 +39,6 @@ let firstReq = true;
 // Not defined by TS
 declare var clients;
 
-
 /**
  * Handles the requests
  * @param - The event
@@ -55,8 +54,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Construct proxy fetch instance
 	const bare = new createBareClient(backends[0]);
 
+	// Init Middleware
 	if (firstReq) {
-		// Sandbox
+		// TODO: Sandbox
 		const fetch = bare.fetch;
 
 		const ctx = require.context(
@@ -73,14 +73,13 @@ async function handle(event: FetchEvent): Promise<Response> {
 	const params = reqUrl.searchParams;
 
 	// Don't rewrite requests for aero's bundles
-	if (reqUrl.pathname.startsWith(aeroPrefix)) {
+	if (reqUrl.pathname.startsWith(aeroPrefix))
 		// Cached to lower the paint time
 		return await fetch(req.url, {
 			headers: {
 				"cache-control": "private",
 			},
 		});
-	}
 
 	let isMod;
 	const isScript = req.destination === "script";
@@ -146,9 +145,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 		frame: string;
 		csp: string;
 	}
-
 	let sec: Sec;
 	if (flags.corsEmulation) {
+		/*
 		if (
 			// FIXME: Unknown error on many sites
 			proxyUrl.protocol === "http:"
@@ -166,6 +165,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 				return redir(redirUrl.href);
 			}
 		}
+		*/
 
 		sec = {
 			clear: reqHeaders["clear-site-data"]
@@ -181,10 +181,11 @@ async function handle(event: FetchEvent): Promise<Response> {
 			csp: reqHeaders["content-security-policy"],
 		};
 
-		if ("clear" in sec) await clear(sec.clear, event.clientId, proxyUrl);
+		if ("clear" in sec) await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
 	}
 
-	// Cache mode emulation
+	// FIXME: Cache mode emulation
+	/*
 	const cache = new CacheManager(reqHeaders);
 
 	if (cache.mode === "only-if-cached")
@@ -192,6 +193,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		return new Response("Can't find a cached response", {
 			status: 500,
 		});
+	*/
 
 	// TODO: Import bare type
 	let opts: BareFetchInit = {
@@ -206,38 +208,36 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	// Request Middleware
 	// mockReq is a proxified version of req
-	let mockReq: Request;
+	let mockReq = req;
 	const ctx = require.context("../middleware/", true, /html.(\.js|\.ts)$/);
-	ctx.keys().forEach(path => {
-		ctx(path).then((mod) => {
-			if (
-				!mod.match ||
-				(Array.isArray(mod.match)
-					? (): boolean => {
-							for (const match of mod.match)
-								if (matchWildcard(match, proxyUrl.href))
-									return true;
-							return false;
-					  }
-					: matchWildcard(mod.match, proxyUrl.href))
-			) {
-				// Sandbox
-				const fetch = bare.fetch;
+	for (const path of ctx.keys()) {
+		const mod = await ctx(path);
 
-				let ret = mod.handle({
-					req: new Request(proxyUrl.href, {
-						...opts,
-					}),
-					isHTML,
-					isiFrame,
-					isNavigate,
-				});
+		if (
+			!mod.match ||
+			(Array.isArray(mod.match)
+				? (): boolean => {
+						for (const match of mod.match)
+							if (matchWildcard(match, proxyUrl.href))
+								return true;
+						return false;
+				  }
+				: matchWildcard(mod.match, proxyUrl.href))
+		) {
+			// TODO: Replace fetch api with bare fetch for sandboxing
+			let ret = mod.handle({
+				req: new Request(proxyUrl.href, {
+					...opts,
+				}),
+				isHTML,
+				isiFrame,
+				isNavigate,
+			});
 
-				if (ret instanceof Request) mockReq = ret;
-				else if (ret instanceof Response) return ret;
-			}
-		});
-	});
+			if (ret instanceof Request) mockReq = ret;
+			else if (ret instanceof Response) return ret;
+		}
+	};
 
 	// Make the request to the proxy
 	const resp = await bare.fetch(new URL(mockReq.url).href, {
@@ -253,6 +253,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Rewrite the response headers
 	const respHeaders = headersToObject(resp.headers);
 
+	/*
 	const cacheAge = cache.getAge(
 		reqHeaders["cache-control"],
 		reqHeaders["expires"]
@@ -260,6 +261,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	const cachedResp = await cache.get(reqUrl, cacheAge);
 	if (cachedResp) return cachedResp;
+	*/
 
 	const rewrittenRespHeaders = rewriteRespHeaders(respHeaders, clientUrl);
 
@@ -427,7 +429,7 @@ ${body}
 		/resp.(\.js|\.ts)$/
 	);
 	ctxResp.keys().forEach(path => {
-		ctxResp(path).then(async (mod) => {
+		ctxResp(path).then(async mod => {
 			if (
 				!mod.match ||
 				(Array.isArray(mod.match)
@@ -439,8 +441,7 @@ ${body}
 					  }
 					: matchWildcard(mod.match, proxyUrl.href))
 			) {
-				// Sandbox
-				const fetch = bare.fetch;
+				// TODO: Replace fetch api with bare fetch for sandboxing
 
 				proxyResp = await mod.handle({
 					req: new Request(proxyUrl.href, {
@@ -451,12 +452,11 @@ ${body}
 					isNavigate,
 				});
 			}
-			if (mockReq instanceof Response) return mockReq;
 		});
 	});
 
 	// Cache the response
-	cache.set(reqUrl.href, proxyResp.clone(), proxyResp.headers.get("vary"));
+	// cache.set(reqUrl.href, proxyResp.clone(), proxyResp.headers.get("vary"));
 
 	// Return the response
 	return proxyResp;

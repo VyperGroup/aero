@@ -1,3 +1,6 @@
+declare var $aero;
+
+/*
 import { aeroPrefix } from "config";
 
 import afterPrefix from "shared/afterPrefix";
@@ -7,7 +10,7 @@ There are 3 ways to detect proxies using the Performance API
 Using entry.name to expose the url 
 If the site was rewritten or the headers were modified, the size would be different than what is intended. You can think of this as a form of hash checking
 If you make a request to two different proxy origins on the site that are both cached and one has the Clear-Site-Data clearing both proxy origins, the proxy can be detected
-*/
+*\/
 
 // Private scope
 {
@@ -41,16 +44,18 @@ If you make a request to two different proxy origins on the site that are both c
 
 	performance.getEntries = new Proxy(performance.getEntries, {
 		apply(target, that, args) {
-			let entries: PerformanceEntryList = Reflect.apply(target, that, args);
+			let entries: PerformanceEntryList = Reflect.apply(
+				target,
+				that,
+				args
+			);
 
 			return (
 				entries
 					// Hide aero's injections
 					.filter(
 						entry =>
-							!entry.name.startsWith(
-								location.origin + aeroPrefix
-							)
+							!entry.name.startsWith(location.origin + aeroPrefix)
 					)
 					.map(async entry => {
 						if (entry.name) {
@@ -113,3 +118,4 @@ If you make a request to two different proxy origins on the site that are both c
 		},
 	});
 }
+*/

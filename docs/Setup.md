@@ -1,14 +1,21 @@
-# NOTICE
-Don't follow any of this advice; it is very out of date
-TODO: Include instructions for V2
-
 # How to use aero
 
-1. Ensure your backend serves an [aero](https://github.com/ProxyHaven/aero-backends) _(recommended)_ or a [TompHTTP Compatible](https://github.com/tomphttp) Backend
-    > If you are using bare, run bare.sh
-2. Ensure you included aero (this repo itself) into your site
+## *Coming soon, you will be able to add aero to your proxy automatically with aero-cli*
+
+## Aero is API-compatible with UV
+
+Alternatively instead of following these steps, you may simply replace UV's files with aero. **If you know how to setup UV, you know how to setup Aero and you don't need these instructions**
+
+## Manual
+
+### Foreword
+
+Make sure your proxy site supports HTTP (unsecure), if you are seeking 100% site support. Eventually with the advent of HTTP Emulation you won't need to do this.
+
+### Procedures
+1. Ensure your backend serves a [TompHTTP-compatible backend](https://github.com/tomphttp) 
+2. Build aero with `npm run build` or GH Actions *soon*, and serve the builds as aero/
 3. Create a service worker like [this](https://github.com/ProxyHaven/aero-site/blob/main/sw.js) in the static topmost directory
-    > If you already have other deployments of sw proxies and they are classic rather than module, register your sw as a module script, and replace importScripts(...) to import ...;
 4. Register the service worker in a script on your main page (not on your backend) like this
    _This example uses our [sdk](https://github.com/ProxyHaven/aero-sdk); allowing you to safely manage deployments of multiple proxies, and supports dynamic config updates_
 

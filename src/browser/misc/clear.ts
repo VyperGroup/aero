@@ -1,3 +1,5 @@
+declare var $aero;
+
 import { flags } from "config";
 
 import { upToProxyOrigin } from "./proxyLocation";
@@ -14,8 +16,8 @@ if (flags.nonstandard)
 
 // Private scope
 {
-	if (globalThis.$aero.sec.clear) {
-		const clear = JSON.parse(globalThis.$aero.sec.clear);
+	if ($aero.sec.clear) {
+		const clear = JSON.parse($aero.sec.clear);
 
 		const all = clear.includes("'*'");
 
@@ -42,14 +44,14 @@ if (flags.nonstandard)
 		// Storage
 		if (all || clear.includes("'storage'")) {
 			// iDB
-			// @ts-ignore: This is a TS Bug; the interface is not defined properly 
-			indexedDB.databases().then(({ name } ) => {	
+			// @ts-ignore: This is a TS Bug; the interface is not defined properly
+			indexedDB.databases().then(({ name }) => {
 				if (name.startsWith(storageNomenclature))
 					indexedDB.deleteDatabase(name);
 			});
 
 			// Storage
-			function clearStore(name: string): void {
+			function clearStore(name: string) {
 				if (name in window) {
 					const storage = window[name];
 
@@ -74,7 +76,10 @@ if (flags.nonstandard)
 								for (let i = 0; i < data.rows.length; i++) {
 									const tableName = data.rows.item(i).name;
 
-									if (tableName !== "__WebKitDatabaseInfoTable__")
+									if (
+										tableName !==
+										"__WebKitDatabaseInfoTable__"
+									)
 										tx.executeSql(
 											`DELETE FROM ${tableName}`
 										);

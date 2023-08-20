@@ -6,7 +6,7 @@ import dynamic from "./dynamic";
 // Extensions
 import recorder from "./recorder";
 
-export default (): void => {
+export default () => {
 	nestedSW();
 	dynamic();
 	recorder();

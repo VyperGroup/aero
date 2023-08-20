@@ -4,7 +4,7 @@ import { proxyLocation } from "browser/misc/proxyLocation";
 
 // Gets the sources in the CSP with directive
 function cspSrc(dir: string): string[] {
-	const [sources] = globalThis.$aero.sec.csp.match(
+	const [sources] = $aero.sec.csp.match(
 		new RegExp(`${dir} ([^;]*)`),
 		"g"
 	);

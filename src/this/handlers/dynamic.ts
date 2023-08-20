@@ -5,7 +5,7 @@ import getStore from "this/dynamic/getStore";
 const { dbName, id } = dynamicConfig;
 
 // For dynamic config updates
-export default (): void => {
+export default () => {
 	if (flags.dynamicUpdates)
 		getStore(dbName, store => {
 			self.addEventListener("message", event => {

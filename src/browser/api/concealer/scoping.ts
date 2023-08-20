@@ -1,10 +1,12 @@
+declare var $aero;
+
 import rewriteScript from "shared/script";
 
 // Scope Checking
-globalThis.$aero.check = val => (val === location ? globalThis.$location : val);
+$aero.check = val => (val === location ? $location : val);
 
 // Evals
-globalThis.$aero.eval = new Proxy(eval, {
+$aero.eval = new Proxy(eval, {
 	apply(target, that, args) {
 		args[0] = rewriteScript(args[0]);
 
@@ -48,10 +50,10 @@ Reflect.get = new Proxy(Reflect.get, {
 		const [theTarget, theProp] = args;
 
 		if (theTarget instanceof Window && theProp === "location")
-			return globalThis.$location;
+			return $location;
 		if (theTarget instanceof Document)
-			if (theProp === "location") return globalThis.$location;
-		if (theTarget instanceof Location) return globalThis.$location[theProp];
+			if (theProp === "location") return $location;
+		if (theTarget instanceof Location) return $location[theProp];
 		return Reflect.apply(target, that, args);
 	},
 });
@@ -60,7 +62,7 @@ Reflect.set = new Proxy(Reflect.set, {
 		const [theTarget, prop, value] = args;
 
 		if (theTarget instanceof Location)
-			return (globalThis.$location[prop] = value);
+			return ($location[prop] = value);
 		return Reflect.apply(target, that, args);
 	},
 });
@@ -71,7 +73,7 @@ Object.getOwnPropertyDescriptor = new Proxy(Object.getOwnPropertyDescriptor, {
 		let [obj, prop] = args;
 
 		if (obj === location || (obj === window && prop === "location"))
-			obj = globalThis.$location;
+			obj = $location;
 
 		args[0] = obj;
 
@@ -85,4 +87,4 @@ window = new Proxy(window, {
 		return key !== "$aero" && Reflect.has(target, key);
 	},
 });
-z
+z;

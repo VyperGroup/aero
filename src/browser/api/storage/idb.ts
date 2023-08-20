@@ -1,3 +1,5 @@
+import { prefix } from "config";
+
 import proxy from "shared/autoProxy/autoProxy";
 
 import { storageNomenclature } from "browser/misc/storage";
@@ -7,9 +9,9 @@ indexedDB.deleteDatabase = new Proxy(
 	indexedDB.deleteDatabase,
 	storageNomenclature
 );
-proxy("indexedDB.databases", null, dbs =>
+proxy("indexedDB.databases", undefined, dbs =>
 	dbs.map(db => {
-		if (typeof db === "error") return db;
+		if (db instanceof Error) return db;
 
 		db.name = prefix + db.name;
 

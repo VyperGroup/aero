@@ -1,3 +1,5 @@
+declare var $aero;
+
 /*
 import rewriteSrc from "shared/src";
 
@@ -19,7 +21,7 @@ Navigator.prototype.sendBeacon = new Proxy(Navigator.prototype.sendBeacon, {
 		apply(target, that, args) {
 			const [scheme, url] = args;
 
-			args[0] = globalThis.$aero.proto.set(scheme);
+			args[0] = $aero.proto.set(scheme);
 			args[1] = rewriteSrc(url, proxyLocation().href);
 
 			return Reflect.apply(target, that, args);

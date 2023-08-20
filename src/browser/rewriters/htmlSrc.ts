@@ -12,7 +12,7 @@ import { proxyLocation } from "browser/misc/proxyLocation";
  * @param - If its to rewrite an iFrame src
  */
 export default (src: string, isIFrame?: boolean): string => {
-	const url = globalThis.$aero.proto.get(
+	const url = $aero.proto.get(
 		src.replace(new RegExp(`^(${location.origin})`, "g"), "")
 	);
 
@@ -28,11 +28,11 @@ export default (src: string, isIFrame?: boolean): string => {
 					exp,
 					"$&" +
 						encodeURIComponent(
-							globalThis.$aero.init + decodeURIComponent(url)
+							$aero.init + decodeURIComponent(url)
 						)
 				);
 			if (matches.length === 1)
-				return "$&" + btoa(globalThis.$aero.init + atob(url));
+				return "$&" + btoa($aero.init + atob(url));
 		}
 		return url;
 	}

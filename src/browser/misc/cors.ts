@@ -1,7 +1,7 @@
-globalThis.$aero.sec.csp = globalThis.$aero.sec.headers.csp;
-if (globalThis.$aero.sec.clear)
-	globalThis.$aero.sec.clear = JSON.parse(
-		`[${globalThis.$aero.sec.headers.clear}]`
+$aero.sec.csp = $aero.sec.headers.csp;
+if ($aero.sec.clear)
+	$aero.sec.clear = JSON.parse(
+		`[${$aero.sec.headers.clear}]`
 	);
 // TODO: Parse and use in perms.ts
-globalThis.$aero.sec.perms = globalThis.$aero.sec.perms.split(";");
+$aero.sec.perms = $aero.sec.perms.split(";");

@@ -1,0 +1,56 @@
+{
+	"name": "aero",
+	"version": "1.0.0",
+	"description": "THE interception proxy",
+	"main": "src/this/handle.ts",
+	"directories": {
+		"doc": "docs",
+		"test": "tests"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "webpack --stats-error-details"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ProxyHaven/aero.git"
+	},
+	"keywords": [
+		"Proxy",
+		"Archiver",
+		"Unblock",
+		"Interception"
+	],
+	"author": "Ryan Wilson",
+	"license": "AGPL-3.0-or-later",
+	"bugs": {
+		"url": "https://github.com/ProxyHaven/aero/issues"
+	},
+	"homepage": "https://github.com/ProxyHaven/aero#readme",
+	"devDependencies": {
+		"@types/chrome": "^0.0.237",
+		"@types/firefox-webext-browser": "^111.0.1",
+		"@types/node": "^20.2.5",
+		"@types/serviceworker": "^0.0.67",
+		"@types/webpack-env": "^1.18.1",
+		"ts-loader": "^9.4.3",
+		"typescript": "^5.0.4",
+		"webpack": "^5.4.0",
+		"webpack-cli": "^4.2.0"
+	},
+	"dependencies": {
+		"@adguard/tsurlfilter": "^2.0.6",
+		"@tomphttp/bare-client": "^1.1.2-beta.3",
+		"@types/tampermonkey": "^4.0.10",
+		"@zip.js/zip.js": "^2.7.15",
+		"cld3-asm": "^3.1.1",
+		"esbuild-loader": "^4.0.1",
+		"localforage": "^1.10.0",
+		"prettier": "^2.8.8",
+		"string-replace-async": "^3.0.2",
+		"ts-node": "^10.9.1",
+		"tsconfig-paths-webpack-plugin": "^4.0.1",
+		"userscript-parser": "^2.2.2",
+		"webpack-bundle-analyzer": "^4.9.0"
+	}
+}
