@@ -27,9 +27,7 @@ export default (src: string, isIFrame?: boolean): string => {
 				return matches[0].replace(
 					exp,
 					"$&" +
-						encodeURIComponent(
-							$aero.init + decodeURIComponent(url)
-						)
+						encodeURIComponent($aero.init + decodeURIComponent(url))
 				);
 			if (matches.length === 1)
 				return "$&" + btoa($aero.init + atob(url));

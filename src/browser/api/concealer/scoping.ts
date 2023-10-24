@@ -61,8 +61,7 @@ Reflect.set = new Proxy(Reflect.set, {
 	apply(target, that, args) {
 		const [theTarget, prop, value] = args;
 
-		if (theTarget instanceof Location)
-			return ($location[prop] = value);
+		if (theTarget instanceof Location) return ($location[prop] = value);
 		return Reflect.apply(target, that, args);
 	},
 });

@@ -22,10 +22,7 @@ function proxy(
 			},
 		});
 }
-function proxyConstruct(
-	api: string,
-	mapRewriteArgs: Map<number, Function>
-) {
+function proxyConstruct(api: string, mapRewriteArgs: Map<number, Function>) {
 	if (api in window)
 		window[api] = new Proxy(window[api], {
 			construct(target, args) {
@@ -41,10 +38,12 @@ function proxyGet(api: string, mapReplaceProps: Map<string, Function>) {
 	if (api in window)
 		window[api] = new Proxy(window[api], {
 			get(target, theProp) {
-				if (typeof theProp === "string" && mapReplaceProps.has(theProp)) {
+				if (
+					typeof theProp === "string" &&
+					mapReplaceProps.has(theProp)
+				) {
 					const handler = mapReplaceProps.get(theProp);
-					if (handler)
-						return handler(theProp);
+					if (handler) return handler(theProp);
 				}
 
 				return Reflect.get(target, theProp);

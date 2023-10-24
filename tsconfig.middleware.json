@@ -10,6 +10,6 @@
 			"shared/*": ["shared/*"],
 			"this/*": ["this/*"],
 			"config": ["config.ts"]
-		},
+		}
 	}
 }

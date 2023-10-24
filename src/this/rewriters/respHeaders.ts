@@ -49,7 +49,7 @@ export default (headers: object, proxyUrl: URL): HeadersInit => {
 
 		if (key === "location") set(rewriteLocation(value));
 		else if (key === "set-cookie") set(rewriteSetCookie(value, proxyUrl));
-		else if (key === "www-authenticate") rewriteAuthServer(val, proxyUrl);
+		//else if (key === "www-authenticate") rewriteAuthServer(val, proxyUrl);
 		else set(value);
 	});
 

@@ -9,7 +9,7 @@
 			"shared/*": ["shared/*"],
 			"browser/*": ["browser/*"],
 			"config": ["config.ts"]
-		},
+		}
 	},
 	"include": ["src/browser/**/*.ts", "types/*.d.ts"]
 }

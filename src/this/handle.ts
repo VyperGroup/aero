@@ -55,6 +55,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	const bare = new createBareClient(backends[0]);
 
 	// Init Middleware
+	/*
 	if (firstReq) {
 		// TODO: Sandbox
 		const fetch = bare.fetch;
@@ -67,6 +68,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		ctx.keys().forEach(path => ctx(path).then(mod => mod.handle(event)));
 		firstReq = false;
 	}
+	*/
 
 	const reqUrl = new URL(req.url);
 
@@ -181,7 +183,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 			csp: reqHeaders["content-security-policy"],
 		};
 
-		if ("clear" in sec) await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
+		if ("clear" in sec)
+			await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
 	}
 
 	// FIXME: Cache mode emulation
@@ -209,6 +212,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Request Middleware
 	// mockReq is a proxified version of req
 	let mockReq = req;
+	/*
 	const ctx = require.context("../middleware/", true, /html.(\.js|\.ts)$/);
 	for (const path of ctx.keys()) {
 		const mod = await ctx(path);
@@ -237,7 +241,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 			if (ret instanceof Request) mockReq = ret;
 			else if (ret instanceof Response) return ret;
 		}
-	};
+	}
+	*/
 
 	// Make the request to the proxy
 	const resp = await bare.fetch(new URL(mockReq.url).href, {

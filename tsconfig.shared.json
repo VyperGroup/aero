@@ -8,7 +8,7 @@
 		"paths": {
 			"shared/*": ["shared/*"],
 			"config": ["config.ts"]
-		},
+		}
 	},
 	"include": ["src/shared/**/*", "./config.ts"]
 }

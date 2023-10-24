@@ -8,7 +8,7 @@
 		"noImplicitAny": false,
 		"forceConsistentCasingInFileNames": true,
 		"downlevelIteration": true,
-		"sourceMap": true,
+		"sourceMap": true
 	},
 	"include": ["types/*.d.ts"],
 	"references": [

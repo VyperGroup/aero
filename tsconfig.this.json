@@ -10,7 +10,7 @@
 			"shared/*": ["shared/*"],
 			"config": ["./config.ts"],
 			"mwTypes": ["middleware/index.d.ts"]
-		},
+		}
 	},
 	"include": ["src/this/**/*.ts", "types/*.d.ts"]
 }

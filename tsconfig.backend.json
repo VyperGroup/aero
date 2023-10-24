@@ -3,7 +3,7 @@
 		"composite": true,
 		// This might need to be changed in the future:
 		"moduleResolution": "nodenext",
-		"baseUrl": "src",
+		"baseUrl": "src"
 	},
 	"include": ["src/backend/**/*.ts", "types/*.d.ts"]
 }
