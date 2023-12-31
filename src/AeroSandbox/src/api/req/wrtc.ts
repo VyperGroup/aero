@@ -1,6 +1,6 @@
 import { flags, wrtcBackends } from "$aero_config";
 
-import escape from "browser/misc/escape";
+import escape from "$aero_browser/misc/escape";
 
 if (flags.wrtc) {
 	RTCPeerConnection = new Proxy(RTCPeerConnection, {

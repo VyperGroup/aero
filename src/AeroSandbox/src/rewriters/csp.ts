@@ -1,4 +1,4 @@
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 // TODO: Use policy.js
 

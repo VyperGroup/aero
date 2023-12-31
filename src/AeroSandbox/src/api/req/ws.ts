@@ -2,8 +2,8 @@ import { backends, flags } from "$aero_config";
 
 import { BareClient } from "@tomphttp/bare-client";
 
-import rewriteSrc from "shared/src";
-import { proxyLocation } from "browser/misc/proxyLocation";
+import rewriteSrc from "$aero/shared/src";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 declare var WebTransport;
 

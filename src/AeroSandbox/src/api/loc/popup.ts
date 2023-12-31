@@ -1,8 +1,8 @@
-import proxy from "shared/autoProxy/autoProxy";
+import proxy from "$aero/shared/autoProxy/autoProxy";
 
-import rewriteSrc from "shared/src";
+import rewriteSrc from "$aero/shared/src";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 proxy(
 	"open",

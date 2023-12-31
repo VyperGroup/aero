@@ -2,11 +2,11 @@
 
 import { flags } from "$aero_config";
 
-import proxy from "shared/autoProxy/autoProxy";
+import proxy from "$aero/shared/autoProxy/autoProxy";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 declare var navigation, NavigationCurrentEntryChangeEvent;
 

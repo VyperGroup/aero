@@ -1,6 +1,6 @@
-import proxy from "shared/autoProxy/autoProxy";
+import proxy from "$aero/shared/autoProxy/autoProxy";
 
-import escape from "browser/misc/escape";
+import escape from "$aero_browser/misc/escape";
 
 // Private scope
 {

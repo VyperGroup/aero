@@ -1,8 +1,8 @@
 import { prefix, flags } from "$aero_config";
 
-import { proxyLocation, upToProxyOrigin } from "browser/misc/proxyLocation";
+import { proxyLocation, upToProxyOrigin } from "$aero_browser/misc/proxyLocation";
 
-import { rewriteGetCookie, rewriteSetCookie } from "shared/cookie";
+import { rewriteGetCookie, rewriteSetCookie } from "$aero/shared/hared/cookie";
 
 declare var cookieStore, CookieChangeEvent;
 

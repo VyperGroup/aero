@@ -1,6 +1,6 @@
-import proxy from "shared/autoProxy/autoProxy";
+import proxy from "$aero/shared/autoProxy/autoProxy";
 
-import isHtml from "shared/isHTML";
+import isHtml from "$aero/shared/isHTML";
 
 proxy(
 	"Blob",

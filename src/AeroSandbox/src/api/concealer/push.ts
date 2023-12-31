@@ -1,3 +1,3 @@
-import { proxyGetString } from "shared/autoProxy/autoProxy";
+import { proxyGetString } from "$aero/shared/autoProxy/autoProxy";
 
 proxyGetString("PushSubscription", ["endpoint"]);

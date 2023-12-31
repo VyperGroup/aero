@@ -5,12 +5,12 @@ import { prefix, aeroPrefix, flags, debug } from "$aero_config";
 
 // Utility
 import matchWildcard from "./util/match";
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 import getRequestUrl from "./util/getRequestUrl";
 import redir from "./util/redir";
 import headersToObject from "this/util/headersToObject";
 import clear from "./cors/clear";
-import isHTML from "shared/isHTML";
+import isHTML from "$aero/shared/isHTML";
 import getPassthroughParam from "./util/getPassthroughParam";
 import escapeJS from "./util/escapeJS";
 
@@ -28,7 +28,7 @@ import rewriteReqHeaders from "./rewriters/reqHeaders";
 import rewriteRespHeaders from "./rewriters/respHeaders";
 import rewriteCacheManifest from "./rewriters/cacheManifest";
 import rewriteManifest from "./rewriters/manifest";
-import rewriteScript from "shared/script";
+import rewriteScript from "$aero/shared/script";
 
 import init from "./handlers/init";
 init();

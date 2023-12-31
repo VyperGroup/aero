@@ -1,7 +1,7 @@
-import { rewriteGetCookie } from "shared/cookie";
+import { rewriteGetCookie } from "$aero/shared/cookie";
 import { rewriteAuthClient } from "./auth";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
 /**
  * Rewrites the response headers

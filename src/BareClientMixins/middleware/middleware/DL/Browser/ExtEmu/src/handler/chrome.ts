@@ -1,4 +1,4 @@
-import extStore from "shared/extStore";
+import extStore from "$aero/shared/extStore";
 
 // TODO: Use import paths
 import crxToZip from "../util/crxToZip";

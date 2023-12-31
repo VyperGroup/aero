@@ -1,6 +1,6 @@
 import prefix from "./prefix";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
 function proxy(
 	api: string,

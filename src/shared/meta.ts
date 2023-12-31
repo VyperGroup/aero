@@ -1,5 +1,5 @@
 export default `
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/hared/afterPrefix";
 
 import.meta.resolve = new Proxy(import.meta.resolve, {
 	apply(target, that, args) {

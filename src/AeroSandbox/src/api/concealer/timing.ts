@@ -3,7 +3,7 @@ import upToProxyLocation from "sandbox/src/util/upToProxyLocation";
 /*
 import { aeroPrefix } from "$aero_config";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
 /*
 There are 3 ways to detect proxies using the Performance API

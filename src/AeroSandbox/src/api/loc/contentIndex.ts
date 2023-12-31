@@ -1,8 +1,8 @@
-import rewriteSrc from "shared/src";
+import rewriteSrc from "$aero/shared/src";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 /*
 if ("serviceWorker" in navigator && "index" in ServiceWorkerRegistration) {

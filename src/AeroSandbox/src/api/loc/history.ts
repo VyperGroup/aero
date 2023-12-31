@@ -1,6 +1,6 @@
-import rewriteSrc from "shared/src";
+import rewriteSrc from "$aero/shared/src";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 const historyState = {
 	apply(target, that, args) {

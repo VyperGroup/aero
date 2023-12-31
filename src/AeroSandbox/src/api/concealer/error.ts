@@ -1,6 +1,6 @@
 import { aeroPrefix, flags } from "$aero_config";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
 /*
 Error emulation

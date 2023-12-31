@@ -1,9 +1,9 @@
 /*
 import { flags } from "$aero_config";
 
-import rewriteSrc from "shared/src";
+import rewriteSrc from "$aero/shared/hared/src";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 if (flags.nestedWorkers)
 	if ("serviceWorker" in navigator) {

@@ -1,10 +1,10 @@
 import { prefix } from "$aero_config";
 
-import rewriteSrc from "shared/src";
+import rewriteSrc from "$aero/shared/src";
 
-import scope from "shared/scope";
+import scope from "$aero/shared/scope";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 /**
  * Extends src rewriting for processed html urls

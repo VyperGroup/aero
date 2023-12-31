@@ -1,8 +1,8 @@
 import { flags } from "$aero_config";
 
-import { proxyConstruct } from "shared/autoProxy/autoProxy";
+import { proxyConstruct } from "$aero/shared/autoProxy/autoProxy";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
 // dom.d.ts doesn't support this yet
 declare var launchQueue;

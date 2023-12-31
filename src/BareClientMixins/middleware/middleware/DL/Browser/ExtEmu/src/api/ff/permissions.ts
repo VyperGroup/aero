@@ -1,4 +1,4 @@
-import extStore from "shared/extStore";
+import extStore from "$aero/shared/hared/extStore";
 
 const permStore = extStore("perms");
 

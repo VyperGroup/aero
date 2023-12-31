@@ -1,6 +1,6 @@
 import { prefix } from "$aero_config";
 
-import { rewriteSetCookie } from "shared/cookie";
+import { rewriteSetCookie } from "$aero/shared/cookie";
 import { rewriteAuthServer } from "./auth";
 
 const ignoredHeaders = [

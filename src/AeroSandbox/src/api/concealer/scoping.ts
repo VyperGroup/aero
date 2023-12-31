@@ -1,6 +1,6 @@
 declare var $aero;
 
-import rewriteScript from "shared/script";
+import rewriteScript from "$aero/shared/script";
 
 // Scope Checking
 $aero.check = val => (val === location ? $location : val);

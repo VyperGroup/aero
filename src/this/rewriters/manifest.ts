@@ -1,4 +1,4 @@
-import rewriteSrc from "shared/src";
+import rewriteSrc from "$aero/shared/hared/src";
 
 export default (body: string, proxyUrl: URL): string => {
 	const json = JSON.parse(body);

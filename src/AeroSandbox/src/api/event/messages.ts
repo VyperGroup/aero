@@ -1,10 +1,10 @@
-import proxy from "shared/autoProxy/autoProxy";
+import proxy from "$aero/shared/autoProxy/autoProxy";
 
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
-import { storageKey } from "browser/misc/storage";
+import { storageKey } from "$aero_browser/misc/storage";
 
 // Sender
 // FIXME: Breaks on Google

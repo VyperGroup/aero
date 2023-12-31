@@ -1,16 +1,16 @@
 import * as config from "$aero_config";
 
-import rewriteSrc from "shared/src";
+import rewriteSrc from "$aero/shared/hared/src";
 import rewriteHtmlSrc from "./htmlSrc";
-import scope from "shared/scope";
-import rewriteScript from "shared/script";
+import scope from "$aero/shared/hared/scope";
+import rewriteScript from "$aero/shared/hared/script";
 
 import checkCsp from "./csp";
 import Cloner from "./Cloner";
 
-import { proxyLocation } from "browser/misc/proxyLocation";
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
-import block from "browser/misc/policy";
+import block from "$aero_browser/misc/policy";
 
 function set(el: HTMLElement, attr: string, val = "", backup = true) {
 	// Backup element (for element hooks)

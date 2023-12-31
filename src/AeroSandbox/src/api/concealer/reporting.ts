@@ -1,5 +1,5 @@
 /*
-import afterPrefix from "shared/afterPrefix";
+import afterPrefix from "$aero/shared/afterPrefix";
 
 // Only supported on chromium
 if ("ReportingObserver" in window) {

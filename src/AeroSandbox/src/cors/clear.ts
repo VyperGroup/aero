@@ -2,7 +2,7 @@ import { flags } from "$aero_config";
 
 import { upToProxyLocation } from "util/upToProxyLocation";
 
-import { storageNomenclature, storagePrefix } from "browser/misc/storage";
+import { storageNomenclature, storagePrefix } from "$aero_browser/misc/storage";
 
 declare var openDatabase;
 

@@ -1,8 +1,8 @@
 import { prefix } from "$aero_config";
 
-import proxy from "shared/autoProxy/autoProxy";
+import proxy from "$aero/shared/autoProxy/autoProxy";
 
-import { storageNomenclature } from "browser/misc/storage";
+import { storageNomenclature } from "$aero_browser/misc/storage";
 
 indexedDB.open = new Proxy(indexedDB.open, storageNomenclature);
 indexedDB.deleteDatabase = new Proxy(
