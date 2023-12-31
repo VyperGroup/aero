@@ -1,4 +1,4 @@
-import { prefix, flags } from "config";
+import { prefix, flags } from "$aero_config";
 
 export default async (
 	clear: string[],

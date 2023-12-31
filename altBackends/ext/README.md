@@ -1,0 +1,1 @@
+This will be like an http proxy. You won't even know that the websites you are going to are being served by a proxy, but will inject web proxy scripts instead. This is harder to detect than an http proxy.

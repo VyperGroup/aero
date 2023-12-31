@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "types": ["tampermonkey"]
+  },
+  "include": ["src/apis.ts"]
+}

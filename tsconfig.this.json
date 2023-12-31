@@ -1,16 +1,16 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
-		"composite": true,
-		"moduleResolution": "nodenext",
-		"baseUrl": "src",
-		"paths": {
-			"this/*": ["this/*"],
-			"shared/*": ["shared/*"],
-			"config": ["./config.ts"],
-			"mwTypes": ["middleware/index.d.ts"]
-		}
-	},
-	"include": ["src/this/**/*.ts", "types/*.d.ts"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "nodenext",
+    "lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
+    "baseUrl": "src",
+    "composite": true,
+    "paths": {
+      "config": ["./config.ts"],
+      "this/*": ["this/*"],
+      "shared/*": ["shared/*"],
+      "mwTypes": ["middleware/index.d.ts"]
+    }
+  },
+  "include": ["src/this/**/*.ts", "types/*.d.ts"]
 }

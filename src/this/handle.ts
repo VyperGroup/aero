@@ -1,19 +1,18 @@
 // Dynamic Config
-import getConfig from "./dynamic/getConfig";
+import getConfig from "./embeds/dynamic/getConfig";
 // Standard Config
-import { prefix, aeroPrefix, flags, debug } from "config";
+import { prefix, aeroPrefix, flags, debug } from "$aero_config";
 
 // Utility
-import createBareClient, { BareFetchInit } from "@tomphttp/bare-client";
-import matchWildcard from "./misc/match";
+import matchWildcard from "./util/match";
 import afterPrefix from "shared/afterPrefix";
-import getRequestUrl from "./misc/getRequestUrl";
-import redir from "./misc/redir";
-import headersToObject from "this/misc/headersToObject";
+import getRequestUrl from "./util/getRequestUrl";
+import redir from "./util/redir";
+import headersToObject from "this/util/headersToObject";
 import clear from "./cors/clear";
 import isHTML from "shared/isHTML";
-import getPassthroughParam from "./misc/getPassthroughParam";
-import escapeJS from "./misc/escapeJS";
+import getPassthroughParam from "./util/getPassthroughParam";
+import escapeJS from "./util/escapeJS";
 
 // Security
 // CORS Emulation
@@ -34,9 +33,7 @@ import rewriteScript from "shared/script";
 import init from "./handlers/init";
 init();
 
-let firstReq = true;
-
-// Not defined by TS
+// Not defined by TS. I might have to install the service worker types.
 declare var clients;
 
 /**
@@ -44,6 +41,7 @@ declare var clients;
  * @param - The event
  * @returns  The proxified response
  */
+// TODO: Move all the proxy middleware code to a bare mixin
 async function handle(event: FetchEvent): Promise<Response> {
 	let req = event.request;
 
@@ -52,29 +50,15 @@ async function handle(event: FetchEvent): Promise<Response> {
 	const { backends /*, wsBackends, wrtcBackends*/ } = getConfig();
 
 	// Construct proxy fetch instance
+	// TODO: Try each backend until there is a success
 	const bare = new createBareClient(backends[0]);
-
-	// Init Middleware
-	/*
-	if (firstReq) {
-		// TODO: Sandbox
-		const fetch = bare.fetch;
-
-		const ctx = require.context(
-			"../middleware/",
-			true,
-			/init.(\.js|\.ts)$/
-		);
-		ctx.keys().forEach(path => ctx(path).then(mod => mod.handle(event)));
-		firstReq = false;
-	}
-	*/
 
 	const reqUrl = new URL(req.url);
 
 	const params = reqUrl.searchParams;
 
 	// Don't rewrite requests for aero's bundles
+	// TODO: Instead of this read the paths from the config instead of confining and marking aero code from the prefix. I will soon have the bundles be pointed out in the config just like other interception proxies do.
 	if (reqUrl.pathname.startsWith(aeroPrefix))
 		// Cached to lower the paint time
 		return await fetch(req.url, {
@@ -118,8 +102,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 			clientUrl,
 			reqUrl.pathname + reqUrl.search,
 			isHomepage,
-			isiFrame
-		)
+			isiFrame,
+		),
 	);
 
 	// Ensure the request isn't blocked by CORS
@@ -131,7 +115,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		console.debug(
 			req.destination == ""
 				? `${req.method} ${proxyUrl.href}`
-				: `${req.method} ${proxyUrl.href} (${req.destination})`
+				: `${req.method} ${proxyUrl.href} (${req.destination})`,
 		);
 
 	// Rewrite the request headers
@@ -139,15 +123,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	const isNavigate = isHomepage || isiFrame;
 
-	interface Sec {
-		clear: string[];
-		timing: string;
-		permsFrame: string;
-		perms: string;
-		frame: string;
-		csp: string;
-	}
-	let sec: Sec;
+	let sec: AeroTypes.Sec;
 	if (flags.corsEmulation) {
 		/*
 		if (
@@ -183,8 +159,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 			csp: reqHeaders["content-security-policy"],
 		};
 
-		if ("clear" in sec)
-			await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
+		//if ("clear" in sec)
+		//await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
 	}
 
 	// FIXME: Cache mode emulation
@@ -209,45 +185,10 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	// TODO: In both the request and response middleware pass a second argument called document proxy, which allows the dom to be modified on the fly on any window of choice. This will require the use of back to back messages and the clients api.
 
-	// Request Middleware
-	// mockReq is a proxified version of req
-	let mockReq = req;
-	/*
-	const ctx = require.context("../middleware/", true, /html.(\.js|\.ts)$/);
-	for (const path of ctx.keys()) {
-		const mod = await ctx(path);
-
-		if (
-			!mod.match ||
-			(Array.isArray(mod.match)
-				? (): boolean => {
-						for (const match of mod.match)
-							if (matchWildcard(match, proxyUrl.href))
-								return true;
-						return false;
-				  }
-				: matchWildcard(mod.match, proxyUrl.href))
-		) {
-			// TODO: Replace fetch api with bare fetch for sandboxing
-			let ret = mod.handle({
-				req: new Request(proxyUrl.href, {
-					...opts,
-				}),
-				isHTML,
-				isiFrame,
-				isNavigate,
-			});
-
-			if (ret instanceof Request) mockReq = ret;
-			else if (ret instanceof Response) return ret;
-		}
-	}
-	*/
-
 	// Make the request to the proxy
-	const resp = await bare.fetch(new URL(mockReq.url).href, {
-		method: mockReq.method,
-		headers: mockReq.headers,
+	const resp = await bare.fetch(new URL(req.url).href, {
+		method: req.method,
+		headers: req.headers,
 	});
 
 	if (resp instanceof Error)
@@ -282,11 +223,11 @@ async function handle(event: FetchEvent): Promise<Response> {
 	/** @type {string | ReadableStream} */
 	let body;
 	// Rewrite the body
+	// TODO: Pack these injected scripts with Webpack
 	if (isNavigate && html) {
 		body = await resp.text();
 
 		if (body !== "") {
-			// TODO: Pack with Webpack
 			let base = `
 <!DOCTYPE html>
 <head>
@@ -369,7 +310,7 @@ ${body}
 	const bak = decodeURIComponent(escape(atob(\`${escapeJS(script)}\`)));
 	${integral(isMod)}
 }			
-`
+`,
 			);
 		} else body = rewriteScript(script, isMod);
 	} else if (req.destination === "manifest") {
@@ -415,7 +356,7 @@ ${body}
 	// TODO: x-aero-size-transfer
 	if (typeof body === "string") {
 		rewriteRespHeaders["x-aero-size-body"] = new TextEncoder().encode(
-			body
+			body,
 		).length;
 		// TODO: x-aero-size-encbody
 	} else if (body instanceof ArrayBuffer) {
@@ -426,38 +367,6 @@ ${body}
 	let proxyResp = new Response(resp.status === 204 ? null : body, {
 		status: resp.status ?? 200,
 		headers: rewrittenRespHeaders,
-	});
-
-	const ctxResp = require.context(
-		"../middleware/",
-		true,
-		/resp.(\.js|\.ts)$/
-	);
-	ctxResp.keys().forEach(path => {
-		ctxResp(path).then(async mod => {
-			if (
-				!mod.match ||
-				(Array.isArray(mod.match)
-					? (): boolean => {
-							for (const match of mod.match)
-								if (matchWildcard(match, proxyUrl.href))
-									return true;
-							return false;
-					  }
-					: matchWildcard(mod.match, proxyUrl.href))
-			) {
-				// TODO: Replace fetch api with bare fetch for sandboxing
-
-				proxyResp = await mod.handle({
-					req: new Request(proxyUrl.href, {
-						...opts,
-					}),
-					isHTML,
-					isiFrame,
-					isNavigate,
-				});
-			}
-		});
 	});
 
 	// Cache the response

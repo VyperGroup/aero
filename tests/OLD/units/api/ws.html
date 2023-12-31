@@ -1,0 +1,31 @@
+<script type="module">
+  import $aero from "$aero.js";
+
+  const config = {
+    url: "wss://echo.websocket.org/?encoding=text",
+    msg: "ping",
+    timeout: 5,
+  };
+
+  document.write(`
+	<script src="../browser/api/req/ws.js"><\/script>
+	<script>
+		const msg = "${config.msg}";
+
+		const ws = new WebSocket("${url}");
+
+		ws.send(msg);
+
+		let passed = false;
+		ws.onmessage(msg => {
+			if (msg === msg) {
+				console.log("Passed");
+				passed = true;
+			}
+		});
+		setTimeout(() => console.log("Failed"), ${timeout} * 1000);
+
+		ws.close();
+	<\/script>
+		`);
+</script>

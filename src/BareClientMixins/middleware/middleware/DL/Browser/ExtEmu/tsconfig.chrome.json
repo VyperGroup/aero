@@ -1,0 +1,13 @@
+{
+  "target": "ESNext",
+  "lib": ["ESNext", "WebWorker", "DOM", "DOM.Iterable"],
+  "composite": true,
+  "moduleResolution": "nodenext",
+  "compilerOptions": {
+    "types": ["chrome", "firefox-webext-browser"],
+    "paths": {
+      "shared": ["./api/shared"]
+    }
+  },
+  "include": ["src/api/chrome/**/*.ts", "types/*.d.ts"]
+}

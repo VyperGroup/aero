@@ -5,7 +5,7 @@ import afterPrefix from "shared/afterPrefix";
 function proxy(
 	api: string,
 	mapRewriteArgs?: Map<number, Function>,
-	rewriteResult?: Function
+	rewriteResult?: Function,
 ) {
 	if (api in window)
 		window[api] = new Proxy(window[api], {
@@ -67,7 +67,7 @@ function proxyString(apiName: string, argNums?: number[], res?: boolean) {
 function proxyConstructString(
 	apiName: string,
 	argNums?: number[],
-	res?: boolean
+	res?: boolean,
 ) {
 	if (argNums) {
 		const map = new Map<number, (...args: string[]) => string>();

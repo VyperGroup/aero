@@ -1,4 +1,4 @@
-import { prefix } from "config";
+import { prefix } from "$aero_config";
 
 import { rewriteSetCookie } from "shared/cookie";
 import { rewriteAuthServer } from "./auth";
@@ -45,12 +45,12 @@ export default (headers: object, proxyUrl: URL): HeadersInit => {
 
 		if (ignoredHeaders.includes(key)) return;
 
-		const value = headers[key];
+		const val = headers[key];
 
-		if (key === "location") set(rewriteLocation(value));
-		else if (key === "set-cookie") set(rewriteSetCookie(value, proxyUrl));
-		//else if (key === "www-authenticate") rewriteAuthServer(val, proxyUrl);
-		else set(value);
+		if (key === "location") set(rewriteLocation(val));
+		else if (key === "set-cookie") set(rewriteSetCookie(val, proxyUrl));
+		else if (key === "www-authenticate") rewriteAuthServer(val, proxyUrl);
+		else set(val);
 	});
 
 	return rewrittenHeaders;

@@ -8,5 +8,5 @@ if (navigator.serviceWorker.controller)
 		new Map().set(0, data => {
 			ns: prefix;
 			data;
-		})
+		}),
 	);

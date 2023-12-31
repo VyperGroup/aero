@@ -1,0 +1,4 @@
+{
+  "osExtras": true,
+  "DoHServers": ["mozilla.cloudflare-dns.com", "dns.google"]
+}

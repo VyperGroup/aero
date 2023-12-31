@@ -1,0 +1,17 @@
+[ ] Move all of the middleware code into a modified BareClient
+
+[ ] Get rid of use of autoProxy
+
+[ ] Bring back aero gels and delete the old parser-based scoping
+
+[ ] Seperate the package.json for middleware. Then, cleanup the package.json.
+[ ] Provide auto-builds
+
+[ ] Implement url encoding
+[ ] Support Safari (Read Faq for more info)
+
+[ ] Fix HTTP and STS Emulation
+
+[ ] Support XML/XSLT documents
+
+[ ] Aero sandboxing library

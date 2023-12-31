@@ -1,14 +1,14 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"lib": ["ESNext", "WebWorker", "DOM", "DOM.Iterable"],
-		"composite": true,
-		"moduleResolution": "nodenext",
-		"baseUrl": "src",
-		"paths": {
-			"shared/*": ["shared/*"],
-			"config": ["config.ts"]
-		}
-	},
-	"include": ["src/shared/**/*", "./config.ts"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "nodenext",
+    "lib": ["ESNext", "WebWorker", "DOM", "DOM.Iterable"],
+    "baseUrl": "./src",
+    "composite": true,
+    "paths": {
+      "config": ["config.ts"],
+      "shared/*": ["shared/*"]
+    }
+  },
+  "include": ["src/shared/**/*", "./config.ts"]
 }

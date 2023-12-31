@@ -1,0 +1,4 @@
+(A) Icon saving
+(A) Add a special menu in about:preferences page for aero's settings like icon repos
+(B) Instead of referencing the Mercurial Repo directly have the user unpack their Omni.JA at the start; this could be changed in aero's settings
+(C) Allow the user to upload save data from Firefox

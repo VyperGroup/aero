@@ -1,5 +1,3 @@
-// Incomplete
-
 // www-authenticate
 function rewriteAuthServer(val, proxyUrl: URL) {
 	// TODO: Support

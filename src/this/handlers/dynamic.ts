@@ -1,6 +1,6 @@
-import { dynamicConfig, flags } from "config";
+import { dynamicConfig, flags } from "$aero_config";
 
-import getStore from "this/dynamic/getStore";
+import getStore from "this/embeds/dynamic/getStore";
 
 const { dbName, id } = dynamicConfig;
 

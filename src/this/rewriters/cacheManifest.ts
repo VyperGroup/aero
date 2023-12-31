@@ -1,4 +1,4 @@
-import { prefix } from "config";
+import { prefix } from "$aero_config";
 
 /**
  * This extends the relative url rewriting with the addition of wildcard support

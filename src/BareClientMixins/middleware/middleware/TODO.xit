@@ -1,0 +1,7 @@
+# TODOs
+
+[ ] Move index.d.ts to the Middleware-spec library
+[ ] WS Middleware
+[ ] Implement DOMProxy
+
+[ ] Compile these to bundles

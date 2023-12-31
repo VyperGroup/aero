@@ -1,13 +1,12 @@
 # NPM
-package-lock.json
-node_modules/
+/**/package-lock.json
+/**/node_modules/
+## For NixOS
+mutable_node_modules
 
 # Webpack
-dist/
+/**/dist/
 
-# Middleware
-src/middleware/*
+# Aero
 
 # Unreleased features (Not finished) 👀
-backend/
-tests/

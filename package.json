@@ -1,56 +1,111 @@
 {
-	"name": "aero",
-	"version": "1.0.0",
-	"description": "THE interception proxy",
-	"main": "src/this/handle.ts",
-	"directories": {
-		"doc": "docs",
-		"test": "tests"
-	},
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "webpack --stats-error-details"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/ProxyHaven/aero.git"
-	},
-	"keywords": [
-		"Proxy",
-		"Archiver",
-		"Unblock",
-		"Interception"
-	],
-	"author": "Ryan Wilson",
-	"license": "AGPL-3.0-or-later",
-	"bugs": {
-		"url": "https://github.com/ProxyHaven/aero/issues"
-	},
-	"homepage": "https://github.com/ProxyHaven/aero#readme",
-	"devDependencies": {
-		"@types/chrome": "^0.0.237",
-		"@types/firefox-webext-browser": "^111.0.1",
-		"@types/node": "^20.2.5",
-		"@types/serviceworker": "^0.0.67",
-		"@types/webpack-env": "^1.18.1",
-		"ts-loader": "^9.4.3",
-		"typescript": "^5.0.4",
-		"webpack": "^5.4.0",
-		"webpack-cli": "^4.2.0"
-	},
-	"dependencies": {
-		"@adguard/tsurlfilter": "^2.0.6",
-		"@tomphttp/bare-client": "^1.1.2-beta.3",
-		"@types/tampermonkey": "^4.0.10",
-		"@zip.js/zip.js": "^2.7.15",
-		"cld3-asm": "^3.1.1",
-		"esbuild-loader": "^4.0.1",
-		"localforage": "^1.10.0",
-		"prettier": "^2.8.8",
-		"string-replace-async": "^3.0.2",
-		"ts-node": "^10.9.1",
-		"tsconfig-paths-webpack-plugin": "^4.0.1",
-		"userscript-parser": "^2.2.2",
-		"webpack-bundle-analyzer": "^4.9.0"
-	}
+  "name": "aero",
+  "version": "1.0.0",
+  "description": "THE interception proxy",
+  "main": "src/this/handle.ts",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build",
+      "group": "build",
+      "problemMatcher": [
+        "$ts-webpack",
+        "$tslint-webpack"
+      ]
+    },
+    {
+      "type": "npm",
+      "script": "buildEslint",
+      "group": "build",
+      "problemMatcher": [
+        "$ts-webpack",
+        "$ts-checker-eslint-webpack-watch"
+      ]
+    },
+    {
+      "type": "npm",
+      "script": "buildRs",
+      "group": "build",
+      "problemMatcher": [
+        "$ts-webpack",
+        "$ts-checker-eslint-webpack-watch"
+      ]
+    }
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pretty": "npx prettier -w .",
+    "build": "webpack",
+    "buildDebug": "webpack --stats-error-detail --watch --info-verbosity",
+    "buildRs": "rspack build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProxyHaven/aero.git"
+  },
+  "keywords": [
+    "Proxy",
+    "Archiver",
+    "Unblock",
+    "Interception"
+  ],
+  "author": "Ryan Wilson",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/ProxyHaven/aero/issues"
+  },
+  "homepage": "https://github.com/ProxyHaven/aero#readme",
+  "devDependencies": {
+    "@swc/core": "^1.3.96",
+    "@types/chrome": "^0.0.237",
+    "@types/firefox-webext-browser": "^111.0.1",
+    "@types/node": "^20.2.5",
+    "@types/serviceworker": "^0.0.67",
+    "@types/webpack-env": "^1.18.1",
+    "bun-types": "^1.0.13",
+    "esbuild": "0.19.7",
+    "swc-loader": "^0.2.3",
+    "ts-loader": "^9.4.3",
+    "typescript": "^5.0.4",
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "dependencies": {
+    "@adguard/tsurlfilter": "^2.0.6",
+    "@babel/standalone": "^7.23.4",
+    "@biomejs/biome": "^1.3.3",
+    "@farmfe/core": "^0.14.0",
+    "@ffmpeg/core": "^0.12.4",
+    "@ffmpeg/ffmpeg": "^0.12.7",
+    "@ffmpeg/types": "^0.12.2",
+    "@tomphttp/bare-client": "^1.1.2-beta.3",
+    "@types/tampermonkey": "^4.0.10",
+    "@types/ua-parser-js": "^0.7.39",
+    "@zip.js/zip.js": "^2.7.15",
+    "caniuse-api": "^3.0.0",
+    "caniuse-lite": "^1.0.30001563",
+    "cld3-asm": "^3.1.1",
+    "esbuild-loader": "^4.0.1",
+    "heic2any": "^0.0.4",
+    "is-program-installed": "^2.3.9",
+    "localforage": "^1.10.0",
+    "marked": "^10.0.0",
+    "prettier": "^2.8.8",
+    "rollup": "^4.5.1",
+    "rollup-plugin-multi-entry": "^2.1.0",
+    "sharp": "^0.32.6",
+    "string-replace-async": "^3.0.2",
+    "svg2img": "^1.0.0-beta.2",
+    "ts-node": "^10.9.1",
+    "ts-png-to-ico": "^1.0.1",
+    "tsconfig-paths-webpack-plugin": "^4.0.1",
+    "ua-parser-js": "^1.0.37",
+    "unplugin-resolve-esm-ts-paths": "^0.1.1",
+    "userscript-parser": "^2.2.2",
+    "webpack-bundle-analyzer": "^4.9.0"
+  }
 }

@@ -1,4 +1,4 @@
-import { cacheKey } from "config";
+import { cacheKey } from "$aero_config";
 
 import Cache from "./Cache";
 
