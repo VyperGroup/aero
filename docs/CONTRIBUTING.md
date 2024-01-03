@@ -36,8 +36,12 @@ You could help write documentation, or find CDN's to exploit.
 
 ### Comment-specific
 
-- Put line-specific comments before the line you are referencing. Not after on the same line.
+- If various comments span multiple files, add that topic to .xit. Don't add it to .xit otherwise.
+- Put line-specific comments on the line you are referencing (not before the line), however don't do this for object properties
 - If the sentence is multi-lined put a period at the end, if not then don't use periods at all
+- If there is only one comment necessary for a line, put the comment after the line itself
+- If a comment concerns multiple lines, try to estimate how many lines it covers (E.g. *~4, ...*)
+- Put the more specific comments to the issue closer to the actual LOC
 
 ### Miscellaneous
 
