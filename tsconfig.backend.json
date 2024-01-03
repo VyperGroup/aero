@@ -5,5 +5,5 @@
     "baseUrl": "./src",
     "composite": true
   },
-  "include": ["src/backend/**/*.ts", "types/*.d.ts"]
+  "include": ["src/altBackends/**/*.ts", "types/*.d.ts"]
 }
