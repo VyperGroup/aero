@@ -3,8 +3,7 @@
 These documents will explain why I believe current proxies and their communities are flawed and how I propose they should be fixed. They explain the motives for my projects. I also state what I believe the potential is of proxies. I only mean to criticize communities, not shame specific ones. There is no intended bias here.
 
 > #1 to #3 are written for proxy site owners, and the others are for developers.
-> Read these in a MD Viewer for the full experience. This was written with Obsidian.md.
 
 ## Proofreading Credits
 
-* proudparrot2
+- proudparrot2

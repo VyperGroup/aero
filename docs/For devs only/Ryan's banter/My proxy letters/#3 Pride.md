@@ -14,7 +14,7 @@ There is no real animosity between proxy site staff. It's merely an illusion, fo
 
 ## My thoughts on reputation
 
-When someone innovates, they are bound to have enemies. For this reason, never deny someone based on their reputation as a whole. You must consider this yourself. Also, no real users actually care about external drama; they just want working links. Adversely, canceling someone will only make them more popular. If you recruit someone who left another community, you will likely be told many lies by others due to them not wanting their talented developers to thrive in another competitor's space.
+When someone innovates, they are bound to have enemies. For this reason, never deny someone based on their reputation as a whole. You must consider this yourself. Also, no real users actually care about external drama; they just want working links. Adversely, canceling someone will only make them more popular. Others will likely tell you many lies if you recruit someone who left another community because they don’t want their talented developers to thrive in another competitor’s space.
 
 ## My thoughts on skiddery
 
@@ -26,4 +26,4 @@ Nobody is above working with another proxy community or using services from anot
 
 ### Talk to other staff in the community
 
-I have gained so much valuable insight, especially from this document, by asking for criticisms of my own work. Accept that you are a flawed person. Don't get mad when someone asks for change. Everyone needs to be open-minded for us to all prosper. Their ideas are just as meaningful as yours. The proxy community has taught me: there is always room for improvement.
+I have gained so much valuable insight, especially from this document, by asking for criticisms of my own work. Accept that you are a flawed person. Don't get mad when someone asks for change. Everyone needs to be open-minded for us to all prosper. Their ideas are just as meaningful as yours. The proxy community has taught me that there is always room for improvement.
