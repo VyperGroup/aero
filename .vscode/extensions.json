@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "ms-playwright.playwright",
+    "amodio.tsl-problem-matcher",
+    "iulian-radu-at.find-unused-exports",
+    "dbaeumer.vscode-eslint",
+    "biomejs.biome",
+    "editorconfig.editorconf",
+    "vcsala.xit-extended",
+    "wayou.vscode-todo-highlight",
+    "gruntfuggly.todo-tree",
+    "yoavbls.pretty-ts-errors",
+    "bierner.comment-tagged-templates"
+  ]
+}
