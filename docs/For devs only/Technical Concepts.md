@@ -1,9 +1,12 @@
 # How aero works
 
-## Terms you should know for proxy dev
+## Dictionary (terms you should know to be a proxy dev)
 
 - API interceptors - We use these in proxies, so that we can mimic the functionality of the unproxied site in our proxy. This works by essentially "intercepting" API calls that would otherwise reveal the identity of the site you are on. Interception mostly occurs with Proxy objects or sometimes methods on the Object class.
+- Proxifying - Doing API interception with the ES6 Proxy object
 - Concealers - This is a subset of API interceptors. These are API interceptors that prevent the origin from being detected. Any API interceptor that is not a concealer
+- Auto API interception - TODO: ...
+- Relay - In this codebase, relaying refers to sending messages back and forth, bouncing between multiple message channels
 
 ## Precedence
 
@@ -29,25 +32,23 @@ HTML is intercepted and rewritten through a Mutation Observer where important el
 
 ### JS Interception
 
-### Aero Gel
-
-### [DSPC](https://github.com/ProxyHaven/aero/blob/Unstable/src/shared/scope.ts) (Deep Scope Property Checking / Legacy) _Support for this feature is enabled in flags_
-
-Location objects are replaced with a fake Location api, and also in the case of the site trying to escape the location scoping bracket property accessors for certain objects are checked using the scope function, which evaluates the expression in hopes of intercepting the attempted location or window call. Additionaly, this scoping is [integrated](https://github.com/ProxyHaven/aero/blob/Unstable/src/browser/api/concealer/scoping.ts) into Eval, Function Class, and Reflect interceptors. The easiest way to use this concept is to use [aero's script rewriter](https://github.com/ProxyHaven/aero/blob/Unstable/src/shared/script.ts) to rewrite every script, which complies to the environment.
+TODO: ...
 
 ## Types of emulation
 
+### Network-based
+
 We emulate certain CORS headers that we can't replace with CORS Testing
 
-### Cache Emulation
+#### Cache Emulation
 
-### Cors Emulation
-
-Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! _Support for this feature is enabled in flags_
-
-### [HTTP Cache Emulation](https://github.com/ProxyHaven/aero/blob/Unstable/src/this/cors/CacheManager.ts)
+##### [HTTP Cache Emulation](https://github.com/ProxyHaven/aero/blob/Unstable/src/this/cors/CacheManager.ts)
 
 HTTP caches are emulated by a system using aero's own cache stores. This allows us to have caches stored for a specific origin. This is important for support since Clear-Site-Data deletes every origin's cache making aero otherwise detectable.
+
+#### Cors Emulation
+
+Unlike other proxies that simply delete the cors policy and ignore it, aero abides by the intended security features by keeping them in place. Without Cors Emulation, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. This means that the site would've been lacking support; no longer with aero! _Support for this feature is enabled in flags_
 
 ## Rewriters
 
