@@ -1,4 +1,5 @@
-import { dynamicConfig, flags } from "$aero_config";
+import config from "$aero_config";
+const { dynamicConfig, flags } = config;
 
 import getStore from "this/embeds/dynamic/getStore";
 
@@ -8,7 +9,7 @@ const { dbName, id } = dynamicConfig;
 export default () => {
 	if (flags.dynamicUpdates)
 		getStore(dbName, store => {
-			self.addEventListener("message", event => {
+			self.addEventListener("message", (event: MessageEvent) => {
 				const config = event.data;
 
 				if (typeof config === "object" && config.id === id)
