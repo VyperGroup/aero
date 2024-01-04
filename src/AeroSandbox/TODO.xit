@@ -1,2 +1,21 @@
 [ ] Implement auto api interception
+[ ] Deprecate autoProxy. It's a dumb gimmick originally made to save me from keystrokes. I will still keep the strings method. I will rename autoProxy to strings proxy
 [ ] In html.ts, instead of keeping an attribute to mark the element, store them in a WeakMap, so they can automatically be cleaned up by the garbage man
+
+[ ] Move all of the middleware code into a modified BareClient
+
+[ ] Bring back aero gels and delete the old parser-based scoping
+
+[ ] Seperate the package.json for middleware. Then, cleanup the package.json.
+[ ] Provide auto-builds
+
+[ ] Implement url encoding
+[ ] Support Safari (Read Faq for more info)
+
+[ ] Fix HTTP and STS Emulation
+
+[ ] Support XML/XSLT documents
+
+[ ] Aero sandboxing library
+
+[ ] Nested SW support
