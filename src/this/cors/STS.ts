@@ -14,11 +14,14 @@ export default class extends Cache {
 
 			const req = indexedDB.open("sts", 1);
 
-			const db = new Promise(resolve => {
-				req.onsuccess = () => {
-					resolve(req.result);
-				};
-			});
+			const db = (async () => {
+				const dbPromise: Promise<IDBDatabase> = new Promise(resolve => {
+					req.onsuccess = () => {
+						resolve(req.result);
+					};
+				});
+				return await dbPromise;
+			})();
 
 			let tx = db.transaction(proxyHostname, "readwrite");
 			let store = tx.objectStore(proxyHostname);

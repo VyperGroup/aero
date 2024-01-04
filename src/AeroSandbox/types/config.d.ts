@@ -35,6 +35,7 @@ declare namespace AeroSandboxTypes {
 		redirectors?: boolean; // Enable redirectors; default true. Concelears and redirectors are distinct options, because you might be trying to intercept link redirection. See DEV.md.
 		concealers?: boolean; // Enable concealers; default true
 		jsRewriter?: Function;
+		nestedSWSupport: boolean; // This requires that you import the nested SW library into your main SW file
 		// Extra features
 		FakerAPI?: FakerAPIConfig; // I recommend disabling: redirectors, if you enable it because it would probably not be necessary
 		SWlessRuntime?: SWlessRuntimeConfig;

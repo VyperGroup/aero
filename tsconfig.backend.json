@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    // This might need to be changed in the future:
-    "moduleResolution": "nodenext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "baseUrl": "./src",
     "composite": true
   },

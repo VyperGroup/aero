@@ -1,4 +1,5 @@
-import { aeroPrefix, flags } from "$aero_config";
+import config from "$aero_config";
+const { aeroPrefix, flags } = config;
 
 import afterPrefix from "$aero/shared/afterPrefix";
 

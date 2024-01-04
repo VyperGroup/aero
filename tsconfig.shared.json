@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "lib": ["ESNext", "WebWorker", "DOM", "DOM.Iterable"],
     "baseUrl": "./src",
     "composite": true,
     "paths": {
-      "config": ["config.ts"],
-      "shared/*": ["shared/*"]
+      "$aero_config": ["./src/config.ts"],
+      "$aero_shared": ["shared/*"]
     }
   },
   "include": ["src/shared/**/*", "./config.ts"]

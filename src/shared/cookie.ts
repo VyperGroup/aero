@@ -1,4 +1,5 @@
-import { prefix } from "$aero_config";
+import config from "$aero_config";
+const { prefix } = config;
 
 function rewriteGetCookie(cookie: string, proxyLoc: URL) {
 	return cookie

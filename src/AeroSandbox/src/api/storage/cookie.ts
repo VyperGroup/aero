@@ -1,6 +1,10 @@
-import { prefix, flags } from "$aero_config";
+import config from "$aero_config";
+const { prefix, flags } = config;
 
-import { proxyLocation, upToProxyOrigin } from "$aero_browser/misc/proxyLocation";
+import {
+	proxyLocation,
+	upToProxyOrigin,
+} from "$aero_browser/misc/proxyLocation";
 
 import { rewriteGetCookie, rewriteSetCookie } from "$aero/shared/hared/cookie";
 

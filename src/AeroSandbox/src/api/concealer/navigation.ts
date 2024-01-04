@@ -1,6 +1,7 @@
 // Not finished
 
-import { flags } from "$aero_config";
+import config from "$aero_config";
+const { flags } = config;
 
 import proxy from "$aero/shared/autoProxy/autoProxy";
 

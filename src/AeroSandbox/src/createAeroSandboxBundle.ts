@@ -3,11 +3,13 @@ function importAll(ctx) {
 }
 
 export default (config: AeroSandboxTypes.config) => {
-	// Dangerous; setting defaults
+	// Set the defaults assuming that you are using aero
 	config.redirectors ??= true;
 	config.concealers ??= true;
 	config.htmlInterception ?? true;
 	config.serverParamsPassthrough ??= true;
+	config.redirectors ??= true;
+	config.nestedSWSupport ??= false;
 
 	// Safety
 	config = Object.seal(structuredClone(config));

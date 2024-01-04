@@ -1,4 +1,3 @@
-
 import { handleEvent } from "$aero_browser/util/swlessUtils";
 
 new MutationObserver(mutations => {

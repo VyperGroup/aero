@@ -1,4 +1,5 @@
-import { flags } from "$aero_config";
+import config from "$aero_config";
+const { flags } = config;
 
 import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 

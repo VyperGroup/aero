@@ -1,7 +1,8 @@
 // Dynamic Config
 import getConfig from "./embeds/dynamic/getConfig";
 // Standard Config
-import { prefix, aeroPrefix, flags, debug } from "$aero_config";
+import config from "$aero_config";
+const { prefix, aeroPrefix, flags, debug } = config;
 
 // Utility
 import matchWildcard from "./util/match";

@@ -22,4 +22,4 @@ I've devised an idea that uses CDN's to "proxy", some require hosting. I also fo
 
 - GUC
 
-This is for Opensocial Gadgets - It lasted 2007-2013, and the XML Proxy is likely being kept up for legacy applications that use it even after deprecation. [See](https://developers.google.com/sites/gadgets/site_gadgets). You can actually insert HTML into these XML files, which the devs were probably unaware of at that time as being an attack vector. However, there two limitations of this method. This can't support Websocket servers, and any request header has to be put in the query strings.
+This is for Opensocial Gadgets - It lasted 2007-2013, and the XML Proxy is likely being kept up for legacy applications that use it even after deprecation. [See](https://developers.google.com/sites/gadgets/site_gadgets). You can actually insert HTML into these XML files, which the devs were probably unaware of at that time as being an attack. This can be paired with TardisProxy to run a proxy site in it.

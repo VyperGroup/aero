@@ -1,4 +1,5 @@
-import { prefix, flags } from "$aero_config";
+import config from "$aero_config";
+const { prefix, flags } = config;
 
 if (flags.legacy) {
 	const handler = {

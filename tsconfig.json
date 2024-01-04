@@ -10,7 +10,6 @@
     // Needed for Rspack - https://www.rspack.dev/guide/language-support.html#isolatedmodules
     "isolatedModules": true
   },
-  "include": ["types/*.d.ts"],
   "references": [
     /*{ "path": "tsconfig.backend.json" },*/
     { "path": "tsconfig.this.json" },

@@ -2,11 +2,14 @@ import afterPrefix from "$aero/shared/afterPrefix";
 
 // Interceptors for Stylesheets
 
-function getSheet(sheet) {
+function getSheet(sheet: HTMLLinkElement) {
 	if (sheet.href) sheet.href = afterPrefix(sheet.href);
-	if (sheet.parentStyleSheet)
-		sheet.parentStyleSheet = getSheet(sheet.parentStyleSheet);
-
+	// TODO: I don't know what is going on here lol
+	if (sheet.hasAttribute("parentStyleSheet"))
+		sheet.setAttribute(
+			"parentStyleSheet",
+			getSheet(sheet.getAttribute("parentStyleSheet")),
+		);
 	return sheet;
 }
 

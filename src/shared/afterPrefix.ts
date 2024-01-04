@@ -1,4 +1,5 @@
-import { prefix } from "$aero_config";
+import config from "$aero_config";
+const { prefix } = config;
 
 /*
 Separate the prefix from the url to get the proxy url isolated

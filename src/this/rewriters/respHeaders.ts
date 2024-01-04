@@ -1,4 +1,5 @@
-import { prefix } from "$aero_config";
+import config from "$aero_config";
+const { prefix } = config;
 
 import { rewriteSetCookie } from "$aero/shared/cookie";
 import { rewriteAuthServer } from "./auth";

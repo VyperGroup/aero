@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
     "baseUrl": "src",
     "composite": true,
     "paths": {
-      "config": ["./config.ts"],
-      "this/*": ["this/*"],
-      "shared/*": ["shared/*"],
-      "mwTypes": ["middleware/index.d.ts"]
+      "$aero_config": ["./src/config.ts"],
+      "$aero_this": ["this/*"],
+      "$aero_shared": ["shared/*"]
     }
   },
-  "include": ["src/this/**/*.ts", "types/*.d.ts"]
+  "include": ["config.ts", "src/this/**/*.ts", "types/*.d.ts"]
 }

@@ -1,6 +1,10 @@
-import { flags } from "$aero_config";
+import config from "$aero_config";
+const { flags } = config;
 
-import { proxyConstruct, proxyGetString } from "$aero/shared/autoProxy/autoProxy";
+import {
+	proxyConstruct,
+	proxyGetString,
+} from "$aero/shared/autoProxy/autoProxy";
 
 import rewriteSrc from "$aero/shared/src";
 

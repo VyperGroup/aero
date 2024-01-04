@@ -1,4 +1,7 @@
-import { proxyConstruct, proxyGetString } from "$aero/shared/autoProxy/autoProxy";
+import {
+	proxyConstruct,
+	proxyGetString,
+} from "$aero/shared/autoProxy/autoProxy";
 
 import rewriteSrc from "$aero/shared/src";
 

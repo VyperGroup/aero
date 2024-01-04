@@ -1,4 +1,5 @@
-import { prefix } from "$aero_config";
+import config from "$aero_config";
+const { prefix } = config;
 
 /**
  * Gets the url that will actually be fetched
@@ -16,7 +17,7 @@ function getRequestUrl(
 	proxyUrl: URL,
 	path: string,
 	isHomepage: boolean,
-	isiFrame: boolean
+	isiFrame: boolean,
 ): string {
 	const noPrefix = path.split(prefix)[1];
 

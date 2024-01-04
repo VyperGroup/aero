@@ -1,4 +1,5 @@
-import { prefix, debug } from "$aero_config";
+import config from "$aero_config";
+const { prefix, debug } = config;
 
 /**
  * This should not be used for processed html attributes, rather rewriteSrcHtml

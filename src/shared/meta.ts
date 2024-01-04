@@ -1,3 +1,4 @@
+// TODO: Bundle properly with Webpack
 export default `
 import afterPrefix from "$aero/shared/hared/afterPrefix";
 

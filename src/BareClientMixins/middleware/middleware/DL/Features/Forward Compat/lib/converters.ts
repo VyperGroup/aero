@@ -37,7 +37,7 @@ async function convertSVGToICO(svgResponse: Response): Promise<Response> {
 		new Blob(
 			[
 				await pngToIco(
-					await sharp(Buffer.from(await svgResponse.arrayBuffer()))
+					await sharp(await svgResponse.arrayBuffer())
 						.png()
 						.toBuffer(),
 				),
@@ -49,11 +49,7 @@ async function convertSVGToICO(svgResponse: Response): Promise<Response> {
 async function convertPNGToICO(pngResponse: Response): Promise<Response> {
 	return new Response(
 		new Blob(
-			[
-				await pngToIco(
-					Buffer.from(await (await pngResponse.blob()).arrayBuffer()),
-				),
-			],
+			[await pngToIco(await (await pngResponse.blob()).arrayBuffer())],
 			{ type: "image/x-icon" },
 		),
 	);

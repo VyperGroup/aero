@@ -1,4 +1,5 @@
-import { cacheKey } from "$aero_config";
+import config from "$aero_config";
+const { cacheKey } = config;
 
 import Cache from "./Cache";
 
@@ -46,7 +47,7 @@ export default class extends Cache {
 	 */
 	async getAge(
 		cacheControl: string,
-		expiry: string
+		expiry: string,
 	): Promise<number | false> {
 		if (cacheControl) {
 			const dirs = cacheControl.split(";").map(dir => dir.trim());
@@ -56,7 +57,7 @@ export default class extends Cache {
 					.find(dir => dir.startsWith("max-age"))
 					// FIXME: Breaks on https://dailymail.com
 					.split("=")
-					.pop()
+					.pop(),
 			);
 
 			return secs ? secs + this.getTime : false;

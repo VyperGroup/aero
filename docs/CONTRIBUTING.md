@@ -16,9 +16,13 @@
 - If you want to find something to contribute to, search in your editor for TODO comments and look in TODO.xit for generalized ideas
 - If you want to learn aero's codebase faster, **read all of the docs**
 
+### Documentation
+
+- Audit your additions using a [grammer checker](https://quillbot.com/grammar-check). If it advises you to rewrite in a passive voice I recommend that you ask a [GPT](https://www.bing.com) to do that, rather than paying for premium.
+
 ## How to help without knowledge of programming
 
-You could help write documentation, or find CDN's to exploit.
+You could help write documentation, or find domain fronting exploits.
 
 ## Style Guide
 
@@ -26,9 +30,11 @@ You could help write documentation, or find CDN's to exploit.
 
 1. Type imports
 2. Config imports
-3. Standard Libraries (Runtime APIs)
-4. External Libraries
-5. Internal Libraries
+3. Standard libraries (Runtime APIs)
+4. External libraries
+5. Internal libraries
+
+> If there are multiple in each subcategory, then list whichever is used first
 
 ### Order of booleans
 
@@ -36,13 +42,23 @@ You could help write documentation, or find CDN's to exploit.
 
 ### Comment-specific
 
-- If various comments span multiple files, add that topic to .xit. Don't add it to .xit otherwise.
-- Put line-specific comments on the line you are referencing (not before the line), however don't do this for object properties
+- If various comments span multiple files, add that topic to .xit. Don't add it to .xit otherwise. These are what you would call milestones.
+- Put line-specific comments on the line you are referencing (not before the line)
 - If the sentence is multi-lined put a period at the end, if not then don't use periods at all
 - If there is only one comment necessary for a line, put the comment after the line itself
-- If a comment concerns multiple lines, try to estimate how many lines it covers (E.g. *~4, ...*)
+- If a comment concerns multiple lines, try to estimate how many lines it covers (E.g. _~4, ..._)
 - Put the more specific comments to the issue closer to the actual LOC
 
 ### Miscellaneous
 
 - If you are concatinating more than two strings use a template string, or else just the unary operator (+)
+
+## FAQ
+
+### I want to contribute, but I don't know how the SW APIs work
+
+If you have ever used the Fetch API or written a server in a JS runtime, it's literally that but with an event listener for fetch, but you have to keep track of how the SW is registered and there are message channels and caching
+
+Don't be overwhelmed
+
+I recommend reading <https://developer.chrome.com/docs/workbox/service-worker-overview> and then <https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers>

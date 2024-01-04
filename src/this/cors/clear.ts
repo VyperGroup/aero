@@ -1,9 +1,10 @@
-import { prefix, flags } from "$aero_config";
+import config from "$aero_config";
+const { prefix, flags } = config;
 
 export default async (
 	clear: string[],
 	client,
-	proxyUrl: URL
+	proxyUrl: URL,
 ): Promise<void> => {
 	if (clear.includes("'*'") || clear.includes("'cache'"))
 		await caches.delete(proxyUrl.origin);
@@ -13,7 +14,7 @@ export default async (
 		clear.includes("executionContexts")
 	) {
 		const clientOrigin = new URL(
-			client.url.replace(new RegExp(`^(${prefix})`, "g"), "")
+			client.url.replace(new RegExp(`^(${prefix})`, "g"), ""),
 		).origin;
 
 		if (clientOrigin === proxyUrl.origin)

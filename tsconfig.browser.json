@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "baseUrl": "./src",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "composite": true,
     "paths": {
-      "$aero_config": ["config.ts"],
-      "$aero_shared/*": ["shared/*"],
-      "$aero_browser/*": ["browser/*"]
+      "$aero_config": ["./src/config.ts"],
+      "$aero_shared": ["shared/*"],
+      "$aero_browser": ["browser/*"]
     }
   },
   "include": ["src/sandbox/**/*.ts", "types/*.d.ts"]

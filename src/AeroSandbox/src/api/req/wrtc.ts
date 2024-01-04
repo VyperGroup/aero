@@ -1,4 +1,5 @@
-import { flags, wrtcBackends } from "$aero_config";
+import config from "$aero_config";
+const { flags, wrtcBackends } = config;
 
 import escape from "$aero_browser/misc/escape";
 
