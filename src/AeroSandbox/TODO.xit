@@ -4,8 +4,6 @@
 
 [ ] Move all of the middleware code into a modified BareClient
 
-[ ] Bring back aero gels and delete the old parser-based scoping
-
 [ ] Seperate the package.json for middleware. Then, cleanup the package.json.
 [ ] Provide auto-builds
 
@@ -18,4 +16,6 @@
 
 [ ] Aero sandboxing library
 
-[ ] Nested SW support
+[ ] Support nested SW
+
+[ ] Support proxifying MutationEvents (deprecated) before they are removed from Chrome soon - https://w3c.github.io/uievents/#interface-mutationevent

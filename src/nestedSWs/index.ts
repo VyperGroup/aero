@@ -32,7 +32,7 @@ if (flags.workers)
 					// TODO: Type this thing correctly
 					const swHandler = new Function(handler(event));
 					return swHandler();
-				}
+				} 
 			} catch (err) {
 				if (err instanceof TypeError)
 					throw new Error(
@@ -41,7 +41,7 @@ if (flags.workers)
 			}
 		} catch (err) {
 			if (debug && err.exception.name === "NetworkError")
-				// TODO: Send back an error code which indicates that the fetching the SW failed, and on the client process it to throw the emulated error (What you would normally see, if there was a network request while registering a SW. SW registration failed with error ...)
+				// TODO: Send back an error code which indicates that the fetching the SW failed, and on the client process it to throw the emulated error (What you would. normally see, if there was a network request while registering a SW. SW registration failed with error ...)
 				null;
 			else {
 				throw err;

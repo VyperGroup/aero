@@ -8,6 +8,11 @@
 - Auto API interception - TODO: ...
 - Relay - In this codebase, relaying refers to sending messages back and forth, bouncing between multiple message channels
 
+### Common misconceptions
+
+- Server-only - When I say this I am usually referring to running the SW code in the web server instead.
+- Backend - The code that the *user* doesn't see. Usually this refers to using different implementations of the same thing. For example, you may refer to a bare server as a bare backend. This is because there are varying implementations to the standard, however bare is not a backend proxy server, it is the *bare* proxy itself.
+
 ## Precedence
 
 Previously, proxies could barely handle more than one person, this was due to all the site's code being rewritten on the backend. Because the code was being rewritten on the backend, it required having to share backend rewrite code with frontend code. This was not only slow, but also allowed the possibility of Slowloris attacks against the proxies.

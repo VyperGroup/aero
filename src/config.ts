@@ -1,44 +1,39 @@
-// TODO: Convert to TS
-const config = {
-	prefix: "/go/", // The prefix for the URL// The prefix for the URL
-	aeroPrefix: "/aero/", // The name of the folder aero is hosted on
-	bareServers: ["/bare/"], // The backends to use
-	webrtcTurnServers: ["stun:stun.l.google.com:19302"], // The WebRTC backends to use
-	sortInterval: 0, // Time to fallback to backends
-	cacheKey: "httpCache", // The cache key to use
-	// The dynamic configuration
-	dynamicConfig: {
-		dbName: "aero", // The database name
-		id: "update", // Id to differentiate message from other purposes
+const config: AeroTypes.config = {
+	prefix: "/go/", 
+  aeroExcludePaths: ["aero.config.js", "uv.config.js", "aero.sandbox.ts"], // This can be done better
+	bareServers: ["/bare/"],
+	webrtcTurnServers: ["stun:stun.l.google.com:19302"],
+	bareSort: {
+	  interval: number
+	  type:  
 	},
-	// The flags
+	sortInterval: 0, 
+	cacheKey: "httpCache", 
+	
+	dynamicConfig: {
+		dbName: "aero", 
+		id: "update", 
+	},
+	
 	flags: {
-		// Features
-		sortBackends: true,
 		dynamicUpdates: false,
-
-		// Security
-		emulateSecureContext: false, // Secure-only features would still be broken; this is only to mask the site as secure
-		corsEmulation: true, // Obey security features, rather than ignore them; Recommended
-
-		// Support
-		safari: false, // Safari has limited support of SWs, so there may be some workarounds
+		
+		emulateSecureContext: false, 
+		corsEmulation: true, 
+		
 		legacy: true,
-		experimental: true, // Code that isn't widely adopted (by the 3 major browsers), or in Draft
-		nonstandard: true, // Browser-specific code. Recommended
-		misc: false, // Experimental features that haven't been tested, and aren't significant enough to earn a flag
+		experimental: true, 
+		nonstandard: true, 
 
-		// Protocol support
 		wrtc: true,
 		ws: true,
 
-		// Misc
-		concealNamespace: true, // This is to prevent sites from detecting the proxy by searching for $aero
-		foolExtensions: false, // Prevent extensions from blocking by checking the request url
+		concealNamespace: true, 
+		foolExtensions: false, 
 
 		workers: true,
 	},
-	// Ignore these if you are not debugging
+	
 	debugMode: true,
 	debug: {
 		errors: true,

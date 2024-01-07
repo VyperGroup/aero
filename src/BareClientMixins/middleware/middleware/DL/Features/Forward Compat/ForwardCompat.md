@@ -1,6 +1,6 @@
 # ForwardCompat
 
-This will be a proxy middleware, primarily intended to be used with the backend-only version of aero, since running a proxy client-side on extremely old browsers is demanding. It will allow modern websites to function on browsers as old as Netscape Navigator 3 and IE6. It will transpile to ES2 with Babel (Only goes down to ES3 by default) and a lot of plugins, automatically inject a plethora of polyfills using the middleware, and converting media files into ones that older browsers can understand through the middleware as well.
+This will be a proxy middleware that will allow modern websites to function on browsers as old as Netscape Navigator 3 and IE6. It will transpile to ES2 with Babel (Only goes down to ES3 by default) and a lot of plugins, automatically inject a plethora of polyfills using the middleware, and converting media files into ones that older browsers can understand through the middleware as well.
 
 ## How ES2 browsers will be supported
 
@@ -10,11 +10,11 @@ I am interested in going all the way back and supporting ES2 based browsers, suc
 
 ### Why?
 
-This is one of my favorite ideas yet, however it is really Novel. It makes me really happy though. It also demonstrates the true power of web proxies that is unrealized.
+This is one of my favorite ideas yet, however it is novel. It also demonstrates the true power of web proxies that is largly unrealized.
 
 ### Why is it called that?
 
-This is a play on words for backwards compatibility. Normally sites use this type of technology to support old browsers on their websites. This does the reverse, and forces the site to use this technology but to the extreme. Specifically, to however the browser needs it the most. If you already understand how web proxies are classified, you could think of this to a "Forward Proxy" rather than the original "Reverse Proxies" but in the context of backwards compatiblity.
+This is a play on words for backwards compatibility. Normally sites use this type of technology to support old browsers on their websites, however this does the reverse, by making sites have it, to however the browser needs it the most. If you already understand how web proxies are classified, you could think of this to a "Forward Proxy" rather than the original "Reverse Proxies" but in the context of backwards compatiblity. If the site uses any known polyfills, the site's polyfills will be removed in favor of ours.
 
 ### How?
 
@@ -55,11 +55,12 @@ As I finish a task I will remove the its bullet point
   - TTF/WOFF fonts will be converted to EOT for IE8 support
   - For browsers that don't even support EOT let alone TTF/WOFF, the fonts will be prerendered into an image. This means that the text in custom fonts will be displayed as an image with invisible text behind it, so that it can be highlighted and copied and pasted. This will also be done with web-safe (default) fonts that weren't included at the time the browser was created. Some possible libraries I will probably use [ultimate-text-to-image](https://github.com/terence410/ultimate-text-to-image).
 - PDFs
-  - [PDF.js](https://mozilla.github.io/pdf.js) will be injected into browsers that don't have a built-in editor
+  - [PDF.js](https://mozilla.github.io/pdf.js) will be injected into browsers that don't have a built-in editor.
+  - [Flash](https://ruffle.rs)
 
 ### Wouldn't repeated detection be slow?
 
-I will have the web proxy remember which sites require specific polyfills depending on what polyfills the browsers need by using [BrowsersList](https://browsersl.ist/), to avoid performing compatibility testing each time a user accesses a website through the proxy. It would automatically maintain a database or a configuration file that maps websites to the corresponding polyfills required for compatibility. When a user requests a specific website through the proxy, it would check the database or configuration file to determine which polyfills need to be injected. It will also only inject polyfills that are needed for the specific browser.
+It only injects polyfills that are needed for the specific browser. I call this "polyfills on demand". The middleware remembers which sites require specific polyfills depending on what polyfills the browsers need by using [BrowsersList](https://browsersl.ist/), to avoid performing compatibility testing each time a user accesses a website through the proxy, it automatically maintains a database or a configuration file that maps websites to the corresponding polyfills required for compatibility. When a user requests a specific website through the proxy, it checks the database or configuration file to determine which polyfills need to be injected.
 
 ### (Insert site here) doesn't work
 
