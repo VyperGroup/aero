@@ -2,7 +2,7 @@
 
 ## What's this?
 
-Here you may find dev work on alternative backends for aero such as: server-only and webextension. This was made to provide ways to use aero rather than through a service worker, allowing aero to be used more efficiently in diverse environments. 
+Here you may find dev work on alternative backends for aero such as: server-only and webextension. This was made to provide ways to use aero rather than through a service worker, allowing aero to be used more efficiently in diverse environments.
 
 ## Backends
 
@@ -16,7 +16,7 @@ I am not interested in porting aero to other backends, due to the maintenance it
 
 ### CF workers
 
-CF Workers support will be the 
+CF Workers support will be the
 
 #### Other JS runtimes
 

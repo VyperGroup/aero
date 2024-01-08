@@ -32,7 +32,7 @@ if (flags.workers)
 					// TODO: Type this thing correctly
 					const swHandler = new Function(handler(event));
 					return swHandler();
-				} 
+				}
 			} catch (err) {
 				if (err instanceof TypeError)
 					throw new Error(

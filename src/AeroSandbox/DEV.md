@@ -36,7 +36,7 @@ console.log(link.getAttribute("no-referrer")); // Outputs "no-referrer" although
 You can simply define a property on
 
 ```js
-$aero.hidden
+$aero.hidden;
 ```
 
 ## SW-less runtime for proxies

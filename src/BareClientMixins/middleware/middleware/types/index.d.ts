@@ -35,7 +35,10 @@ declare namespace MiddlewareTypes {
 		DOMProxy?: DOMProxy,
 	) => Promise<Request | Response | RewriteController | void>;
 	// TODO: Specify a return type
-	export type WSRequestHandler = (ctx: RequestContext, DOMProxy?: DOMProxy) => unknown;
+	export type WSRequestHandler = (
+		ctx: RequestContext,
+		DOMProxy?: DOMProxy,
+	) => unknown;
 	export type ResponseHandler = (
 		ctx: ResponseContext,
 		DOMProxy?: DOMProxy,

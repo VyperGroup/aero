@@ -1,6 +1,6 @@
 const namingSchemes = {
-	entryName: "aero-[name]-[hash].[ext]",
-	chunkName: "aero-chunk-[name]-[hash].[ext]",
+  entryName: "aero-[name]-[hash].[ext]",
+  chunkName: "aero-chunk-[name]-[hash].[ext]",
 };
 
 const src = "../src/";

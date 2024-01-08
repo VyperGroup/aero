@@ -5,8 +5,10 @@
     "module": "NodeNext",
     "lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
     "composite": true,
-    "paths": {
-    }
+    "paths": {}
   },
-  "include": ["src/this/BareClientMixins/middleware/middleware/DL/**/*.ts", "src/BareClientMixins/middleware/middleware/DL/types/types.d.ts"]
+  "include": [
+    "src/this/BareClientMixins/middleware/middleware/DL/**/*.ts",
+    "src/BareClientMixins/middleware/middleware/DL/types/types.d.ts"
+  ]
 }
