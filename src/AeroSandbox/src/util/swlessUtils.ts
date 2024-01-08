@@ -1,4 +1,4 @@
-declare var $aero;
+declare var $aero: AeroTypes.GlobalAeroCTX;
 
 // This is what is already set in handleFetchEvent (whatever needs to be passed into handleFetchEvent)
 interface FakeEventPartial {

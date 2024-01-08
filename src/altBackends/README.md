@@ -12,7 +12,7 @@ Aero powered by WebExtensions. This would be recommended if you are able to inst
 
 ## Server
 
-I am not interested in porting aero to other backends, due to the maintenance it requires. Besides,server-only aero is discouraged due to [SW-less](x).
+I am not interested in porting aero to other backends, due to the maintenance it requires. Besides, server-only aero is discouraged due to [SW-less](x).
 
 ### CF workers
 

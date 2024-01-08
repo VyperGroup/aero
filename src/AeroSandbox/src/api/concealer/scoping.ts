@@ -1,4 +1,4 @@
-declare var $aero;
+declare var $aero: AeroTypes.GlobalAeroCTX;
 
 import rewriteScript from "$aero/shared/script";
 

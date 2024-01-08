@@ -1,4 +1,4 @@
-declare var $aero;
+declare var $aero: AeroTypes.GlobalAeroCTX;
 
 import config from "$aero_config";
 const { flags } = config;

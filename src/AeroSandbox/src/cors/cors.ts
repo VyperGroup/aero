@@ -4,4 +4,4 @@ if ($aero.sec.clear)
 // TODO: Parse and use in perms.ts
 $aero.sec.perms = $aero.sec.perms.split(";");
 
-Object.seal(($aero.sec)
+Object.seal($aero.sec);

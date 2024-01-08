@@ -1,3 +1,1 @@
-chrome.browsingData.remove = (options, dataToRemove, callback) {
-    
-}
+chrome.browsingData.remove = (options, dataToRemove, callback) => {};
