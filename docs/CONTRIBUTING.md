@@ -19,6 +19,7 @@
 
 ### Documentation
 
+- Write in the present simple tense by default, unless you are writing a proposal document, where you would write in the future tense
 - Audit your additions using a [grammer checker](https://quillbot.com/grammar-check). If it advises you to rewrite in a passive voice I recommend that you ask a [GPT](https://www.bing.com) to do that, rather than paying for premium.
 
 ## How to help without knowledge of programming
