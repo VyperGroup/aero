@@ -5,6 +5,7 @@
     "iulian-radu-at.find-unused-exports",
     "dbaeumer.vscode-eslint",
     "biomejs.biome",
+    jeremyrajan.webpack",
     "editorconfig.editorconf",
     "vcsala.xit-extended",
     "wayou.vscode-todo-highlight",
