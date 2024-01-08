@@ -31,6 +31,14 @@ $aero.faker.setAttribute("referrerpolicy", "no-referrer");
 console.log(link.getAttribute("no-referrer")); // Outputs "no-referrer" although the element doesn't actually contain it
 ```
 
+## How to hide a variable
+
+You can simply define a property on
+
+```js
+$aero.hidden
+```
+
 ## SW-less runtime for proxies
 
 This will be a configurable extension for aero's sandboxing library (just like Faker), but it will intercept http requests and process them as a "fake SW". If it is disabled, the logic won't be compiled into the binary just like Faker.
