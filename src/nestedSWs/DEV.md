@@ -1,4 +1,4 @@
-# Dev Docs
+# Nested SW support for proxies - Dev Docs
 
 It will compile two bundles:
 

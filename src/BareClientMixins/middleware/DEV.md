@@ -1,4 +1,4 @@
-# Proxy Middleware Dev Docs
+# Proxy Middleware - Dev Docs
 
 # Permission system
 
