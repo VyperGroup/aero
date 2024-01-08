@@ -11,10 +11,11 @@
     "isolatedModules": true
   },
   "references": [
+    { "path": "build/tsconfig.build.json" }
     /*{ "path": "tsconfig.backend.json" },*/
     { "path": "tsconfig.this.json" },
     { "path": "tsconfig.browser.json" },
     { "path": "tsconfig.shared.json" },
-    { "path": "src/middleware/Userscripts/tsconfig.json" }
+    { "path": "src/BareClientMixins/middleware/tsconfig.json" }
   ]
 }
