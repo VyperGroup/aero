@@ -1,4 +1,4 @@
-declare module "mw" {
+declare namespace MiddlewareTypes {
 	// Both...
 	type DOMProxy = Function;
 
@@ -32,13 +32,13 @@ declare module "mw" {
 
 	export type RequestHandler = (
 		ctx: RequestContext,
-		DOMProxy?,
+		DOMProxy?: DOMProxy,
 	) => Promise<Request | Response | RewriteController | void>;
 	// TODO: Specify a return type
-	export type WSRequestHandler = (ctx: RequestContext, DOMProxy?) => unknown;
+	export type WSRequestHandler = (ctx: RequestContext, DOMProxy?: DOMProxy) => unknown;
 	export type ResponseHandler = (
 		ctx: ResponseContext,
-		DOMProxy?,
+		DOMProxy?: DOMProxy,
 	) => Promise<Response | void>;
 	export type HTMLHandler = (el: Element) => HTMLCommand;
 
