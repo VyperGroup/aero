@@ -16,14 +16,13 @@ You could always [email me](mailto:inbox@ryanwilson.space) with questions. You w
 ## Directories
 
 - **altBackends** - Alternative backends rather than using a SW
-- **src/BareClientMixins** - Alternative Bare Clients. This code makes any of the code used in aero able to be ran inside of other proxies to prevent creating a properietary ecosystem on accident. See [BareClientMixins](x) for more info.
+- **src/BareClientMixins** - Alternative Bare Clients. This code makes any of the code used in aero able to be ran inside of other proxies to prevent creating a properietary ecosystem on accident. See [BareClientMixins](./src/BareClientMixins/middleware/README.md) for more info.
 - **src/BareClientsMixins/middleware** - The middleware code
 - **src** - Aero's _actual_ code
 - **src/this** - The SW code (aero's base). Alternative backends are found in _backend_.
-- **src/sandbox** - Code that is injected into the site. This consists of [API interceptors](x). This will transition to becoming the aero sandboxing library to become proxy independent. This is why the name was recently changed from browser to sandbox.
-- **src/worker** - Basically, browser but for [nested workers](x)
+- **src/sandbox** - Code that is injected into the site. This consists of API interceptors. This will transition to becoming the aero sandboxing library to become proxy independent. This is why the name was recently changed from browser to sandbox.
+- **src/worker** - Basically, browser but for [nested workers](./src/nestedSWs/README.md)
 - **src/shared** - Code used by _this_ and _browser_
-  - **src/shared/autoProxy** - [API Interceptor](x) base code
 - **backend** - Alternative aero backends (Non SW) for certain environments
 - **tests** - Unit testing
 - **dist** - Build files for aero. This is what you actually need to use aero on your site. These won't be present until you run `pnpm run build`.
