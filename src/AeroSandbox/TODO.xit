@@ -16,6 +16,6 @@
 
 [ ] Aero sandboxing library
 
-[ ] Support nested SW
+[ ] Support nested SWs
 
 [ ] Support proxifying MutationEvents (deprecated) before they are removed from Chrome soon - https://w3c.github.io/uievents/#interface-mutationevent
