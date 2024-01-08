@@ -1,3 +1,5 @@
+// Config types
+
 // This is the typical proxy config. This is only what is used to format and unformat urls.
 type ProxyConfig = {
 	prefix: string;
@@ -28,6 +30,9 @@ type SWlessRuntimeConfig = {
 };
 
 declare namespace AeroSandboxTypes {
+	export interface $location {
+		// TODO: Define
+	},
 	export type AeroSandboxConfig = {
 		ProxyConfig?; // This is not needed, if you are running this on aero itself, since it will automatically have the proper namespace already (no need for mapping).
 		proxyLocation: () => URL;

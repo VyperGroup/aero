@@ -12,5 +12,5 @@
       "$aero_browser": ["browser/*"]
     }
   },
-  "include": ["src/sandbox/**/*.ts", "types/*.d.ts"]
+  "include": ["src/sandbox/**/*.ts", "index.d.ts", "index.d.ts"]
 }

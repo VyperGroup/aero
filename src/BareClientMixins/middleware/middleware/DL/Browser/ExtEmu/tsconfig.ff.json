@@ -5,5 +5,5 @@
   "compilerOptions": {
     "types": ["firefox-webext-browser"]
   },
-  "include": ["src/api/ff/**/*.ts", "types/*.d.ts"]
+  "include": ["src/api/ff/**/*.ts", "index.d.ts"]
 }

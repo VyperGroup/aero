@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
+    "composite": true
+  },
+  "include": ["DL/**/*.ts", "DL/types/types.d.ts"]
+}

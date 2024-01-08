@@ -9,5 +9,5 @@
       "shared": ["./api/shared"]
     }
   },
-  "include": ["src/api/chrome/**/*.ts", "types/*.d.ts"]
+  "include": ["src/api/chrome/**/*.ts", "index.d.ts"]
 }
