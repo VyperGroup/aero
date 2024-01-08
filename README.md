@@ -16,7 +16,8 @@ You could always [email me](mailto:inbox@ryanwilson.space) with questions. You w
 ## Directories
 
 - **altBackends** - Alternative backends rather than using a SW
-- **BareClientMixins** - Alternative Bare Clients. This code makes any of the code used in aero able to be ran inside of other proxies to prevent creating a properietary ecosystem on accident. See [BareClientMixins](x) for more info.
+- **src/BareClientMixins** - Alternative Bare Clients. This code makes any of the code used in aero able to be ran inside of other proxies to prevent creating a properietary ecosystem on accident. See [BareClientMixins](x) for more info.
+- **src/BareClientsMixins/middleware** - The middleware code
 - **src** - Aero's _actual_ code
 - **src/this** - The SW code (aero's base). Alternative backends are found in _backend_.
 - **src/sandbox** - Code that is injected into the site. This consists of [API interceptors](x). This will transition to becoming the aero sandboxing library to become proxy independent. This is why the name was recently changed from browser to sandbox.
