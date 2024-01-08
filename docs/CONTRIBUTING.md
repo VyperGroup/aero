@@ -1,5 +1,9 @@
 # CONTRIBUTING
 
+## Project management
+
+If you want to find something to contribute to, search in your editor for TODO comments and look in TODO.xit for milestones, or generalized ideas
+
 ## Guidelines
 
 - Don't commit without using a formatter beforehand
@@ -14,7 +18,6 @@
 - Setup [biomejs](https://biomejs.dev/guides/integrate-in-editor/#third-party-plugins) (preferrable) or [prettier](https://prettier.io/docs/en/editors.html) integrations in your IDE
 - If none of tools used suite you, feel free to make a PR for however you like
 - If you are on VSCode, install the recommended extensions
-- If you want to find something to contribute to, search in your editor for TODO comments and look in TODO.xit for generalized ideas
 - If you want to learn aero's codebase faster, **read all of the docs**
 
 ### Documentation
@@ -59,7 +62,7 @@ You could help write documentation, or find domain fronting exploits.
 
 ### I want to contribute, but I don't know how the SW APIs work
 
-If you have ever used the Fetch API or written a server in a JS runtime, it's literally that but with an event listener for fetch, but you have to keep track of how the SW is registered and there are message channels and caching
+If you have ever used the Fetch API or written a server in a JS runtime, it's that but with an event listener for fetch, but you have to keep track of how the SW is registered and there are message channels and caching
 
 Don't be overwhelmed
 
