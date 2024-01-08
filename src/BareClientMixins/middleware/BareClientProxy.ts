@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { BareClient } from "@tomphttp/bare-client";
 
 function sandboxFunc(func: Function) {
