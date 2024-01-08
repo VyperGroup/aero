@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
+    "composite": true,
+    "paths": {
+    }
+  },
+  "include": ["src/this/BareClientMixins/middleware/middleware/DL/**/*.ts", "src/BareClientMixins/middleware/middleware/DL/types/types.d.ts"]
+}
