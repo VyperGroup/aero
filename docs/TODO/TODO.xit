@@ -1,13 +1,22 @@
-[ ] Move all of the middleware code into a modified BareClient
+General
+
+[ ] Finish aero's sandboxing library
+[ ] Nested SW support
+
+Issues
+
+[ ] Fix HTTP and STS Emulation
+
+Config
 
 [ ] Seperate the package.json for middleware. Then, cleanup the package.json.
 [ ] Provide auto-builds
 
+Aero Config
+
 [ ] Implement url encoding
-[ ] Support Safari (Read Faq for more info)
 
-[ ] Fix HTTP and STS Emulation
+BareClient
 
-[ ] Aero sandboxing library
+[ ] Move all of the middleware code into a modified BareClient
 
-[ ] Nested SW support
