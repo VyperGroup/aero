@@ -48,7 +48,7 @@ You could help write documentation, or find domain fronting exploits.
 
 ### Comment-specific
 
-- If various comments span multiple files, add that topic to .xit. Don't add it to .xit otherwise. These are what you would call milestones.
+- If various comments span multiple files, add that topic to the respective [TODO.xit](https://xit.jotaen.net/syntax-guide). Don't add it to .xit otherwise. These are what you would call milestones.
 - Put line-specific comments on the line you are referencing (not before the line)
 - If the sentence is multi-lined put a period at the end, if not then don't use periods at all
 - If there is only one comment necessary for a line, put the comment after the line itself
