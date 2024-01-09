@@ -1,6 +1,6 @@
 # Proxy Middleware - Dev Docs
 
-# Permission system
+## Permission system
 
 When a middleware is first installed, the user will have the option to grant permissions it asks for with checkboxes (ike Discord's Oauth). The user will be able to grant the permission in the middleware UI later. When an API that requires a permission to be used and it is denied, the user will be checkbox, with a popup, to allow it, under the button that says no, there will be a checkbox that says "Don't ask again. Additionally, the user may set the number of times before the same prompt will show the checkbot, in the middleware UI.
 
@@ -17,11 +17,11 @@ if (!<API_NAME>)
 
 ```
 
-# Network request proxying
+## Network request proxying
 
 The permission, "network_requests" must be enabled, in order to wt, fetch, ws, and wrtc. Those APIs will be overriden inside of the scope of the middleware.
 
-# modifySelf
+## modifySelf
 
 This was created so that the middleware could support live editing. In order for this API to work, the permission `modify_self` must be granted. I will eventually, make different web bundler backends. This is a form of eval.
 
@@ -32,9 +32,9 @@ type modifier = (script: string) => string
 ctx.apis.modifySelf(<Type of middleware enum>, modifier)
 ```
 
-If it is a minified file and min.js files are provided in the Zip that correspond to the name of the handler files, they will be used to recreate the deobfuscated scripts. You will be able to choose which minifier would be used after the file is saved. Also when the file is saved, if it is Webpack, WebCrack will be used to debundle, and when it is saved, it will be repacked.
+If it is a minified file and min.js files are provided in the Zip that correspond to the name of the handler files, they will be used to recreate the deobfuscated scripts. You will be able to choose which minifier would be used after the file is saved. Also when the file is saved, if it is Webpack, webcrack will be used to debundle, and when it is saved, it will be repacked.
 
-# Adapters
+## Adapters
 
 Perhaps, you may want to communicate between different middlewares. This is called shared data.
 
@@ -44,7 +44,7 @@ In any storage key or message channel that works in Web Workers, the storage key
 
 > The identifier comes from the manifest itself
 
-# Bridge (fake middleware)
+## Bridge (fake middleware)
 
 fakeMiddleware is a low level API that allows middleware to create. In order for it to be used the permission must be granted by the user, "fake_middleware".
 
