@@ -63,7 +63,7 @@ You could help write documentation, or find domain fronting exploits.
 
 ### I want to contribute, but I don't know how the SW APIs work
 
-If you have ever used the Fetch API or written a server in a JS runtime, it's that but with an event listener for fetch, but you have to keep track of how the SW is registered and there are message channels and caching
+
 
 Don't be overwhelmed
 
