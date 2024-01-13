@@ -103,8 +103,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 			clientUrl,
 			reqUrl.pathname + reqUrl.search,
 			isHomepage,
-			isiFrame,
-		),
+			isiFrame
+		)
 	);
 
 	// Ensure the request isn't blocked by CORS
@@ -116,7 +116,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		console.debug(
 			req.destination == ""
 				? `${req.method} ${proxyUrl.href}`
-				: `${req.method} ${proxyUrl.href} (${req.destination})`,
+				: `${req.method} ${proxyUrl.href} (${req.destination})`
 		);
 
 	// Rewrite the request headers
@@ -229,7 +229,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		body = await resp.text();
 
 		if (body !== "") {
-			let base = `
+			let base = /* html */ `
 <!DOCTYPE html>
 <head>
     <!-- Fix encoding issue -->
@@ -290,7 +290,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	) {
 		body = await resp.text();
 
-		`
+		/* xml */ `
 <config>
 {
 	prefix: ${prefix}
@@ -306,12 +306,12 @@ ${body}
 			body = rewriteScript(
 				script,
 				isMod,
-				`
+				/* js */ `
 {
 	const bak = decodeURIComponent(escape(atob(\`${escapeJS(script)}\`)));
 	${integral(isMod)}
 }			
-`,
+`
 			);
 		} else body = rewriteScript(script, isMod);
 	} else if (req.destination === "manifest") {
@@ -327,7 +327,7 @@ ${body}
 	// Nests
 	else if (flags.workers && req.destination === "worker")
 		body = isModWorker
-			? `
+			? /* js */ `
 import { proxyLocation } from "${aeroPrefix}worker/worker";
 self.location = proxyLocation;
 `
@@ -338,11 +338,11 @@ ${body}
 		`;
 	else if (flags.workers && req.destination === "sharedworker")
 		body = isModWorker
-			? `
+			? /* js */ `
 import { proxyLocation } from "${aeroPrefix}worker/worker";
 self.location = proxyLocation;
 `
-			: `
+			: /* js */ `
 importScripts("${aeroPrefix}worker/worker.js");
 importScripts("${aeroPrefix}worker/sharedworker.js");
 	
@@ -357,7 +357,7 @@ ${body}
 	// TODO: x-aero-size-transfer
 	if (typeof body === "string") {
 		rewriteRespHeaders["x-aero-size-body"] = new TextEncoder().encode(
-			body,
+			body
 		).length;
 		// TODO: x-aero-size-encbody
 	} else if (body instanceof ArrayBuffer) {
