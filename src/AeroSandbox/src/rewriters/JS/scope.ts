@@ -1,10 +1,12 @@
 import config from "$aero_config";
 const { flags } = config;
 
-import * as config from "$aero_config";
-
-// Somehow make scope global in browser bundle
-const scope = (script: string): string => {
+/**
+ * This method should only be used for ancient browsers. FIXME: Don't use this scoping method right now; the parser is really broken.
+ * @param script The script to scope
+ * @returns The scoped script
+ */
+function scope(script: string): string {
 	return script;
 	/*
 	// Currently scanning for
@@ -155,7 +157,7 @@ const scope = (script: string): string => {
 
 	return script;
 	*/
-};
+}
 
 /*
 function group(n) {

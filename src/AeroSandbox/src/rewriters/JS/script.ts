@@ -1,5 +1,5 @@
 import scope from "./scope";
-import meta from "../meta";
+import meta from "../../../../shared/meta";
 
 // TODO: Don't replace if in a block scope
 const isStrict = /\s*("use strict"|'use strict');?/;

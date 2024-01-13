@@ -6,4 +6,6 @@ HTTP caches are emulated by a system using aero's service worker's own cache sto
 
 ## Cache Manifest Rewriting
 
-This is feature is deprecated, but is still supported in Safari. 
+aero rewrites the paths in the cache manfiests files using the [src rewriter](../../src/shared/src.ts)
+
+> This is web feature is deprecated, but is still supported in Safari.

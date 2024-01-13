@@ -2,152 +2,127 @@ import proxy from "$aero/shared/autoProxy/autoProxy";
 
 import escape from "$aero_browser/misc/escape";
 
+import integrityEscapeRules from "$aero_browser/rewriters/shared/rules";
+
 // Private scope
-{
-	const escapeAttrs = ["href", "integrity"];
+// This file isn't needed for proxies and is for Faker. This could be done using the shadow dom, but that isn't performant.
+const concealAttrs = (escapeRules: Map<any, AeroSandboxTypes.EscapeRule[]>): void => {
+	for (const [targetElClass, escapeRules] of escapeRules) {
+		const escapeAttrs = escapeRules.map(escapeRule => escapeRule.attr);
 
-	const escapeEl = {
-		get: attr => {
-			return (
-				attr
-					// TODO: Only perform the escapes on the correct element
-					.replace(escape(escapeAttrs[0]), "_$&")
-					.replace(escape(escapeAttrs[1]), "_$&")
-			);
-		},
-	};
-
-	const attr = {
-		apply(target, that, args) {
-			const [, name] = args;
-
-			args[0] = escapeEl.get(name);
-
-			return Reflect.apply(target, that, args);
-		},
-	};
-	const attrNS = {
-		apply(target, that, args) {
-			const [, name] = args;
-
-			args[1] = escapeEl.get(name);
-
-			return Reflect.apply(target, that, args);
-		},
-	};
-	const removeAttr = {
-		apply(target, that, args) {
-			// Remove
-			Reflect.apply(target, that, args);
-
-			// Remove the backup too
-			const [name] = args;
-			if (name.includes(escapeAttrs)) args[0] = `_${name}`;
-
-			Reflect.apply(target, that, args);
-		},
-	};
-	const removeAttrNS = {
-		apply(target, that, args) {
-			// Remove
-			Reflect.apply(target, that, args);
-
-			// Remove the backup too
-			const [, name] = args;
-			if (name.includes(escapeAttrs)) args[1] = `_${name}`;
-
-			Reflect.apply(target, that, args);
-		},
-	};
-
-	Element.prototype.hasAttribute = new Proxy(
-		Element.prototype.hasAttribute,
-		attr,
-	);
-	Element.prototype.hasAttribute = new Proxy(
-		Element.prototype.hasAttribute,
-		attr,
-	);
-	Element.prototype.hasAttributeNS = new Proxy(
-		Element.prototype.hasAttribute,
-		attrNS,
-	);
-	Element.prototype.getAttribute = new Proxy(
-		Element.prototype.getAttribute,
-		attr,
-	);
-	Element.prototype.getAttributeNode = new Proxy(
-		Element.prototype.getAttributeNode,
-		attr,
-	);
-	Element.prototype.getAttributeNS = new Proxy(
-		Element.prototype.getAttribute,
-		attrNS,
-	);
-	Element.prototype.getAttributeNodeNS = new Proxy(
-		Element.prototype.getAttribute,
-		attrNS,
-	);
-	Element.prototype.getAttributeNames = new Proxy(
-		Element.prototype.getAttributeNames,
-		{
-			apply(target, that, args) {
-				return Reflect.apply(target, that, args)
-					.filter(attr => attr === "_href")
-					.map(attr =>
-						(target instanceof HTMLAnchorElement &&
-							escape("href").test(attr)) ||
-						(target instanceof HTMLScriptElement &&
-							escape("integrity").test(attr))
-							? attr.slice(1)
-							: attr,
-					);
+		const escapeEl: ProxyHandler<any> = {
+			get: attrName => {
+				for (const targetAttr of escapeAttrs)
+					attrName = attrName.replace(escape(targetAttr), "_$&");
+				return attrName;
 			},
-		},
-	);
-	Element.prototype.toggleAttribute = new Proxy(
-		Element.prototype.toggleAttribute,
-		removeAttr,
-	);
-	Element.prototype.removeAttribute = new Proxy(
-		Element.prototype.removeAttribute,
-		removeAttr,
-	);
-	Element.prototype.removeAttributeNS = new Proxy(
-		Element.prototype.removeAttribute,
-		removeAttrNS,
-	);
+		};
 
-	// Conceal
-	/*
-	const concealedAttrs = ["href", "xlink:href", "integrity"];
-	function invalid(el, attr) {
-		return !(
-			([
-				...concealedAttrs,
-				...concealedAttrs.filter(attr => `_${attr}`),
-			].includes(attr) &&
-				// href
-				(el instanceof HTMLAnchorElement ||
-					el instanceof HTMLAreaElement ||
-					// integrity
-					el instanceof HTMLScriptElement)) ||
-			(el instanceof HTMLIFrameElement && attr === "parentProxyOrigin") ||
-			attr === onload
-		);
+		if (escapeAttrs) {
+			// Generic attr proxies
+			const attr: ProxyHandler<any> = {
+				apply(target, that, args) {
+					const [, name] = args;
+
+					// @ts-ignore
+					args[0] = escapeEl.get(name);
+
+					return Reflect.apply(target, that, args);
+				},
+			};
+			const attrNS: ProxyHandler<any> = {
+				apply(target, that, args) {
+					const [, name] = args;
+
+					// @ts-ignore
+					args[1] = escapeEl.get(name);
+
+					return Reflect.apply(target, that, args);
+				},
+			};
+			const removeAttr: ProxyHandler<any> = {
+				apply(target, that, args) {
+					// Remove
+					Reflect.apply(target, that, args);
+
+					// Remove the backup too
+					const [name] = args;
+					if (name.includes(escapeAttrs)) args[0] = `_${name}`;
+
+					Reflect.apply(target, that, args);
+				},
+			};
+			const removeAttrNS: ProxyHandler<any> = {
+				apply(target, that, args) {
+					// Remove
+					Reflect.apply(target, that, args);
+
+					// Remove the backup too
+					const [, name] = args;
+					if (name.includes(escapeAttrs)) args[1] = `_${name}`;
+
+					Reflect.apply(target, that, args);
+				},
+			};
+
+			for (const funcToProxy of ["hasAttribute", "hasAttributeNS", "getAttribute", "getAttributeNode", "getAttributeNS", "getAttributeNodeNS", "getAttributeNames", "toggleAttribute", "removeAttributeNS"]) {
+				targetElClass[funcToProxy] = new Proxy(
+					funcToProxy,
+					attr
+				)
+			}
+			targetElClass.getAttributeNames = new Proxy(
+				targetElClass.getAttributeNames,
+				{
+					apply(target, that, args) {
+						// @ts-ignore
+						return Reflect.apply(target, that, args)
+							.filter((attr: string) => escapeAttrs.includes(attr))
+							.map((attr: string) =>
+								(target instanceof HTMLScriptElement &&
+									escape("integrity").test(attr))
+									? attr.slice(1)
+									: attr,
+							);
+					},
+				},
+			);
+			for (const funcToProxy of ["toggleAttribute", "removeAttribute"]) {
+				// @ts-ignore
+				targetElClass[funcToProxy] = new Proxy(
+					funcToProxy,
+					removeAttr
+				)
+			}
+			targetElClass.removeAttributeNS = new Proxy(
+				targetElClass.removeAttribute,
+				removeAttrNS,
+			);
+
+			// Conceal
+			// FIXME: I don't know what's gone wrong
+			const concealedAttrs = escapeAttrs;
+			function isInvalid(attrName: string): boolean {
+				const rel = escapeAttrs.getNamedItem(attrName);
+				if (rel)
+					// The array was obtained from - https://html.spec.whatwg.org/multipage/semantics.html#attr-link-integrity
+					return possibleValues.includes(rel.value);
+				return false;
+			}
+			Element = new Proxy(Element, {
+				get(target, prop) {
+					if (isInvalid(target.attr)) prop = `_${prop}`;
+
+					return Reflect.get(target, prop);
+				},
+				set(target, prop) {
+					if (isInvalid(target, prop)) prop = `_${prop}`;
+
+					return Reflect.set(target, prop, value);
+				},
+			});
+		}
 	}
-	// TODO: Fix
-	Element = new Proxy(Element, {
-		get(target, prop) {
-			if (invalid(target, prop)) prop = `_${prop}`;
-
-			return Reflect.get(target, prop);
-		},
-		set(target, prop) {
-			if (invalid(target, prop)) prop = `_${prop}`;
-
-			return Reflect.set(target, prop, value);
-		},
-	});
-	*/
 }
+
+concealAttrs(integrityEscapeRules);

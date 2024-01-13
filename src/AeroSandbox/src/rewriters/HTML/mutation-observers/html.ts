@@ -1,26 +1,34 @@
 import * as config from "$aero_config";
 
 import rewriteSrc from "$aero/shared/hared/src";
-import rewriteHtmlSrc from "./htmlSrc";
+import rewriteHtmlSrc from "../shared/htmlSrc";
 import scope from "$aero/shared/hared/scope";
 import rewriteScript from "$aero/shared/hared/script";
 
-import checkCsp from "./csp";
-import Cloner from "./Cloner";
+import checkCsp from "../csp";
+import Cloner from "../Cloner";
 
 import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 import block from "$aero_browser/misc/policy";
 
+// Rules
+import * as defaultRules from "$aero_browser/rewriters/shared/rules";
+
+const rulesArr: any = Object.values(defaultRules).map(rule => [...rule]);
+// What we need to proxy in aero
+const defaultRules: Map<any, AeroSandboxTypes.EscapeRule[]> = new Map();
+
+const elContainer = new Map<keyof HTMLElement, keyof HTMLElement>();
 function set(el: HTMLElement, attr: string, val = "", backup = true) {
+	// TODO: Use WeakMaps instead
 	// Backup element (for element hooks)
 	if (backup) el.setAttribute(`_${attr}`, el.getAttribute(attr));
 
 	el.setAttribute(attr, val);
 }
 
-declare var HTMLPortalElement;
-
+// TODO: Use the element rewriting rules and html rewriters
 /**
  * Rewrite an element
  * @param - The element to rewrite
@@ -30,7 +38,12 @@ export default (el: HTMLElement, attr?: String) => {
 	// Don't exclusively rewrite attributes or check for already observed elements
 	const isNew = typeof attr === "undefined";
 
+	// TODO: Instead of doing this keep track with a WeakMap
 	if (isNew && el.hasAttribute("observed")) return;
+
+	for (const [targetElClass, escapeRules] of escapeRules) {
+		const escapeAttrs = escapeRules.map(escapeRule => escapeRule.attr);
+	}
 
 	// HTML Middleware
 	const ctx = require.context("../middleware/", true, /html.(\.js|\.ts)$/);
@@ -117,7 +130,7 @@ export default (el: HTMLElement, attr?: String) => {
 			set(
 				el,
 				"xlink:href",
-				rewriteHtmlSrc(el.getAttribute("xlink:href")),
+				rewriteHtmlSrc(el.getAttribute("xlink:href"))
 			);
 	} else if (
 		el instanceof HTMLAnchorElement ||
@@ -130,7 +143,7 @@ export default (el: HTMLElement, attr?: String) => {
 			set(
 				el,
 				"xlink:href",
-				rewriteHtmlSrc(el.getAttribute("xlink:href")),
+				rewriteHtmlSrc(el.getAttribute("xlink:href"))
 			);
 	} else if (
 		el instanceof HTMLFormElement &&
@@ -176,7 +189,7 @@ export default (el: HTMLElement, attr?: String) => {
 		}
 		el.addEventListener(
 			"load",
-			() => (el.contentWindow["sec"] = JSON.stringify(sec)),
+			() => (el.contentWindow["sec"] = JSON.stringify(sec))
 		);
 	} else if (el instanceof HTMLPortalElement && el["src"])
 		set(el, "src", rewriteHtmlSrc(el["src"]));
@@ -204,8 +217,8 @@ export default (el: HTMLElement, attr?: String) => {
 							g2 +
 							g3 +
 							g4 +
-							rewriteSrc(g5, proxyLocation().href),
-					),
+							rewriteSrc(g5, proxyLocation().href)
+					)
 				);
 		}
 	}

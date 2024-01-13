@@ -32,13 +32,33 @@ type SWlessRuntimeConfig = {
 declare namespace AeroSandboxTypes {
 	export interface $location {
 		// TODO: Define
-	},
+	}
+	// Internal types
+	interface EscapeRule {
+		// These rules should be applied to per element
+		// Attribute to match
+		attr: string;
+		// Exclusion rules
+		mustContain?: string[];
+		cannotContain?: string[];
+		// Interception methods
+		rewriter?: Function;
+		emulator?: Function;
+	}
+	// Bundler types
 	export type AeroSandboxConfig = {
-		ProxyConfig?; // This is not needed, if you are running this on aero itself, since it will automatically have the proper namespace already (no need for mapping).
+		/**
+		 * This is not needed, if you are running this on aero itself, since it will automatically have the proper namespace already (no need for mapping).
+		 */
+		ProxyConfig?;
 		proxyLocation: () => URL;
 		htmlInterception?: HtmlInterceptionConfig; // Enable Element API inteception and HTML interception
 		redirectors?: boolean; // Enable redirectors; default true. Concelears and redirectors are distinct options, because you might be trying to intercept link redirection. See DEV.md.
 		concealers?: boolean; // Enable concealers; default true
+		concealVars?: string[]; // This will use a script rewriter to conceal variables other than $aero
+		/**
+		 * Bias: bias_text[rating.bias[0]],
+		 */
 		jsRewriter?: Function;
 		nestedSWSupport: boolean; // This requires that you import the nested SW library into your main SW file
 		// Extra features

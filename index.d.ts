@@ -1,57 +1,74 @@
 // Config types
 
+/**
+ * Interface for BareSort.
+ * This interface is used to define the structure of BareSort.
+ */
 interface BareSort {
-	checkInterval: number | false; // Return false to disable
-	sorter: (endpoints: string[]) => string[]; // // A modifer that returns a sorted array of endpoints
+	/** checkInterval: Can be a number or false. If false, it disables the check interval. */
+	checkInterval: number | false;
+	/** sorter: A function that takes an array of endpoints and returns a sorted array of endpoints. */
+	sorter: (endpoints: string[]) => string[];
 }
 
-type aeroExcludePaths = (reqPath: string) => boolean; // A modifer
+/** aeroPathFilter: A function that modifies the request path. */
+type aeroPathFilter = (reqPath: string) => boolean;
 
 declare namespace AeroTypes {
-	// This isn't in AeroSandbox, because it is initialized inside of handle.ts
-	// TODO: I might make a seperate type for $aero inside of the sandbox library, because by then the security variables are set. Besides, I doubt that AeroTypes works in the scope of AeroSandbox.
+	/**
+	 * GlobalAeroCTX interface.
+	 * This interface is not in AeroSandbox because it is initialized inside of handle.ts.
+	 * It might be better to make a separate type for $aero inside of the sandbox library.
+	 */
 	export interface GlobalAeroCTX {
-		// TODO: ...(define properties)
+		// TODO: Define properties here
 	}
 
+	/**
+	 * config interface.
+	 * This interface is used to define the configuration options for Aero.
+	 */
 	export interface config {
-		prefix: string; // The prefix for the URL// The prefix for the URL
-		aeroExcludePaths: aeroExcludePaths; // The array of these files are exluded from import, because they are needed to be imported for aero to function.
-		bareServers: string[]; // The backends to use
-		webrtcTurnServers: string[]; // The WebRTC backends to use
+		/** prefix: The prefix for the URL. */
+		prefix: string;
+		/** aeroPathFilter: These files are excluded from import because they are needed for aero to function. */
+		aeroPathFilter: aeroPathFilter;
+		/** bareServers: The backends to use. */
+		bareServers: string[];
+		/** webrtcTurnServers: The WebRTC backends to use. */
+		webrtcTurnServers: string[];
 		bareSort: BareSort;
-		sortInterval: number; // Time to fallback to backends
-		cacheKey: string; // The cache key to use
-		// The dynamic configuration
-		dynamicConfig: {
-			dbName: string; // The database name
-			id: string; // Id to differentiate message from other purposes
+		/** sortInterval: Time to fallback to backends. */
+		sortInterval: number;
+		/** cacheKey: The cache key to use. */
+		cacheKey: string;
+		/** aeroScopingType: Import scoping.ts rather than gel.ts when it is set to gel. */
+		aeroScopingType: "gel" | "scoping"; // TODO: Import scoping.ts rather than gel.ts when it is set to gel
+		/** dynamicConfig: The dynamic configuration. */
+		dynamicConfig?: {
+			/** dbName: The database name. */
+			dbName: string;
+			/** id: Id to differentiate message from other purposes. */
+			id: string;
 		};
-		// The flags
+		/** flags: The flags for various features, security options, support options, protocol support, and misc options. */
 		flags: {
 			// Features
 			sortBackends: boolean;
 			dynamicUpdates: boolean;
-
 			// Security
-			emulateSecureContext: boolean; // Secure-only features would still be broken; this is only to mask the site as secure
-			corsEmulation: boolean; // Obey security features, rather than ignore them; Recommended
+			emulateSecureContext: boolean /** emulateSecureContext: Trick the site into thinking it has SSL */;
+			corsCompliance: boolean /** corsCompliance: Obey security features, rather than ignore them; Recommended */;
 			// AeroSandbox support options
-			legacy: boolean;
-			experimental: boolean; // Enable features that arent widely adopted by the 3 major browser  or in Draft
-			nonstandard: boolean; // Browser-specific code. Recommended
-
-			// Protocol support
-			wrtc: boolean;
-			ws: boolean;
-
-			// Misc
-			concealNamespace: boolean; // This is to prevent sites from detecting the proxy by searching for $aero
-			foolExtensions: boolean; // Prevent extensions from blocking by checking the request url
-
+			legacy: boolean /** legacy: Enable support for deprecated features; Recommended */;
+			experimental: boolean /** experimental: Enable features that aren't widely adopted by the 3 major browsers or in Draft; Recommended */;
+			nonstandard: boolean; // Browser-specific code; Recommended
+			concealNamespace: boolean /** This is to prevent sites from detecting the proxy by searching for $aero */;
+			// Extra
+			foolExtensions: boolean /* foolExtensions: Prevent extensions from blocking by checking the request url */;
 			workers: boolean;
 		};
-		// Ignore these if you are not debugging
+		/** debugMode: Ignore these if you are not debugging. */
 		debugMode: boolean;
 		debug: {
 			errors: boolean;
@@ -60,6 +77,10 @@ declare namespace AeroTypes {
 			scoping: boolean;
 		};
 	}
+	/**
+	 * Sec interface.
+	 * This interface is used to define the security options.
+	 */
 	export interface Sec {
 		clear: string[];
 		timing: string;

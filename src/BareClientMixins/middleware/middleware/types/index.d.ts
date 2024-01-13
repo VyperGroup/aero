@@ -32,16 +32,16 @@ declare namespace MiddlewareTypes {
 
 	export type RequestHandler = (
 		ctx: RequestContext,
-		DOMProxy?: DOMProxy,
+		DOMProxy?: DOMProxy
 	) => Promise<Request | Response | RewriteController | void>;
 	// TODO: Specify a return type
 	export type WSRequestHandler = (
 		ctx: RequestContext,
-		DOMProxy?: DOMProxy,
+		DOMProxy?: DOMProxy
 	) => unknown;
 	export type ResponseHandler = (
 		ctx: ResponseContext,
-		DOMProxy?: DOMProxy,
+		DOMProxy?: DOMProxy
 	) => Promise<Response | void>;
 	export type HTMLHandler = (el: Element) => HTMLCommand;
 
@@ -70,12 +70,13 @@ declare namespace MiddlewareTypes {
 // While you could write your own rewritable content interceptors for the mw interceptors, this prevents you from reinventing the weel by making the proxy's existing content interceptors extendable. In turn, it makes the middleware code easier to understand.
 // By rewritable content interception, I mean modification that happens after a resource is rewritten in the proxy. For normal assets that don't need rewrites in a proxy, you should be looking for Response Middleware instead.
 // TODO: Implement these into aero
-declare module "mwRewriters" {
+
+declare namespace AeroSandboxMiddlewareRewriters {
 	type cssHandler = (styles: string) => Promise<string>;
 	type jsHandler = (script: string) => Promise<string>;
 	type jsHandlerExternal = (
 		script: string,
-		ctx: ResponseContext,
+		ctx: ResponseContext
 	) => Promise<string>;
 	type headersHandler = (headers: object, proxyUrl: URL) => HeadersInit;
 

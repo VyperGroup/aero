@@ -11,5 +11,9 @@
       "$aero_shared": ["shared/*"]
     }
   },
-  "include": ["src/shared/**/*", "./config.ts"]
+  "include": [
+    "src/shared/**/*",
+    "./config.ts",
+    "src/AeroSandbox/src/rewriters/JS"
+  ]
 }

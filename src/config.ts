@@ -1,41 +1,34 @@
 const config: AeroTypes.config = {
 	prefix: "/go/",
-	aeroExcludePaths: path =>
+	aeroPathFilter: path =>
 		["aero.config.js", "uv.config.js", "aero.sandbox.ts"].includes(path), // This is probably wrong
 	bareServers: ["/bare/"],
 	webrtcTurnServers: ["stun:stun.l.google.com:19302"],
 	bareSort: {
-		interval: false,
+		interval: 3600000, // 1 hr in ms
 		sorter: bareServers => {
 			// TODO: Load balance by default and also provide an example function for speed optimization
 			return bareServers;
 		},
 	},
-	sortInterval: 0,
+	urlEncoder: () => {},
 	cacheKey: "httpCache",
-
 	dynamicConfig: {
 		dbName: "aero",
 		id: "update",
 	},
-
 	flags: {
-		dynamicUpdates: false,
-
+		// Emulation
 		emulateSecureContext: false,
 		corsEmulation: true,
-
+		// Support options
 		legacy: true,
 		experimental: true,
 		nonstandard: true,
-
-		wrtc: true,
-		ws: true,
-
-		concealNamespace: true,
+		// Stealth
 		foolExtensions: false,
-
-		workers: true,
+		// Aero Sandbox options
+		concealNamespace: true,
 	},
 
 	debugMode: true,

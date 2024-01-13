@@ -22,9 +22,8 @@ This is a play on words for backwards compatibility. Normally sites use this typ
 
 [Polyfills](https://web.dev/articles/the-end-of-ie)
 
-
 - [ ] The user agents will be fooled to a modern browser
-  Babel - Gets down to ES3. I would have to write my own Babel plugins to have ES2 support. See [ECMA History](https://www.educative.io/blog/javascript-versions-history)
+      Babel - Gets down to ES3. I would have to write my own Babel plugins to have ES2 support. See [ECMA History](https://www.educative.io/blog/javascript-versions-history)
 - [ ] JS
   - [ ] Polyfill collections
     - [ ] [NPM Lib #2](https://github.com/JakeChampion/polyfill-library)
@@ -33,7 +32,21 @@ This is a play on words for backwards compatibility. Normally sites use this typ
     - [ ] [Bundle Website](https://polyfill.io/v3)
   - [ ] Extremely optimized specific polyfills
     - [ ] [unfetch for ES3](https://www.npmjs.com/package/unfetch)
-  - [ ] https://guybedford.com/es-module-preloading-integrity
+  - [ ] Async support - [https://www.npmjs.com/package/promise-polyfill]() and https://babeljs.io/docs/babel-plugin-transform-async-to-generator
+  - [ ] Misc APIs
+    - [ ] XHR for IE (using [XDomainRequest](https://udn.realityripple.com/docs/Web/API/XDomainRequest))
+    - [ ] [Custom elements V1](https://github.com/ungap/custom-elements)
+    - [ ] [WASM](https://github.com/evanw/polywasm)
+  - Graphics
+    - [ ] https://github.com/austinEng/webgpu-shader-module-transform
+    - [ ] [Firefox Shim for full WebGPU compliance](https://github.com/Kangz/webgpu-samples/commit/1d17266bdba1446b87318f4c6e770e4b955a80bc#diff-3fac2dc02796ccd69993b1445672eaf700066cf4fd66fc1e247698fd987a1d23)
+    - [ ] https://webgl2fundamentals.org/webgl/lessons/webgl1-to-webgl2.html
+  - [ ] Storage
+    - [ ] [Cache](https://github.com/jimmywarting/cache-polyfill)
+    - [ ] [localStorage](https://github.com/mortzdk/localStorage#supported-browsers)
+    - [ ] [IndexedDB](https://github.com/facebookarchive/IndexedDB-polyfill) ()
+    - [ ] [IndexedDB 2](https://github.com/indexeddbshim/indexeddbshim)
+    - [ ] WebSQL?
   - [ ] Emulated Web Workers (We have many options)
     - [ ] [Psuedo-worker](https://github.com/nolanlawson/pseudo-worker)
     - [ ] [worker-polyfill](https://www.npmjs.com/package/worker-polyfill)
@@ -50,14 +63,17 @@ This is a play on words for backwards compatibility. Normally sites use this typ
 - [ ] CSS?
   - [ ] [Guide](https://ricostacruz.com/til/ie-polyfills)
   - [ ] [IE11](https://github.com/nuxodin/ie11CustomProperties)
-- [ ] HTML
-  - [ ] [Webcomponents](https://github.com/webcomponents/polyfills) 
-  - [ ] Preload (Emulated in a SW)
-  - [ ] 
+  - [ ] https://css-tricks.com/a-new-container-query-polyfill-that-just-works/
+- [ ] HTML - [also see](https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-browser-Polyfills)
+  - [ ] [Webcomponents](https://github.com/webcomponents/polyfills)
+  - [ ] Preload (Emulated in a SW) - I will probably make this myself
+  - [ ] [Canvas HTML 5 support]()
+  - [ ] [Canvas >HTML5]()
 - [ ] Video/Audio codecs / Older mage formats
-  Unsupported codecs and older image formats will be converted using [FFMpeg](https://www.npmjs.com/package/web-ffmpeg?activeTab=readme)
+      Unsupported codecs and older image formats will be converted using [FFMpeg](https://www.npmjs.com/package/web-ffmpeg?activeTab=readme)
 - [ ] Semi-modern image support
-  - [ ] [For semi-older browsers that don't support external svgs](https://github.com/thasmo/external-svg-polyfill)
+  - [ ] [For semi-older browsers that don't support external SVGs](https://github.com/thasmo/external-svg-polyfill)
+  - [ ] [SVGs for older IE versions](https://github.com/dhamaso/svg2vml)
 - [ ] Fonts
   - [ ] TTF/WOFF fonts will be converted to EOT for IE8 support
   - [ ] For browsers that don't even support EOT let alone TTF/WOFF, the fonts will be prerendered into an image. This means that the text in custom fonts will be displayed as an image with invisible text behind it, so that it can be highlighted and copied and pasted. This will also be done with web-safe (default) fonts that weren't included at the time the browser was created. Some possible libraries I will probably use [ultimate-text-to-image](https://github.com/terence410/ultimate-text-to-image).
@@ -68,7 +84,8 @@ This is a play on words for backwards compatibility. Normally sites use this typ
 #### Both backwards and forwards compatibility
 
 TODO: Move the flash compatbility section away from Moonrock and instead make Moonrock use Fowardcompat instead.
-- [ ] Flash - [CheerpX]() OR [Ruffle](https://ruffle.rs) - 
+
+- [ ] Flash - [CheerpX]() OR [Ruffle](https://ruffle.rs)
 - [ ] Java Applets - [appletrunner](https://www.bing.com/ck/a?!&&p=43bca98a76ba897aJmltdHM9MTcwNDkzMTIwMCZpZ3VpZD0wOTYwMTdkMy1iZGRiLTZiYTAtMDcxOC0wM2QxYmM2NTZhZjImaW5zaWQ9NTMxOQ&ptn=3&ver=2&hsh=3&fclid=096017d3-bddb-6ba0-0718-03d1bc656af2&psq=java+applet+emlator&u=a1aHR0cHM6Ly9naXRodWIuY29tL2xlYW5pbmd0ZWNoL2NoZWVycGotYXBwbGV0cnVubmVy&ntb=1)
 
 ### Wouldn't repeated detection be slow?
