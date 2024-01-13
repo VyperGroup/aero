@@ -1,9 +1,16 @@
 General
 
-[ ] Consider convert all of the TODO.xit files to MD
+
+[ ] Instead of using comments at the end of properties to document, properly document the interface properties with /** * */. Use AI to do this.
 
 [ ] Finish aero's sandboxing library
+
 [ ] Nested SW support
+
+Docs
+
+[ ] Consider converting all of the TODO.xit files to MD
+[ ] Properly capitalize the headings in the docs
 
 Issues
 
