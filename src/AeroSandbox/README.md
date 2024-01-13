@@ -8,9 +8,24 @@ This is a soon to be proxy-independent library that lets you modify. It will wor
   - Adding on to use case, you will soon be able to intercept HTTP requests without a Service Worker and get back mock responses, making the browser think that there is no asset blocking.
 - Soon, you will be able to bring back your MW2 extensions from your dead using injected scripts combined with this library. I will provide the old APIs in a bundle that you can import in your SW.
 - Speeds up your proxy by not parsing, turning it into an interception proxy, rather than a semi-interception proxy.
-- Easily port new proxies. I will be porting Rammerhead to become an interception proxy, and along with my SW-less runtime for proxy, I will use this in place of it's own API interceptors and HTML Rewriting. This will be a stepping stone before aero releases (something for my users to use while I keep them waiting),
 - Intercept redirects, so that you could provide logging or link checking. A real world example is that many social media sites change the href to be a link checker that processes the url, before finally redirecting. They usually do this to warn the user that they are leaving the site (to mitigate phising attempts) or check the link on something like VirusTotal. Google search does something similar where when you click on the links you are first redirected to an endpoint for analytics purposes.
+
+## Shims for alternative proxies
+
+I will provide built files that can be imported into other proxies to replace their default modules
+
+> The proxies that will be supported are: UV, Wombat (library used by Womginx and Pywb), Rammearhead
+
+### Build patterns
+
+They will be stored with this pattern: build/`proxy name`/`files`
+In order to shim them easily, there will be git patch files for the respective proxy repos at build/`proxy name`/shim.patch
 
 ## Maintainability / Futureproofing
 
 This library directly parses standards for conealers, so you can ensure that most API interceptors will keep up with the latest specifications. Unless there is a major enough change when it comes to how requests are made. It will parse the documentation and the WebIDL files.
+
+## Index
+
+- [HTML Rewriting](src/sandboxers)
+-
