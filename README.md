@@ -6,11 +6,11 @@ Aero is a safe, developer friendly, and innovative interception web proxy with m
 
 Web proxies are website libraries that work to emulate the functionality site that you want. They do this by intercepting API calls and rewriting documents to emulate as if it was under the proxied origin.
 
-Proxies can be used for:
+Web Proxies can be used for:
 
-* Unblocking websites or browser features
-* Middleware
-* Bypassing any browsing restrictions in a sandbox
+- Bypassing any browsing restrictions in a sandbox
+- Unblocking websites or browser features through emulation
+- Middleware
 
 ## Related
 
@@ -25,21 +25,21 @@ You could always [email me](mailto:inbox@ryanwilson.space) with questions. You w
 
 ## Directories
 
-* **altBackends** - Alternative backends rather than using a SW
-* **src/BareClientMixins** - Alternative Bare Clients. This code makes any of the code used in aero able to be ran inside of other proxies to prevent creating a properietary ecosystem on accident. See [BareClientMixins](./src/BareClientMixins/middleware/README.md) for more info.
-* **src/BareClientsMixins/middleware** - The middleware code
-* **src** - Aero's _actual_ code
-* **src/this** - The SW code (aero's base). Alternative backends are found in _backend_.
-* **src/sandbox** - Code that is injected into the site. This consists of API interceptors. This will transition to becoming the aero sandboxing library to become proxy independent. This is why the name was recently changed from browser to sandbox.
-* **src/worker** - Basically, browser but for [nested workers](./src/nestedSWs/README.md)
-* **src/shared** - Code used by _this_ and _browser_
-* **backend** - Alternative aero backends (Non SW) for certain environments
-* **tests** - Unit testing
-* **dist** - Build files for aero. This is what you actually need to use aero on your site. These won't be present until you run `pnpm run build`.
+- **altBackends** - Alternative backends rather than using a SW
+- **src/BareClientMixins** - Alternative Bare Clients. This code makes any of the code used in aero able to be ran inside of other proxies to prevent creating a properietary ecosystem on accident. See [BareClientMixins](./src/BareClientMixins/middleware/README.md) for more info.
+- **src/BareClientsMixins/middleware** - The middleware code
+- **src** - Aero's _actual_ code
+- **src/this** - The SW code (aero's base). Alternative backends are found in _backend_.
+- **src/sandbox** - Code that is injected into the site. This consists of API interceptors. This will transition to becoming the aero sandboxing library to become proxy independent. This is why the name was recently changed from browser to sandbox.
+- **src/worker** - Basically, browser but for [nested workers](./src/nestedSWs/README.md)
+- **src/shared** - Code used by _this_ and _browser_
+- **backend** - Alternative aero backends (Non SW) for certain environments
+- **tests** - Unit testing
+- **dist** - Build files for aero. This is what you actually need to use aero on your site. These won't be present until you run `pnpm run build`.
 
 ## Notable Contributions
 
-* [Divide](https://github.com/e9x) for standardizing interception proxies with [TompHTTP](https://github.com/tomphttp/bare-server-node)
+- [Divide](https://github.com/e9x) for standardizing interception proxies with [TompHTTP](https://github.com/tomphttp/bare-server-node)
 
 Don't be afraid to help 😄
 Nobody is unqualified to work on aero
