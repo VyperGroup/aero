@@ -15,22 +15,24 @@ import block from "$aero_browser/misc/policy";
 // Rules
 import * as defaultRules from "$aero_browser/rewriters/shared/rules";
 
+// @ts-ignore
 const rulesArr: any = Object.values(defaultRules).map(rule => [...rule]);
-// What we need to proxy in aero
-const defaultRules: Map<any, AeroSandboxTypes.EscapeRule[]> = new Map();
+// What the rules for what we need to proxy in the scope of this module
+const defaultRulesCollection: Map<any, AeroSandboxTypes.Rule[]> = new Map(rulesArr);
 
-const attrMap = new Map<HTMLElement, HTMLElement>();
-
-const elContainer = new Map<keyof HTMLElement, keyof HTMLElement>();
+const elContainer = new Map<HTMLElement, HTMLElement>();
 function set(el: HTMLElement, attr: string, val = "", backup = true) {
 	const elBak = el.cloneNode(true);
-	
-	el.setAttribute(attr, val);
+	if (elBak instanceof HTMLElement) {
+		el.setAttribute(attr, val);
 
-	// Backup element (for Element hooks)
-	if (backup)
-		attrMap.set(el, elBak);
+		// Backup element (for Element hooks)
+		if (backup)
+			elContainer.set(el, elBak);
+	}
 }
+
+const observedElements = new Set<HTMLElement>();
 
 // TODO: Use the element rewriting rules and html rewriters
 /**
@@ -43,15 +45,12 @@ export default (el: HTMLElement, attr?: String) => {
 	const isNew = typeof attr === "undefined";
 
 	// TODO: Instead of doing this keep track with a WeakMap
-	if (isNew && el.hasAttribute("observed")) return;
+	if (isNew && observedElements.has(el)) return;
 
-	for (const [targetElClass, escapeRules] of escapeRules) {
-		const escapeAttrs = escapeRules.map(escapeRule => escapeRule.attr);
+	// Ensure that there is something to rewrite
+	if (!defaultRulesCollection.has(el.constructor)) return;
 
-
-		if (esca[])
-
-	}
+	const rules = defaultRulesCollection.get(el.constructor)
 
 	// HTML Middleware
 	const ctx = require.context("../middleware/", true, /html.(\.js|\.ts)$/);
@@ -250,6 +249,8 @@ export default (el: HTMLElement, attr?: String) => {
 		set(el, "onload", scope(el.getAttribute("onload")));
 	if (typeof el.error === "string")
 		set(el, "onerror", scope(el.getAttribute("onload")));
-
-	el.setAttribute("observed", true);
 };
+
+function setupHTMLMiddlewareRewriters(el: HTMLElement) {
+
+}
