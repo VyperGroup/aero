@@ -1,5 +1,5 @@
 # Middleware BareClient Mix-in
 
-[Dev Docs](./DEV.md)
+[Dev Docs](./docs/DEV.md)
 
 Extends the fallback mix-in

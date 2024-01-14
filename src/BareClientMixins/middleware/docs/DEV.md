@@ -1,5 +1,7 @@
 # Proxy Middleware - Dev Docs
 
+> Soon these docs will become an official standard
+
 ## Permission system
 
 When a middleware is first installed, the user will have the option to grant permissions it asks for with checkboxes (ike Discord's Oauth). The user will be able to grant the permission in the middleware UI later. When an API that requires a permission to be used and it is denied, the user will be checkbox, with a popup, to allow it, under the button that says no, there will be a checkbox that says "Don't ask again. Additionally, the user may set the number of times before the same prompt will show the checkbot, in the middleware UI.
@@ -16,6 +18,10 @@ if (!<API_NAME>)
   ...(handle exception)
 
 ```
+
+### An "encompassing permission"
+
+This means that there is a "master" permission that grants a few other permissions along with it
 
 ## Network request proxying
 
