@@ -42,7 +42,7 @@ If it is a minified file and min.js files are provided in the Zip that correspon
 
 ## Adapters
 
-Perhaps, you may want to communicate between different middlewares. This is called shared data.
+Perhaps, you may want to communicate between different middlewares. This is called shared data. If you want to communicate between a SW-side handler and a site-side handler, you should use a [DeferredPromise](https://github.com/open-draft/deferred-promise) while waiting for an event message to be recieved.
 
 Shared data requires the permission `shared_data`. This allows data to be written and read. You may also manually grant `shared_data_send` and `shared_data_recieve` instead for thr respective scripts.
 

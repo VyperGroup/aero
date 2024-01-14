@@ -1,3 +1,7 @@
+# Roadmap
+
+> This file has become unmaintained and out of date
+
 It is clear that aero is too unstable to be taken seriously at the moment. I can't do much with it right now for my own projects. Development efforts will start sometime in the summer for aero's new updates. **You aren't promised nor entitled to anything**
 
 There will be a new update schedule
