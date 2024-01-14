@@ -85,6 +85,7 @@
     "@tomphttp/bare-client": "^1.1.2-beta.3",
     "@types/tampermonkey": "^4.0.10",
     "@types/ua-parser-js": "^0.7.39",
+    "@types/web-app-manifest": "^1.0.7",
     "@zip.js/zip.js": "^2.7.15",
     "caniuse-api": "^3.0.0",
     "caniuse-lite": "^1.0.30001563",
