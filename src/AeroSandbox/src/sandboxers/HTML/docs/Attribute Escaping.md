@@ -14,10 +14,10 @@ It's best to not have to proxy elements (DOM interception), if you don't need to
 
 ## What aero does instead
 
-### 🏆 With [attribute emulation](./Attribute%20Rewriting%20methods.md/### 🏆 Attribute Emulation method)
+### 🏆 With [attribute sandboxing](./Attribute%20Sandboxing%20methods.md/### 🏆 Attribute Emulation method)
 
 Aero doesn't actually need to escape the attributes, because with this method it doesn't need to keep track of the previous values.
 
-### With attribute rewriting methods
+### With attribute sandboxing methods
 
 Instead of escaping, aero cleverly uses WeakMap to keep track of the old values. The key is the rewritten element and the value is the original. This also allows for garbage collector to clear up values on its own.
