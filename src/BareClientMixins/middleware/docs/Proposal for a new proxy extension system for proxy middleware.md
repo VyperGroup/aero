@@ -1,4 +1,4 @@
-# Proposal for a new proxy extension system for Middleware
+# Proposal for a new proxy extension system for proxy middleware
 
 As it stands, the only way to extend API interceptors or extend rewriters in your proxy (extend proxy functionality or create new functionality) right now is to inject your own sandboxers into the response body. This is obviously tedious and should be avoided. Here is my new proposal.
 
@@ -14,7 +14,7 @@ Caveats:
 ```ts
 declare namespace MiddlewareTypes {
   /**
-   * This is a modified version of the Project interface from the TompHTTP standards made to allow for identification and distinction of the proxy that will be used. For every property provided, the proxy itself would ensure that the property on the project matches. If ProjectSelector is not provided, it would work on any proxy, which is dangerous, since every proxy is implemented differently. I might write linting code to try to prevent this from happening in debug mode.
+   * This is a modified version of the Project interface from the TompHTTP standards made to allow for identification and distinction of the proxy that will be used. For every property provided, the proxy itself would ensure that the property on the project matches. If ProjectSelector is not provided, it would work on any proxy, which is dangerous, since every proxy is implemented differently.
   */
   export interface ProjectSelector {
     ...
