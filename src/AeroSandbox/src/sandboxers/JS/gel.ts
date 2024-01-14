@@ -41,7 +41,7 @@ if (
 }
 
 (() => {${str}}).call(
-  // Change \`this\` to be the window. This makes it act as if it is not scoped. This is because when you use a blocked-scope variable keyword (let or const) it is a part of the window, but not on the window object. This is the essence of scoping.
+  // Changes \`this\` to be the window. This makes it act as if it is not scoped. This is because when you use a blocked-scope variable keyword (let or const) it is a part of the window, but not on the window object. This is the essence of scoping.
   fakeWindow
 );
-`; // js
+`;

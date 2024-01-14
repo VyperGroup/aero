@@ -19,13 +19,17 @@ const rulesArr: any = Object.values(defaultRules).map(rule => [...rule]);
 // What we need to proxy in aero
 const defaultRules: Map<any, AeroSandboxTypes.EscapeRule[]> = new Map();
 
+const attrMap = new Map<HTMLElement, HTMLElement>();
+
 const elContainer = new Map<keyof HTMLElement, keyof HTMLElement>();
 function set(el: HTMLElement, attr: string, val = "", backup = true) {
-	// TODO: Use WeakMaps instead
-	// Backup element (for element hooks)
-	if (backup) el.setAttribute(`_${attr}`, el.getAttribute(attr));
-
+	const elBak = el.cloneNode(true);
+	
 	el.setAttribute(attr, val);
+
+	// Backup element (for Element hooks)
+	if (backup)
+		attrMap.set(el, elBak);
 }
 
 // TODO: Use the element rewriting rules and html rewriters
@@ -43,6 +47,10 @@ export default (el: HTMLElement, attr?: String) => {
 
 	for (const [targetElClass, escapeRules] of escapeRules) {
 		const escapeAttrs = escapeRules.map(escapeRule => escapeRule.attr);
+
+
+		if (esca[])
+
 	}
 
 	// HTML Middleware
