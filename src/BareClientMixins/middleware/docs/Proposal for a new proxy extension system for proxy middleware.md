@@ -14,7 +14,7 @@ Caveats:
 ```ts
 declare namespace MiddlewareTypes {
   /**
-   * This is a modified version of the Project interface from the TompHTTP standards made to allow for identification and distinction of the proxy that will be used. For every property provided, the proxy itself would ensure that the property on the project matches. If ProjectSelector is not provided, it would work on any proxy, which is dangerous, since every proxy is implemented differently.
+   * This is a modified version of the Project interface from the TompHTTP standards made to allow for identification and distinction of the proxy that will be used. For every property provided, the proxy itself would ensure that the property on the project matches. If ProjectSelector is not provided, it would work on any proxy, which is dangerous, since every proxy is implemented differently. If this happens, there will be a warning about this logged to the console.
   */
   export interface ProjectSelector {
     ...
@@ -56,6 +56,10 @@ declare namespace MiddlewareTypes {
   ...
 }
 ```
+
+### Warning, if ProjectSelector is not provided
+
+TODO: Write
 
 ### Interceptors
 
