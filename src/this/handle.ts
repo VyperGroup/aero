@@ -28,7 +28,7 @@ import integral from "./embeds/integral";
 import rewriteReqHeaders from "./rewriters/reqHeaders";
 import rewriteRespHeaders from "./rewriters/respHeaders";
 import rewriteCacheManifest from "./rewriters/cacheManifest";
-import rewriteManifest from "./rewriters/manifest";
+import rewriteManifest from "./rewriters/webAppManifest";
 import rewriteScript from "$aero/shared/script";
 
 import init from "./handlers/init";
