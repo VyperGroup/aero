@@ -181,8 +181,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 		headers: rewriteReqHeaders(reqHeaders, clientUrl),
 	};
 
-	// A request body should only be created under these conditions
-	if (["GET", "HEAD"].includes(req.method)) opts.body = req.body;
+	// A request body should not be created under these conditions
+	if (!["GET", "HEAD"].includes(req.method)) opts.body = req.body;
 
 	// TODO: In both the request and response middleware pass a second argument called document proxy, which allows the dom to be modified on the fly on any window of choice. This will require the use of back to back messages and the clients api.
 
