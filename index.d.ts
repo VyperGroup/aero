@@ -22,6 +22,7 @@ declare namespace AeroTypes {
 	 */
 	export interface GlobalAeroCTX {
 		// TODO: Define properties here
+		sec: Sec;
 	}
 
 	/**

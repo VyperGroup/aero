@@ -1,21 +1,15 @@
 import config from "$aero_config";
 const { prefix, flags } = config;
 
-type ClientType = any; // Replace 'any' with the actual type of 'client'
-type URLType = URL; // Replace 'URL' with the actual type of 'proxyUrl' if it's different
-
-const clearCache = async (
-	clear: string[],
-	proxyUrl: URLType
-): Promise<void> => {
+const clearCache = async (clear: string[], proxyUrl: URL): Promise<void> => {
 	if (clear.includes("'*'") || clear.includes("'cache'"))
 		await caches.delete(proxyUrl.origin);
 };
 
 const clearExecutionContexts = async (
 	clear: string[],
-	client: ClientType,
-	proxyUrl: URLType
+	client: Client,
+	proxyUrl: URL
 ): Promise<void> => {
 	if (
 		(flags.misc && clear.includes("'*'")) ||
@@ -31,8 +25,8 @@ const clearExecutionContexts = async (
 
 export default async (
 	clear: string[],
-	client: ClientType,
-	proxyUrl: URLType
+	client: Client,
+	proxyUrl: URL
 ): Promise<void> => {
 	await clearCache(clear, proxyUrl);
 	await clearExecutionContexts(clear, client, proxyUrl);
