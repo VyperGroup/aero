@@ -1,5 +1,7 @@
 {
+  "extends": "./tsconfig.browser.json",
   "compilerOptions": {
+    "moduleResolution": "nodenext",
     "lib": ["ESNext", "DOM", "WebWorker"],
     "types": ["node", "webpack-env"],
     "target": "ESNext",
@@ -14,7 +16,7 @@
     { "path": "build/tsconfig.build.json" },
     /*{ "path": "tsconfig.backend.json" },*/
     { "path": "tsconfig.this.json" },
-    { "path": "tsconfig.browser.json" },
+    { "path": "tsconfig.sandbox.json" },
     { "path": "tsconfig.shared.json" },
     { "path": "src/BareClientMixins/middleware/middleware/tsconfig.json" }
   ]
