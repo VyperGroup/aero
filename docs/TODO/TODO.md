@@ -11,6 +11,11 @@
 - [x] Convert all of the TODO.xit files to MD
 - [ ] Properly capitalize the headings in the docs
 
+### Comments
+
+- [ ] Cite every web standard referenced (this will take a while)
+- [ ] Finish JSDoc annotations (this will take a while)
+
 ## Issues
 
 - [ ] Fix HTTP and STS Emulation
