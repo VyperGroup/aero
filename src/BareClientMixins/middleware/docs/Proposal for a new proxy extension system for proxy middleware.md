@@ -4,7 +4,7 @@ As it stands, the only way to extend API interceptors or extend rewriters in you
 
 Caveats:
 
-* This would be an optional specification, because it requires a lot of work to implement into a proxy and it shouldn't be done inside of a Bare Client, although it is possible. I may make a BCC extension that works by injecting aero's sandboxers into the response body, but this would be very expensive due to there being two rewriters at once. The best option as a proxy dev is to adopt this specification.
+* This would be an optional specification, because it requires a lot of work to implement into a proxy and it shouldn't be done inside of a Bare Client, although it is possible. I may make a [BCC](https://github.com/MercuryWorkshop/bare-client-custom) extension that works by injecting aero's sandboxers into the response body, but this would be very expensive due to there being two rewriters at once. The best option as a proxy dev is to adopt this specification.
 * This would require the encompassing `extend_proxy` permission, or the two individual permissions `extend_proxy_interceptors` or `extend_proxy_rewriters`
 
 ## Intercepting
