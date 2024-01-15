@@ -1,30 +1,16 @@
 import { rewriteGetCookie } from "$aero/shared/cookie";
 import { rewriteAuthClient } from "./auth";
-
 import afterPrefix from "$aero/shared/afterPrefix";
 
-/**
- * Rewrites the response headers
- * @return The rewritten headers
- */
-export default (headers: object, proxyUrl: URL): HeadersInit => {
-	const rewrittenHeaders = {};
-
-	Object.keys(headers).forEach(key => {
-		function set(val: string) {
-			rewrittenHeaders[key] = val;
-		}
-
-		const val = headers[key];
-
-		if (key === "host") set(proxyUrl?.host);
-		else if (key === "origin") set(proxyUrl?.origin);
-		else if (key === "referrer") set(afterPrefix(val));
+export default (headers: Headers, proxyUrl: URL): void => {
+	for (const [key, value] of headers.entries()) {
+		if (key === "host") headers.set(key, proxyUrl?.host);
+		else if (key === "origin") headers.set(key, proxyUrl?.origin);
+		else if (key === "referrer") headers.set(key, afterPrefix(value));
 		// TODO: Ignore commas inside of quotes
-		else if (key === "cookie") set(rewriteGetCookie(val, proxyUrl));
-		else if (key === "authenticate") rewriteAuthClient(val, proxyUrl);
-		else if (!key.startsWith("x-aero")) set(val);
-	});
-
-	return rewrittenHeaders;
+		else if (key === "cookie")
+			headers.set(key, rewriteGetCookie(value, proxyUrl));
+		else if (key === "authenticate") rewriteAuthClient(value, proxyUrl);
+		else if (!key.startsWith("x-aero")) headers.set(key, value);
+	}
 };

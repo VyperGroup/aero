@@ -22,31 +22,25 @@ const ignoredHeaders = [
 ];
 
 function rewriteLocation(url: string): string {
-    return self.location.origin + prefix + url;
+	return self.location.origin + prefix + url;
 }
 
-export default (headers: Headers, proxyUrl: URL): Headers => {
-    const rewrittenHeaders = new Headers();
+export default (headers: Headers, proxyUrl: URL): void => {
+	for (const [key, value] of headers.entries()) {
+		if (ignoredHeaders.includes(key)) continue;
 
-    rewrittenHeaders.set("x-headers", JSON.stringify({ ...headers }));
-
-    for (const [key, value] of headers.entries()) {
-        if (ignoredHeaders.includes(key)) continue;
-
-        switch (key) {
-            case "location":
-                rewrittenHeaders.set(key, rewriteLocation(value));
-                break;
-            case "set-cookie":
-                rewrittenHeaders.set(key, rewriteSetCookie(value, proxyUrl));
-                break;
-            case "www-authenticate":
-                rewriteAuthServer(value, proxyUrl); // Assumes this handles header setting
-                break;
-            default:
-                rewrittenHeaders.set(key, value);
-        }
-    }
-
-    return rewrittenHeaders;
+		switch (key) {
+			case "location":
+				headers.set(key, rewriteLocation(value));
+				break;
+			case "set-cookie":
+				headers.set(key, rewriteSetCookie(value, proxyUrl));
+				break;
+			case "www-authenticate":
+				rewriteAuthServer(value, proxyUrl); // Assumes this handles header setting
+				break;
+			default:
+				headers.set(key, value);
+		}
+	}
 };
