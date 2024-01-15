@@ -14,50 +14,50 @@ Caveats:
 ```ts
 declare namespace MiddlewareTypes {
   /**
-   * This is a modified version of the Project interface from the TompHTTP standards made to allow for identification and distinction of the proxy that will be used. For every property provided, the proxy itself would ensure that the property on the project matches. If ProjectSelector is not provided, it would work on any proxy, which is dangerous, since every proxy is implemented differently. If this happens, there will be a warning about this logged to the console.
+   * This is a modified version of the Project interface from the TompHTTP standards made to allow for identification and distinction of the proxy that will be used. For every property provided, the proxy itself would ensure that the property on the project matches. Basically detecting if sets intersect, but with objects. If ProjectSelector is not provided, it would work on any proxy, which is dangerous, since every proxy is implemented differently. If this happens, there will be a warning about this logged to the console.
   */
-  export interface ProjectSelector {
+  export interface SupportedProjects {
     ...
 
     /**
-     * The name of the projects supported.
+     * The name of the supported projects.
      */
     names?: string[];
 
     /**
-     * A description of the projects supported.
+     * A descriptions of the supported projects.
      */
     descriptions?: string[];
 
 
     /**
-     * The project's website.
+     * The project's website supported.
      */
-    website?: string;
+    websites?: string;
 
     /**
-     * The project's repository URL.
+     * The  supported project's repository URL.
      */
-    repository?: string;
+    repositories?: string;
 
     /**
      * The short SHA-1 hash of the project's repository.
      * @see https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
      */
-    commitHash?: string;
+    commitHashes?: string;
 
     /**
      * The current version of the project.
      * Consider this an alternative to the `commitHash` property.
      */
-    version: string;
+    versions: string;
   }
 
   ...
 }
 ```
 
-### Warning, if ProjectSelector is not provided
+### Warning, if SupportedProjects is not provided
 
 TODO: Write
 
@@ -73,6 +73,8 @@ extendProxyInterceptor.open: MiddlewareTypes.ExtendProxyInterceptor = {
 }
 ```
 
+> Basically in this example, these functions would overwrite the window.open API
+
 #### Types
 
 ```ts
@@ -84,15 +86,15 @@ declare namespace MiddlewareTypes {
    * @param - The file to rewrite
    * @returns - The rewritten file
   */
-  export type createNewProxyAPI = (
-    file: string
-  ) => string
+  export type createNewProxyAPIInterceptor = (
+    api: object
+  ) => Proxy<object> | object
 
   export interface ExtendProxyInterceptor = {
     /**
      * The identification of the proxy. Same as the one from the bare meta. This is provided to specify, which proxy and the versions to run this code on.
      */
-    project: MiddlewareTypes.Project,
+    project: MiddlewareTypes.SupportedProjects,
 
     /**
       * @param - The original API from the browser
@@ -147,7 +149,7 @@ declare namespace MiddlewareTypes {
     /**
      * The identification of the proxy. Same as the one from the bare meta. This is provided to specify, which proxy and the versions to run this code on.
      */
-    project: MiddlewareTypes.Project,
+    project: MiddlewareTypes.SupportedProjects,
 
     /**
       * This is usually to add new APIs that the proxy doesn't yet support.
