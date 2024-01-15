@@ -10,7 +10,7 @@
 
 ## Middleware APIs
 
-- [ ] Implement DOMProxy. This would be a proxy that uses
+- [ ] In both the request and response middleware pass a second argument called DOMProxy, which allows the dom to be modified on the fly on any window of choice. This will require the use of back to back messages and the clients api using a [DeferredPromise](https://github.com/open-draft/deferred-promise)
 
 ## UI
 
