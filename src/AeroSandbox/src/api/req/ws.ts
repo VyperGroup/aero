@@ -12,16 +12,4 @@ if (flags.ws) {
 
 	// TODO: Implement middleware for WS with wsReq handle
 	WebSocket = bare.createWebsocket;
-
-	// Only supported on Chromium
-	if ("WebTransport" in window)
-		WebTransport = new Proxy(WebTransport, {
-			construct(target, args) {
-				const [url] = args;
-
-				args[0] = rewriteSrc(url, proxyLocation().href);
-
-				return Reflect.construct(target, args);
-			},
-		});
 }
