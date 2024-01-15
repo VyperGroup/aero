@@ -2,55 +2,74 @@ import config from "$aero_config";
 const { prefix } = config;
 
 /**
- * This extends the relative url rewriting with the addition of wildcard support
+ * Rewrites a path specifically for CacheManifest files in proxies
+ *
+ * @param path - The path within the CacheManifest file to rewrite.
+ * @param isFirefox - Whether the browser is Firefox, to handle a quirk.
+ * @returns The proxied path
  */
 function rewritePath(path: string, isFirefox: boolean): string {
 	// Firefox needs the protocol before the wildcard
-	// TODO: Support wildcards elsewhere by using matchWildcard.ts (NEW)
-	if (!isFirefox && path === "*") return location.origin + prefix + path;
+	if (!isFirefox && path === "*") {
+		return `${location.origin}${prefix}${path}`;
+	}
 
-	// If absolute
+	// Handle absolute paths with wildcards
 	const protoWildcard = /({a-zA-Z}+):\/\/\*/.exec(path);
 	if (protoWildcard !== null) {
 		const proto = protoWildcard[1];
-
-		// TODO: Rewrite
+		// Rewrite absolute path with wildcard:
+		// - Append prefix if not already present
+		// - Ensure trailing slash for directory matching
+		return path.endsWith("/")
+			? `${proto}://${location.hostname}${prefix}${path}`
+			: `${proto}://${location.hostname}${prefix}${path}/`;
 	}
-	// TODO: If relative ...
 
-	return new URL(location.origin, path).href;
+	// Handle relative paths (including those with wildcards)
+	// Rewrite relative path with wildcard:
+	// - Prepend prefix for matching within the app's scope
+	const relativePathWithWildcard = /^\/.*\*$/.test(path);
+	if (relativePathWithWildcard) {
+		return `${prefix}${path}`;
+	}
+
+	// If no wildcards or special handling required, use URL constructor
+	return new URL(path, location.origin).href;
 }
 
-/*
-This is an old standard that has been deprecated
-It has been removed from all major browsers except for Safari
-*/
+/**
+ * Rewrites the Cache Manifest in proxies
+ *
+ * @param body - The Cache Manifest to rewrite.
+ * @param isFirefox - Whether the browser is Firefox.
+ * @returns The rewritten Cache Manifest.
+ */
 export default (body: string, isFirefox: boolean): string => {
-	const lines = body.split("/n");
+	const lines = body.split(/\r?\n/); // Handle different newline characters
 
-	// Current directive
-	let dir;
+	let currentDirective = "";
 	for (const [i, line] of lines.entries()) {
-		// Ignore comments
-		if (line.startsWith("#")) null;
-		else if (
+		if (line.startsWith("#")) {
+			// Ignore comments
+		} else if (
 			["CACHE:", "NETWORK:", "FALLBACK:", "SETTINGS:"].includes(line)
-		)
-			// Update directive
-			dir = line;
-		else if (dir === "CACHE:" || dir === "NETWORK:") {
+		) {
+			currentDirective = line;
+		} else if (
+			currentDirective === "CACHE:" ||
+			currentDirective === "NETWORK:"
+		) {
 			const [path] = line.split(" ");
-
 			lines[i] = rewritePath(path, isFirefox);
-		} else if (dir === "FALLBACK:") {
-			let [path1, path2] = line.split(" ");
-
-			path1 = rewritePath(path1, isFirefox);
-			path2 = rewritePath(path2, isFirefox);
-
-			lines[i] = `${path1} ${path2}`;
+		} else if (currentDirective === "FALLBACK:") {
+			const [path1, path2] = line.split(" ");
+			lines[i] = `${rewritePath(path1, isFirefox)} ${rewritePath(
+				path2,
+				isFirefox
+			)}`;
 		}
 	}
 
-	return body;
+	return lines.join("\n");
 };
