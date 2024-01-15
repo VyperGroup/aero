@@ -24,7 +24,7 @@ export default class HSTSCacheEmulation extends Cache {
 		this.proxyHostname = proxyHostname;
 
 		if (hsts) {
-			this.processHsts(hsts);
+			this.processHSTS(hsts);
 		}
 	}
 
@@ -34,7 +34,7 @@ export default class HSTSCacheEmulation extends Cache {
 	 * @param hsts - The HSTS header value.
 	 * @returns
 	 */
-	async processHsts(hsts: string): Promise<void> {
+	async processHSTS(hsts: string): Promise<void> {
 		const directives = hsts.toLowerCase().split(";");
 		const maxAgeDirective = directives.find(dir =>
 			dir.startsWith("max-age")
@@ -63,12 +63,12 @@ export default class HSTSCacheEmulation extends Cache {
 		for (let i = domains.length - 1; i >= 1; i--) {
 			const domain = domains.slice(i).join(".");
 			const sec = await this.getEntry(domain);
-			if (sec?.result?.subdomains && this.isFresh(sec?.result?.age)) {
+			if (sec?.result?.subdomains && super.isFresh(sec?.result?.age)) {
 				return true;
 			}
 		}
 		const sec = await this.getEntry(this.proxyHostname);
-		return this.isFresh(sec?.result?.age);
+		return super.isFresh(sec?.result?.age);
 	}
 
 	/**
@@ -125,17 +125,5 @@ export default class HSTSCacheEmulation extends Cache {
 			req.onsuccess = () => resolve(req.result);
 			req.onerror = () => reject(req.error);
 		});
-	}
-
-	/**
-	 * Checks if an HSTS entry is still fresh (not expired).
-	 *
-	 * @param age - The age of the HSTS entry.
-	 * @returns
-	 */
-	isFresh(age: number): boolean {
-		// Implement logic to check if the HSTS entry is fresh based on the provided age.
-		const now = Date.now();
-		return age > now; // If age is greater than current time, it's fresh
 	}
 }
