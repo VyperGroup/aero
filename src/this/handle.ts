@@ -212,6 +212,12 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	const rewrittenRespHeaders = rewriteRespHeaders(respHeaders, clientUrl);
 
+	// Overwrite the response headers (they are immutable)
+	Object.defineProperty(resp, "headers", {
+		value: respHeaders,
+		configurable: false,
+	});
+	
 	const type = respHeaders["content-type"];
 
 	// For modules
@@ -365,16 +371,13 @@ ${body}
 		// TODO: x-aero-size-encbody
 	}
 
-	let proxyResp = new Response(resp.status === 204 ? null : body, {
-		status: resp.status ?? 200,
-		headers: rewrittenRespHeaders,
-	});
+	resp.body = resp.status === 204 ? null : body;
 
 	// Cache the response
-	// cache.set(reqUrl.href, proxyResp.clone(), proxyResp.headers.get("vary"));
+	// cache.set(reqUrl.href, resp.clone(), resp.headers.get("vary"));
 
 	// Return the response
-	return proxyResp;
+	return resp;
 }
 
 export default handle;
