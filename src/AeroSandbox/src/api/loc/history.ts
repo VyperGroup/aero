@@ -3,16 +3,25 @@ import rewriteSrc from "$aero/shared/src";
 import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 const historyState = {
-	apply(target, that, args) {
-		const [, , url = ""] = args;
+	apply(target: any, that: ProxyHandler<object>, args: any[]) {
+		let url = "";
+		if (args.length > 2 && typeof args[2] === "string") {
+			url = args[2];
+		}
 
-		// FIXME: Breaks on https://search.brave.com
-		// FIXME: Reaches maximum call stack size on https://beinternetawesome.withgoogle.com/en_us/interland/
-		console.log(url);
-		console.log(args);
-
-		args[2] = rewriteSrc(url, proxyLocation().href);
-		args[3] = rewriteSrc(url, proxyLocation().href);
+		try {
+			if (args.length > 2) {
+				args[2] = rewriteSrc(url, proxyLocation().href);
+			}
+			if (args.length > 3) {
+				args[3] = rewriteSrc(url, proxyLocation().href);
+			}
+		} catch (error) {
+			console.error(
+				"An error occurred while intercepting the source in the History API interceptor: ",
+				error
+			);
+		}
 
 		return Reflect.apply(target, that, args);
 	},
