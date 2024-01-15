@@ -22,7 +22,7 @@ import HSTSCacheEmulation from "./cors/HSTSCacheEmulation";
 // Integrity check
 import integral from "./embeds/integral";
 // Cache Emulation
-//import CacheManager from "./cors/CacheManager";
+import CacheManager from "./cors/CacheManager";
 
 // Rewriters
 import rewriteReqHeaders from "./rewriters/reqHeaders";
@@ -120,7 +120,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		);
 
 	// Rewrite the request headers
-	const reqHeaders = headersToObject(req.headers);
+	const reqHeaders = req.headers;
 
 	const isNavigate = isHomepage || isiFrame;
 
@@ -158,12 +158,11 @@ async function handle(event: FetchEvent): Promise<Response> {
 			csp: reqHeaders["content-security-policy"],
 		};
 
-		//if ("clear" in sec)
-		//await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
+		if ("clear" in sec)
+			await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
 	}
 
 	// FIXME: Cache mode emulation
-	/*
 	const cache = new CacheManager(reqHeaders);
 
 	if (cache.mode === "only-if-cached")
@@ -171,7 +170,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 		return new Response("Can't find a cached response", {
 			status: 500,
 		});
-	*/
 
 	// TODO: Import bare type
 	let opts: BareFetchInit = {
@@ -195,8 +193,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 			status: 500,
 		});
 
-
-	/*
 	const cacheAge = cache.getAge(
 		reqHeaders["cache-control"],
 		reqHeaders["expires"]
@@ -204,7 +200,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	const cachedResp = await cache.get(reqUrl, cacheAge);
 	if (cachedResp) return cachedResp;
-	*/
 
 	// Rewrite the response headers
 	const rewrittenRespHeaders = rewriteRespHeaders(resp.headers, clientUrl);
@@ -214,7 +209,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		value: rewrittenRespHeaders,
 		configurable: false,
 	});
-	
+
 	const type = resp.headers.get("content-type");
 
 	// For modules
@@ -371,7 +366,7 @@ ${body}
 	resp.body = resp.status === 204 ? null : body;
 
 	// Cache the response
-	// cache.set(reqUrl.href, resp.clone(), resp.headers.get("vary"));
+	cache.set(reqUrl.href, resp, resp.headers.get("vary"));
 
 	// Return the response
 	return resp;
