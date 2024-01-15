@@ -365,10 +365,10 @@ ${body}
 		rewriteRespHeaders["x-aero-size-body"] = new TextEncoder().encode(
 			body
 		).length;
-		// TODO: x-aero-size-encbody
+		// TODO: Emulate x-aero-size-encbody
 	} else if (body instanceof ArrayBuffer) {
 		rewriteRespHeaders["x-aero-size-body"] = body.byteLength;
-		// TODO: x-aero-size-encbody
+		// TODO: Emulate x-aero-size-encbody
 	}
 
 	resp.body = resp.status === 204 ? null : body;
