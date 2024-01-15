@@ -122,51 +122,43 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Rewrite the request headers
 	const reqHeaders = req.headers;
 
-	const isNavigate = isHomepage || isiFrame;
-
 	let sec: AeroTypes.Sec;
 	if (flags.corsEmulation) {
-		if (
-			// FIXME: Unknown error on many sites
-			proxyUrl.protocol === "http:"
-		) {
-			const HSTSCacheEmulation = new HSTSCacheEmulation(
-				reqHeaders["strict-transport-security"],
+		if (proxyUrl.protocol === "http:") {
+			const hstsCacheEmulator = new HSTSCacheEmulation(
+				reqHeaders.get("strict-transport-security"),
 				proxyUrl.origin
 			);
 
-			if (await HSTSCacheEmulation.redirect()) {
+			if (await hstsCacheEmulator.redirect()) {
 				const redirUrl = proxyUrl;
-
 				redirUrl.protocol = "https:";
-
 				return redir(redirUrl.href);
 			}
 		}
 
 		sec = {
-			clear: reqHeaders["clear-site-data"]
-				? JSON.parse(`[${reqHeaders["clear-site-data"]}]`)
+			clear: reqHeaders.get("clear-site-data")
+				? JSON.parse(`[${reqHeaders.get("clear-site-data")}]`)
 				: undefined,
 			// TODO: Emulate
-			timing: reqHeaders["timing-allow-origin"],
+			timing: reqHeaders.get("timing-allow-origin"),
 			permsFrame: frameSec?.["perms"],
-			perms: reqHeaders["permissions-policy"],
-			// These are parsed later in frame.js if needed
-			frame: reqHeaders["x-frame-options"],
-			// This is only used for getting the frame frameancesors for $aero.frame
-			csp: reqHeaders["content-security-policy"],
+			perms: reqHeaders.get("permissions-policy"),
+			// These will beparsed later in frame.js, if needed
+			frame: reqHeaders.get("x-frame-options"),
+			// This is only referenced for getting the frame frameancesors for $aero.frame
+			csp: reqHeaders.get("content-security-policy"),
 		};
 
-		if ("clear" in sec)
+		if ("clear" in sec) {
 			await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
+		}
 	}
-
-	// FIXME: Cache mode emulation
 	const cache = new CacheManager(reqHeaders);
 
 	if (cache.mode === "only-if-cached")
-		// TODO: Emulate network error
+		// TODO: Emulate network error for your given browser. I would ideally do this through a compile-time macro that fetches the src code of the browsers.
 		return new Response("Can't find a cached response", {
 			status: 500,
 		});
@@ -179,8 +171,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	// A request body should not be created under these conditions
 	if (!["GET", "HEAD"].includes(req.method)) opts.body = req.body;
-
-	// TODO: In both the request and response middleware pass a second argument called document proxy, which allows the dom to be modified on the fly on any window of choice. This will require the use of back to back messages and the clients api.
 
 	// Make the request to the proxy
 	const resp = await bare.fetch(new URL(req.url).href, {
@@ -349,19 +339,22 @@ ${body}
 	// No rewrites are needed; proceed as normal
 	else body = resp.body;
 
-	rewriteRespHeaders["x-aero-size-transfer"] = null;
-	rewriteRespHeaders["x-aero-size-encbody"] = null;
+	/*
+	FIXME: Fix whatever this is. I forgot where I was going with this.
+	resp.headers["x-aero-size-transfer"] = null;
+	resp.headers["x-aero-size-encbody"] = null;
 
 	// TODO: x-aero-size-transfer
 	if (typeof body === "string") {
-		rewriteRespHeaders["x-aero-size-body"] = new TextEncoder().encode(
+		resp.headers["x-aero-size-body"] = new TextEncoder().encode(
 			body
 		).length;
 		// TODO: Emulate x-aero-size-encbody
 	} else if (body instanceof ArrayBuffer) {
-		rewriteRespHeaders["x-aero-size-body"] = body.byteLength;
+		resp.headers["x-aero-size-body"] = body.byteLength;
 		// TODO: Emulate x-aero-size-encbody
 	}
+	*/
 
 	resp.body = resp.status === 204 ? null : body;
 
