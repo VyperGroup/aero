@@ -181,8 +181,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 		headers: rewriteReqHeaders(reqHeaders, clientUrl),
 	};
 
-	// A request body should only be created under a post request
-	if (req.method === "POST") opts.body = req.body;
+	// A request body should only be created under these conditions
+	if (["GET", "HEAD"].includes(req.method)) opts.body = req.body;
 
 	// TODO: In both the request and response middleware pass a second argument called document proxy, which allows the dom to be modified on the fly on any window of choice. This will require the use of back to back messages and the clients api.
 
@@ -197,8 +197,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 			status: 500,
 		});
 
-	// Rewrite the response headers
-	const respHeaders = headersToObject(resp.headers);
 
 	/*
 	const cacheAge = cache.getAge(
@@ -210,11 +208,12 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (cachedResp) return cachedResp;
 	*/
 
-	const rewrittenRespHeaders = rewriteRespHeaders(respHeaders, clientUrl);
+	// Rewrite the response headers
+	const rewrittenRespHeaders = rewriteRespHeaders(resp.headers, clientUrl);
 
 	// Overwrite the response headers (they are immutable)
 	Object.defineProperty(resp, "headers", {
-		value: respHeaders,
+		value: rewrittenRespHeaders,
 		configurable: false,
 	});
 	

@@ -21,38 +21,32 @@ const ignoredHeaders = [
 	"x-frame-options",
 ];
 
-/**
- * Rewrites the location header
- * @param - The url
- * @return - The url pointed to the proxified url
- */
 function rewriteLocation(url: string): string {
-	return self.location.origin + prefix + url;
+    return self.location.origin + prefix + url;
 }
 
-/**
- * Rewrites the response headers
- * @return The rewritten headers
- */
-export default (headers: object, proxyUrl: URL): HeadersInit => {
-	const rewrittenHeaders = {};
+export default (headers: Headers, proxyUrl: URL): Headers => {
+    const rewrittenHeaders = new Headers();
 
-	rewrittenHeaders["x-headers"] = JSON.stringify({ ...headers });
+    rewrittenHeaders.set("x-headers", JSON.stringify({ ...headers }));
 
-	Object.keys(headers).forEach(key => {
-		function set(val: string) {
-			rewrittenHeaders[key] = val;
-		}
+    for (const [key, value] of headers.entries()) {
+        if (ignoredHeaders.includes(key)) continue;
 
-		if (ignoredHeaders.includes(key)) return;
+        switch (key) {
+            case "location":
+                rewrittenHeaders.set(key, rewriteLocation(value));
+                break;
+            case "set-cookie":
+                rewrittenHeaders.set(key, rewriteSetCookie(value, proxyUrl));
+                break;
+            case "www-authenticate":
+                rewriteAuthServer(value, proxyUrl); // Assumes this handles header setting
+                break;
+            default:
+                rewrittenHeaders.set(key, value);
+        }
+    }
 
-		const val = headers[key];
-
-		if (key === "location") set(rewriteLocation(val));
-		else if (key === "set-cookie") set(rewriteSetCookie(val, proxyUrl));
-		else if (key === "www-authenticate") rewriteAuthServer(val, proxyUrl);
-		else set(val);
-	});
-
-	return rewrittenHeaders;
+    return rewrittenHeaders;
 };
