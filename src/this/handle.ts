@@ -18,7 +18,7 @@ import escapeJS from "./util/escapeJS";
 // Security
 // CORS Emulation
 import block from "./cors/test";
-//import STS from "./cors/STS";
+import HSTSCacheEmulation from "./cors/HSTSCacheEmulation";
 // Integrity check
 import integral from "./embeds/integral";
 // Cache Emulation
@@ -58,7 +58,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	const params = reqUrl.searchParams;
 
-	// Don't rewrite requests for aero's bundles
+	// Don't rewrite request for aero's bundles
 	// TODO: Instead of this read the paths from the config instead of confining and marking aero code from the prefix. I will soon have the bundles be pointed out in the config just like other interception proxies do.
 	if (reqUrl.pathname.startsWith(aeroPrefix))
 		// Cached to lower the paint time
@@ -111,7 +111,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (flags.corsEmulation && (await block(proxyUrl.href)))
 		return new Response("Blocked by CORS", { status: 500 });
 
-	// Log requests
+	// Log request
 	if (debug.url)
 		console.debug(
 			req.destination == ""
@@ -126,17 +126,16 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	let sec: AeroTypes.Sec;
 	if (flags.corsEmulation) {
-		/*
 		if (
 			// FIXME: Unknown error on many sites
 			proxyUrl.protocol === "http:"
 		) {
-			const sts = new STS(
+			const HSTSCacheEmulation = new HSTSCacheEmulation(
 				reqHeaders["strict-transport-security"],
 				proxyUrl.origin
 			);
 
-			if (await sts.redirect()) {
+			if (await HSTSCacheEmulation.redirect()) {
 				const redirUrl = proxyUrl;
 
 				redirUrl.protocol = "https:";
@@ -144,7 +143,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 				return redir(redirUrl.href);
 			}
 		}
-		*/
 
 		sec = {
 			clear: reqHeaders["clear-site-data"]
@@ -217,7 +215,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		configurable: false,
 	});
 	
-	const type = respHeaders["content-type"];
+	const type = resp.headers.get("content-type");
 
 	// For modules
 	const isModWorker =
@@ -254,7 +252,7 @@ async function handle(event: FetchEvent): Promise<Response> {
         navigator.serviceWorker
             .register("/sw.js", {
                 scope: ${prefix},
-                // Don't cache http requests
+                // Don't cache http request
                 updateViaCache: "none",
                 type: "module",
             })
@@ -329,7 +327,7 @@ ${body}
 			body = rewriteCacheManifest(body, isFirefox);
 		} else body = rewriteManifest(body, proxyUrl);
 	}
-	// Nests
+	// NeHSTSCacheEmulation
 	else if (flags.workers && req.destination === "worker")
 		body = isModWorker
 			? /* js */ `
