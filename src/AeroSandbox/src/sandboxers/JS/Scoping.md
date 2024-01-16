@@ -1,37 +1,42 @@
-# JS Scoping
+# JS Sandboxing
+
+> We don't support rewriters on aero anymore
+
+## Aero gel (preferred)
 
 TODO: Finish writing this section
 
-## AST-based parsing
+## ShadowRealm
 
-Traditionally proxies have parsed the JS and whenever there was a reference to the location identifier they would replace it with their own location object. This is slow because it parses the entire JS library. It doesn't have to be this way!
+[ShadowRealm](https://github.com/tc39/proposal-shadowrealm/blob/main/explainer.md) is an upcoming browser API that will allow you to modify the realm of JS, basically allowing you to control the scope more easily than before.
 
-## Partial proxing
+We can actually use it right now!
 
-This only parses references to variable name and property trees. If it suspects something of being a reference to aero, it will wrap it in a function to check it. When I say wrapping, it means putting the identifiers inside of a argument for the checker. In aero's case it is `$aero.check`. Under [certain conditions](#conditions-required-to-wrap), it does not wrap.
+The essence of the [polyfill](https://github.com/ambit-tsai/shadowrealm-api) works is basically binding a prototype version of the window object that has been modified to be proxified. This polyfill works exactly like aero gel, but it uses the ShadowRealm API, which is only available on the [Safari Technology Preview](https://developer.apple.com/safari/technology-preview)
 
-## Conditions required to wrap
+## Example
 
-The parser has to keep track of strings, their escapes, and the templates for template strings (it needs to get what it insine). If the current character is a part of a string, it won't qualify for variable checkng
+> I'm going to make a module in aero for this with the polyfill
 
-1. It will check an entire object with its bracker property accessors
-2. Whenever there is an equals sign, it will wrap whatever is after up to a: ;, \n, or ) (in the case of default parameters)
+// proxyRealmLocation.ts (aero.sandbox.proxyRealm.js)
 
-## How it wraps
+```ts
+import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
-Whenever there is a character, while iterating over the string as an array, it records the index of the array to a variable.
-Along the way, it keeps track of what it is to determine if a It does this in multiple ways, because there are different ways of naming a variable:
+fakeLocation = proxyLocation();
 
-It needs to keep track of whatever is inside of the [binding list]()
+export { fakeLocation };
+```
 
-Because of functions parameters and default parameters, if the variable is inside of parenthesis when it is after the equals operator of a variable and before the.
+// proxyRealm.ts
 
-> `var x = ...;`
+```ts
+const proxyRealm = new ShadowRealm();
 
-### Reaching the end of a statment
+const proxyWin = await realm.importValue(
+  "./aero.sandbox.proxyRealmLocation.js",
+  "location"
+);
 
-## 🏆 Aero Gel
-
-[code](../../src/shared/JS/gel.ts)
-
-TODO: Bring back this from the old aero docs
+realm.evalute(...)
+```

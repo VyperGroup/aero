@@ -1,5 +1,5 @@
 // TODO: Bundle properly with Webpack
-export default `
+export default /* js */ `
 import afterPrefix from "$aero/shared/hared/afterPrefix";
 
 import.meta.resolve = new Proxy(import.meta.resolve, {

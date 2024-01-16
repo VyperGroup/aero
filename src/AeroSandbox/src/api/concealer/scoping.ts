@@ -13,6 +13,7 @@ $aero.eval = new Proxy(eval, {
 		return Reflect.apply(target, that, args);
 	},
 });
+
 Function = new Proxy(Function, {
 	construct(target, args) {
 		let [func] = args;
