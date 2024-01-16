@@ -1,23 +1,25 @@
-import {
-	proxyConstruct,
-	proxyGetString,
-} from "$aero/shared/autoProxy/autoProxy";
+import { proxyGetString } from "$aero/shared/autoProxy/autoProxy";
 
 import rewriteSrc from "$aero/shared/src";
 
 import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
-if ("Presentation" in window) {
-	proxyConstruct(
-		"PresentationRequest",
-		new Map().set(0, urls => {
-			// Could either be a string or an array
-			if (Array.isArray(urls))
-				urls = urls.map(url => rewriteSrc(url, proxyLocation().href));
-			else urls = rewriteSrc(urls, proxyLocation().href);
+declare let PresentationRequest: any;
 
-			return urls;
-		}),
-	);
+if ("Presentation" in window) {
+	PresentationRequest = new Proxy(PresentationRequest, {
+		construct(_that, args) {
+			// Could either be a string or an array
+			let [urls] = args;
+
+			if (Array.isArray(urls))
+				urls = urls.map(url => $aero.rewriteSrc(url));
+			else urls = $aero.rewriteSrc(urls);
+
+			args[0] = urls;
+
+			return Reflect.construct(...arguments);
+		},
+	});
 	proxyGetString("PresentationConnection", ["url"]);
 }

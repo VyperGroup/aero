@@ -1,10 +1,7 @@
 import config from "$aero_config";
 const { flags } = config;
 
-import {
-	proxyConstruct,
-	proxyGetString,
-} from "$aero/shared/autoProxy/autoProxy";
+import { proxyGetString } from "$aero/shared/autoProxy/autoProxy";
 
 import rewriteSrc from "$aero/shared/src";
 
@@ -12,12 +9,15 @@ import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 // Only supported on Chromium
 if ("PaymentRequest" in window)
-	proxyConstruct(
-		"PaymentRequest",
-		new Map().set(0, methods =>
-			methods.map(method => rewriteSrc(method, proxyLocation().href)),
-		),
-	);
+	PaymentRequest = new Proxy(PaymentRequest, {
+		construct(_target, _prop, args) {
+			let [methods] = args;
+
+			args[0] = methods.map(method => $aero.rewriteSrc(method));
+
+			return Reflect.construct(...arguments);
+		},
+	});
 
 if (flags.legacy && "MerchantValidationEvent" in window)
 	proxyGetString("MerchantValidationEvent", ["validationURL"]);

@@ -2,7 +2,7 @@
 
 - [ ] Implement auto api interception
 
-- [ ] Deprecate autoProxy. It's a dumb gimmick originally made to save me from keystrokes. I will still keep the strings method. I will rename autoProxy to strings proxy
+- [x] Deprecate autoProxy. It's a dumb gimmick originally made to save me from keystrokes. I will still keep the strings method. I will rename autoProxy to strings proxy
 
 - [ ] In html.ts, instead of keeping an attribute to mark the element, store them in a WeakMap, so they can automatically be cleaned up by the garbage man
 

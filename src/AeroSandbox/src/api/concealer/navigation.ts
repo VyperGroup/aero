@@ -3,13 +3,13 @@
 import config from "$aero_config";
 const { flags } = config;
 
-import proxy from "$aero/shared/autoProxy/autoProxy";
-
 import afterPrefix from "$aero/shared/afterPrefix";
 
 import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 declare var navigation, NavigationCurrentEntryChangeEvent;
+
+declare var navigation: any, NavigationCurrentEntryChangeEvent: any;
 
 if (
 	flags.misc &&
@@ -50,24 +50,26 @@ if (
 				newEntries.push(newEntry);
 			}
 
-			return entries;
+			return newEntries;
 		},
 	});
 
 	if (navigation.transition)
 		navigation.transition.from = proxyLocation().href;
 
-	proxy(
-		"navigation.addEventListener",
-		new Map().set(1, (_type, listener) => {
-			return event => {
-				if (event) {
+	navigation.addEventListener = new Proxy(navigation.addEventListener, {
+		apply(_target, _that, args) {
+			const [type, listener] = args;
+
+			if (type === "currententrychange")
+				args[1] = event => {
 					if (event instanceof NavigationCurrentEntryChangeEvent)
-						event.from.url = afterPrefix(event.from.url);
+						event.from.url = $aero.afterPrefix(event.from.url);
 
 					listener(event);
-				} else listener();
-			};
-		}),
-	);
+				};
+
+			return Reflect.apply(...arguments);
+		},
+	});
 }

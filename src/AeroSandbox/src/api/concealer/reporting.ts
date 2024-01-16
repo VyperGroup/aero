@@ -1,5 +1,6 @@
-/*
 import afterPrefix from "$aero/shared/afterPrefix";
+
+// TODO: Define the undefined APIs on the Window object. This file is very incomplete.
 
 // Only supported on chromium
 if ("ReportingObserver" in window) {
@@ -44,7 +45,7 @@ if ("ReportingObserver" in window) {
 		construct(target, args) {
 			const [callback] = args;
 
-			args[1] = async function (reports) {
+			args[1] = async (reports) => {
 				reports = await rewriteReports(reports);
 
 				callback(...arguments);
@@ -56,4 +57,3 @@ if ("ReportingObserver" in window) {
 		},
 	});
 }
-*/
