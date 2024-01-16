@@ -1,9 +1,7 @@
 # TODOs
 
 - [ ] Instead of using comments at the end of properties to document, properly document the interface properties with `/** * */`. Use AI to do this.
-
 - [ ] Finish aero's sandboxing library
-
 - [ ] Nested SW support
 
 ## Docs

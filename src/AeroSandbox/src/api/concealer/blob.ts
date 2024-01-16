@@ -1,22 +1,20 @@
-import proxy from "$aero/shared/autoProxy/autoProxy";
-
 import isHtml from "$aero/shared/isHTML";
 
-proxy(
-	"Blob",
-	new Map().set(0, (blobParts: BlobPart[], opts: BlobPropertyBag) => {
-		if (opts && isHtml(opts.type))
-			return blobParts.map(html => $aero.init + html);
-	}),
-	(res, blobParts: BlobPart[]) => {
+Blob = new Proxy(Blob, {
+	apply(_target, _that, args) {
+		const [arr, opts] = args;
+
+		if ($aero.isHtml(opts.type))
+			args[0] = arr.map(html => $aero.init + html);
+
+		let ret = Reflect.apply(...arguments);
+
 		let size = 0;
 
-		blobParts.forEach(html => {
-			if (html instanceof ArrayBuffer) size += html.byteLength;
-			if (html instanceof Blob) size += html.size;
-			if (typeof html === "string") size += html.length;
-		});
+		args[0].forEach(html => (size += html.length));
 
-		return (res.size = size);
+		ret.size = size;
+
+		return Reflect.apply(...arguments);
 	},
-);
+});
