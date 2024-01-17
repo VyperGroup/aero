@@ -3,6 +3,7 @@
 - [ ] Instead of using comments at the end of properties to document, properly document the interface properties with `/** * */`. Use AI to do this.
 - [ ] Finish aero's sandboxing library
 - [ ] Nested SW support
+- [ ] Completely move any remnants of middleware to the proxy-middleware repo and instead recommend the users to reference that repo for the middleware in the docs.
 
 ## Docs
 
