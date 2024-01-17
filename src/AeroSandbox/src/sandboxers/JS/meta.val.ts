@@ -4,6 +4,15 @@
 import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
 /**
+ * An API interceptor for import.meta.resolve that prevents the paths from going behind the proxy origin.
+ *
+ * The params are given from val-loader
+ * @see https://github.com/webpack-contrib/val-loader
+ */
+export default (options, loaderContext) => {
+	return {
+		code: /* js */ `
+/**
  * Checks if a segment is a valid directory name.
  *
  * @param {string} segment - The segment to check.
@@ -48,15 +57,6 @@ function removeOneLevel(path: string): string {
 	return modifiedPath;
 }
 
-/**
- * An API interceptor for import.meta.resolve that prevents the paths from going behind the proxy origin.
- *
- * The params are given from val-loader
- * @see https://github.com/webpack-contrib/val-loader
- */
-export default (options, loaderContext) => {
-	return {
-		code: /* js */ `
 import.meta.resolve = new Proxy(import.meta.resolve, {
 	apply(target, that, args) {
 		let ret = Reflect.apply(target, that, args);
