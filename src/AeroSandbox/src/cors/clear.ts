@@ -93,13 +93,13 @@ if (flags.nonstandard) {
 									const tableName = data.rows.item(i).name;
 
 									if (
+										tableName.startsWith(storagePrefix()) &&
 										tableName !==
-										"__WebKitDatabaseInfoTable__"
-									) {
+											"__WebKitDatabaseInfoTable__"
+									)
 										tx.executeSql(
 											`DELETE FROM ${tableName}`
 										);
-									}
 								}
 							}
 						);
@@ -119,12 +119,12 @@ if (flags.nonstandard) {
 							entries.forEach(entry => {
 								if (entry.isDirectory) {
 									// @ts-ignore
-									// TODO: Clear any of the directories that are prefixed with the origin
+									// TODO: Clear any of the directories that .startsWith(storagePrefix())
 									entry.removeRecursively(() => null); // Stub
 								} else {
 									// @ts-ignore
 									// Stub
-									// TODO: Clear any of the directories that are prefixed with the origin
+									// TODO: Clear any of the directories that .startsWith(storagePrefix())
 									entry.remove(() => null);
 								}
 							});

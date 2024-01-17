@@ -1,5 +1,6 @@
 import { proxyLocation } from "$aero_browser/misc/proxyLocation";
 
+// TODO: Consider renaming this to "proxyKey"
 const storagePrefix = () => `${proxyLocation().origin}_`;
 
 const storageNomenclature = {
