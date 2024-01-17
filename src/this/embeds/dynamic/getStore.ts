@@ -1,3 +1,5 @@
+type getStoreHandler = (store: IDBObjectStore) => 
+
 // A safe astraction to get the actual config store that aero needs
 export default (dbName: string, func: Function) => {
 	const req = indexedDB.open(dbName);
@@ -18,7 +20,7 @@ export default (dbName: string, func: Function) => {
 
 	req.onerror = err => {
 		console.error(
-			`Error initializing the db for dynamic config updates\n${err}`,
+			`Error initializing the db for dynamic config updates\n${err}`
 		);
 	};
 };

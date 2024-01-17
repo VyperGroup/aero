@@ -21,6 +21,7 @@ declare namespace AeroTypes {
 	 * It might be better to make a separate type for $aero inside of the sandbox library.
 	 */
 	export interface GlobalAeroCTX {
+		[x: string]: any;
 		// TODO: Define properties here
 		sec: Sec;
 	}
