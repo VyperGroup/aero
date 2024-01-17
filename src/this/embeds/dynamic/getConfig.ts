@@ -8,6 +8,7 @@ interface cfg {
 
 // Dynamically retrieve the config
 export default (): cfg /*config*/ => {
+	// FIXME: This code is a mess and it obviously wouldn't work
 	if (config.flags.dynamicUpdates) {
 		getStore(config.dynamicConfig.dbName, store => {
 			const dbConfig = store.getAll();

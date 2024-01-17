@@ -6,6 +6,7 @@ import getStore from "this/embeds/dynamic/getStore";
 const { dbName, id } = dynamicConfig;
 
 // For dynamic config updates
+// FIXME: This obviously wouldn't work
 export default () => {
 	if (flags.dynamicUpdates)
 		getStore(dbName, store => {
