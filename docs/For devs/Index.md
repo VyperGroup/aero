@@ -4,6 +4,10 @@ This index only lists features that are used in aero by default
 
 Whenever there are multiple subheadings in a "Methods" heading, if there is a 🏆 emoji, it means that it is the default method that aero uses. The medals signify the fallback number.
 
+## Glossary
+
+- Forwarding - TODO: ...
+
 ## Order of which to read
 
 ### The basics
