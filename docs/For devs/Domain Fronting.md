@@ -1,8 +1,8 @@
 # How to domain front a proxy
 
-The two most common ways I have found success with are SVGs and XML with XSLT. I have provided code to perform these
-
 ## Known methods
+
+The two most common ways I have found success with are SVGs and XML with XSLT. I have provided code to perform these
 
 ### Static
 

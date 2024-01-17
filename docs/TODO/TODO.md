@@ -1,9 +1,14 @@
 # TODOs
 
-- [ ] Instead of using comments at the end of properties to document, properly document the interface properties with `/** * */`. Use AI to do this.
+This is the main TODO file for changes that encompass every part of aero.
+
+If you want to find something to contribute to, search in your editor for TODO comments and look in TODO.md files for milestones, or generalized ideas. This is how project management is done in aero.
+
+- [ ] Instead of using comments at the end of properties to document, properly document the interface properties with `/** * */` (JSDoc). - Russel9000 (on Discord) plans to work on this.
 - [ ] Finish aero's sandboxing library
 - [ ] Nested SW support
 - [ ] Completely move any remnants of middleware to the proxy-middleware repo and instead recommend the users to reference that repo for the middleware in the docs.
+- [ ] Move everything from [src/shared](../../src/shared/) to the AeroSandboxing library as general utilities.
 
 ## Commit renames
 

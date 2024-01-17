@@ -1,9 +1,5 @@
 # CONTRIBUTING
 
-## Project management
-
-If you want to find something to contribute to, search in your editor for TODO comments and look in TODO.xit for milestones, or generalized ideas
-
 ## Guidelines
 
 - Don't commit without using a formatter beforehand
@@ -24,7 +20,7 @@ If you want to find something to contribute to, search in your editor for TODO c
 ### Documentation
 
 - Write in the present simple tense by default, unless you are writing a proposal document, where you would write in the future tense
-- Audit your additions using a [grammer checker](https://quillbot.com/grammar-check). If it advises you to rewrite in a passive voice I recommend that you ask a [GPT](https://www.bing.com) to do that, rather than paying for premium.
+- Audit your additions using a [grammer checker](https://quillbot.com/grammar-check). If it advises you to rewrite in a passive voice I recommend that you ask a GPT to do that, rather than paying for premium.
 
 ## How to help without knowledge of programming
 
@@ -48,7 +44,7 @@ You could help write documentation, or find domain fronting exploits.
 
 ### Comment-specific
 
-- If various comments span multiple files, add that topic to the respective [TODO.xit](https://xit.jotaen.net/syntax-guide). Don't add it to .xit otherwise. These are what you would call milestones.
+- If various comments span multiple files, add that topic to the respective [TODO.md](https://xit.jotaen.net/syntax-guide) in the directory, if it exists. These are what you would call milestones.
 - Put line-specific comments on the line you are referencing (not before the line)
 - If the sentence is multi-lined put a period at the end, if not then don't use periods at all
 - If there is only one comment necessary for a line, put the comment after the line itself
@@ -63,8 +59,8 @@ You could help write documentation, or find domain fronting exploits.
 
 ### I want to contribute, but I don't know how the SW APIs work
 
-
-
 Don't be overwhelmed
 
 I recommend reading <https://developer.chrome.com/docs/workbox/service-worker-overview> and then <https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers>
+
+SW's simply make network requests easier to intercept

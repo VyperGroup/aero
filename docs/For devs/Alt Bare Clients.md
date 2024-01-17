@@ -6,11 +6,11 @@ There are two types of alternative bare clients:
 
 ## Middleware
 
+TODO: Move this to a seperate repo (VyperGroup/BareClient-implementation-middleware)
+
 I am converting all of aero's Middleware code into just one WebPack minified bundle that can be imported, and with no work required you get yourself middleware support on any proxy!
 
 I will port all of aero's middleware code into a single WebPack bundle that, It seems like nobody is adopting my Middleware API at the moment, and that isn't necessarily a bad thing they have different priorities from me. I do think it is unfortunate how all this Middleware I write is only restricted to one proxy. I would like to give anyone the choice to use whatever proxy they want. I am not like Apple with their "blue bubbles".
-
-There is only one:
 
 ## Domain Fronting
 

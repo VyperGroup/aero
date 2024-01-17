@@ -1,6 +1,4 @@
-# aero's Sandboxing library Dev Docs
-
-## How to use (with faker)
+# Faker API (optional feature)
 
 Faker is an API that aero's sandbox can be built with that allows the state of the element to be fake. This is used to prevent sites from detecting modifications. This will be used in aero's middleware and in my undetectable adblocker.
 
@@ -8,7 +6,7 @@ In your bundle file
 
 ```ts
 createAeroSandboxBundle({
-  proxyLocation: ...
+  proxyLocation: ...,
   jsRewriter: ...,
   FakerAPI: {
     enable: true, // This is necessary to use Faker
@@ -76,15 +74,3 @@ in JS
 ### How the faker API will be implemented
 
 If the Faker API is enabled in the config in compile time, special code will be added to the element interceptor. We obviously wouldn't want to bundle extra code if the Faker API support is turned off. I will use [Babel Macros](https://babeljs.io/blog/2017/09/11/zero-config-with-babel-macros) for this.
-
-## How automatic API interception would work
-
-The essence of API interception is parsing standard documents to create [concealers](Dictionary.md), which are API interceptors
-
-### WHATWG
-
-1. Scan for every class
-
-#### Example from the [Response class](BareClientExtenders)
-
-response.url = ...
