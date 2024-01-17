@@ -119,9 +119,12 @@ if (flags.nonstandard) {
 							entries.forEach(entry => {
 								if (entry.isDirectory) {
 									// @ts-ignore
-									entry.removeRecursively(() => null);
+									// TODO: Clear any of the directories that are prefixed with the origin
+									entry.removeRecursively(() => null); // Stub
 								} else {
 									// @ts-ignore
+									// Stub
+									// TODO: Clear any of the directories that are prefixed with the origin
 									entry.remove(() => null);
 								}
 							});
