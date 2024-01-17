@@ -10,6 +10,5 @@ declare var WebTransport;
 if (flags.ws) {
 	const bare = new BareClient(backends[0]);
 
-	// TODO: Implement middleware for WS with wsReq handle
 	WebSocket = bare.createWebsocket;
 }
