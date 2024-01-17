@@ -1,7 +1,7 @@
 import config from "$aero_config";
 const { prefix } = config;
 
-import { storageNomenclature } from "$aero_browser/misc/storage";
+import { storageNomenclature } from "./shared";
 
 indexedDB.open = new Proxy(indexedDB.open, storageNomenclature);
 indexedDB.deleteDatabase = new Proxy(
