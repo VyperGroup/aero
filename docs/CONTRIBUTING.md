@@ -16,6 +16,8 @@
 - If none of tools used suite you, feel free to make a PR for however you like
 - If you are on VSCode, install the recommended extensions
 - If you want to learn aero's codebase faster, **read all of the docs**
+- If you want to speed up reptitive tasks, use Phind (free and my choice) or any GPT assistant that is well-integrated with your codebase. I also recommend [the open source models on HuggingFace](https://huggingface.co/chat). They seem to be accurate. **Do not use AI in situations where you don't know the language or libraries used.** While it is mostly fine, if you have accurate tests, you must also audit your code with someone who knows the concepts well to ensure that there is no security holes with the generated code.
+-
 
 ### Documentation
 
