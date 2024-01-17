@@ -1,5 +1,5 @@
 /**
- * Class representing a Cache.
+ * A class representing a Cache.
  */
 export default class Cache {
 	/**
