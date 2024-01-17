@@ -5,6 +5,10 @@
 - [ ] Nested SW support
 - [ ] Completely move any remnants of middleware to the proxy-middleware repo and instead recommend the users to reference that repo for the middleware in the docs.
 
+## Commit renames
+
+- Change instances of "doc" to "article"
+
 ## Docs
 
 - [x] Convert all of the TODO.xit files to MD
