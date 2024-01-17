@@ -13,6 +13,14 @@ webpackConfig = {
 	module: {
 		rules: [
 			{
+				test: /\.val.ts/,
+				use: [
+					{
+						loader: "val-loader",
+					},
+				],
+			},
+			{
 				...webpackConfig.module.rules,
 				loader: debug ? "ts-loader" : "swc-loader",
 			},
