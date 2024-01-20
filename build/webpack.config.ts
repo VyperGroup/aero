@@ -13,7 +13,6 @@ webpackConfig = {
 	module: {
 		rules: [
 			{
-				// TODO: Somehow make it so that the template strings in val.ts files are formatted by prettier
 				test: /\.val.ts/,
 				use: [
 					{
