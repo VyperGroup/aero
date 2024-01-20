@@ -9,7 +9,7 @@ import { proxyLocation } from "$aero_browser/misc/proxyLocation";
  * The params are given from val-loader
  * @see https://github.com/webpack-contrib/val-loader
  */
-export default (options, loaderContext) => {
+export default () => {
 	return {
 		code: /* js */ `
 /**

@@ -1,4 +1,4 @@
-export default (options, loaderContext) => {
+export default () => {
 	return {
 		code: /* js */ `
 if (

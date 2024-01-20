@@ -1,4 +1,4 @@
-export default (options, loaderContext) => {
+export default () => {
 	return {
 		code: `
 // FIXME: Breaks sites such as https://www.aquarium.ru/en and https://radon.games
