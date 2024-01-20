@@ -38,13 +38,12 @@ Whenever there are multiple subheadings in a "Methods" heading, if there is a ðŸ
 ## Code Directory listing
 
 - **[src](./src)** - Aero's _actual_ code that is built
-- **[src/AeroSandbox](../../src/this)** - The SW code (aero's base). Alternative backends are found in _backend_.
 - **[src/AeroSandbox](../../src/AeroSandbox/)** - The library that powers the interception techniques that aero uses.
 
 ## Optional
 
 If you are learning proxies for the first time, I highly recommend that you don't peek at these just yet. These are optional and are only needed for certain edge-cases.
 
-- **[altBackends](../../src/altBackends)** - Alternative backends rather than using a SW for certain environments
+- **[altBackends](../../src/altBackends)** - Alternative backends rather than using a SW made for unique environments
 - **[tests](../../tests/)** - Unit testing
 - **[dist](../../dist)** - Build files for aero. This is what you actually need to use aero on your site. These won't be present until you run `pnpm run build`.
