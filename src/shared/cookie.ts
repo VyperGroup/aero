@@ -6,14 +6,14 @@ function rewriteGetCookie(cookie: string, proxyLoc: URL) {
 		.replace(
 			new RegExp(`(?<=path\=)${prefix}${proxyLoc.origin}.*(?= )`, "g"),
 			match =>
-				match.replace(new RegExp(`^(${prefix}${proxyLoc.origin})`), ""),
+				match.replace(new RegExp(`^(${prefix}${proxyLoc.origin})`), "")
 		)
 		.replace(/_path\=.*(?= )/g, "");
 }
 function rewriteSetCookie(cookie: string, proxyLoc: URL) {
 	return cookie.replace(
 		/(?<=path\=).*(?= )/g,
-		`${prefix}${proxyLoc.origin}$& _path=$&`,
+		`${prefix}${proxyLoc.origin}$& _path=$&`
 	);
 }
 
