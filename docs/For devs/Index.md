@@ -28,10 +28,11 @@ Whenever there are multiple subheadings in a "Methods" heading, if there is a ðŸ
 ### The Basics
 
 1. [Common Misconceptions](./Common%20Misconceptions.md)
-2. [The Purpose of a SW](./The%20Purpose%20of%20a%20SW.md)
-3. [Request Intereption](./Request%20Interception.md)
-4. [The No-parse Philosophy](./The%20No-parse%20Philosophy.md)
-5. [Sandboxing](../../src/AeroSandbox/Index.md)
+2. [Web Standards](./Web%20Standards.md)
+3. [The Purpose of a SW](./The%20Purpose%20of%20a%20SW.md)
+4. [Request Intereption](./Request%20Interception.md)
+5. [The No-parse Philosophy](./The%20No-parse%20Philosophy.md)
+6. [Sandboxing](../../src/AeroSandbox/Index.md)
 
 ## If you want to help contribute
 
