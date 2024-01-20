@@ -15,6 +15,7 @@ Whenever there are multiple subheadings in a "Methods" heading, if there is a ðŸ
 - [Domain Fronting](./Domain%20Fronting.md#DomainFronting) (this term is mainly for proxy site hosters, if you are a dev you don't need to worry about this)
 - [Edge cases](https://en.wikipedia.org/wiki/Edge_case) (this term is common in aero, because aero covers a lot of scenarios that you normally wouldn't need as a proxy hoster)
 
+> There are [more terms](../../src/AeroSandbox/docs/Index.md#glossary) in AeroSandbox
 > Also see [Common Misconceptions](./Common%20Misconceptions.md)
 
 ### Sandboxing
@@ -33,7 +34,7 @@ Whenever there are multiple subheadings in a "Methods" heading, if there is a ðŸ
 ## If you want to help contribute
 
 1. If you want to become an aero contributor please read [the contributing guide](./docs/CONTRIBUTING.md). Treat this more as a style guide than requirements. You are still free to express yourself however you want to.
-2. [Take a look at the TODOs](../TODO/TODO.md). These should give you a better overview of what needs to be done.
+2. [Take a look at the TODOs](TODO.md). These should give you a better overview of what needs to be done.
 
 ## Code Directory listing
 
