@@ -1,5 +1,7 @@
 # TODOs
 
+- [ ] Publish AeroSandbox to NPM. There will be specific builds for specific features for tree-shaking purposes.
+
 - [ ] Implement auto api interception
 
 - [x] Deprecate autoProxy. It's a dumb gimmick originally made to save me from keystrokes. I will still keep the strings method. I will rename autoProxy to strings proxy
