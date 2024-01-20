@@ -1,9 +1,0 @@
-{
-  "target": "ESNext",
-  "lib": ["ESNext", "WebWorker", "DOM", "DOM.Iterable"],
-  "composite": true,
-  "compilerOptions": {
-    "types": ["firefox-webext-browser"]
-  },
-  "include": ["src/api/ff/**/*.ts", "index.d.ts"]
-}

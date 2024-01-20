@@ -1,7 +1,0 @@
-{
-  "references": [
-    { "path": "tsconfig.chrome.json" },
-    { "path": "tsconfig.ff.json" },
-    { "path": "tsconfig.safari.json" }
-  ]
-}
