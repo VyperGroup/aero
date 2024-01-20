@@ -29,7 +29,8 @@ Whenever there are multiple subheadings in a "Methods" heading, if there is a ðŸ
 1. [Common Misconceptions](./Common%20Misconceptions.md)
 2. [The Purpose of a SW](./The%20Purpose%20of%20a%20SW.md)
 3. [Request Intereption](./Request%20Interception.md)
-4. [Sandboxing](../../src/AeroSandbox/Index.md)
+4. [The No-parse Philosophy](./The%20No-parse%20Philosophy.md)
+5. [Sandboxing](../../src/AeroSandbox/Index.md)
 
 ## If you want to help contribute
 

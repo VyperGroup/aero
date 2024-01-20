@@ -1,0 +1,3 @@
+# The No-parse Philosophy
+
+Aero doesn't parse unless it has to. Typically, aero intercepts APIs rather than rewriting them. Rewriters require parsers. Parsing to rewrite, is an instance of double parsing. The only cases where you need to parse in proxies is for Cache Manfiests and Web App Manifests. Even in these cases, aero uses the parsers built into the browsers, with the exception of Cache Manifests. Cache Manifests are deprecated and only function in older browsers or Safari anyways. There are no APIs that let you modify the manifest's content for good reasons. It has to be parsed and modified on the SW itself.
