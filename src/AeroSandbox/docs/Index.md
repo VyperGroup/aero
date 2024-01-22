@@ -5,7 +5,11 @@
 - API Interceptors - These are ES6 Proxy objects whose job is to make the site as if the site is under another origin. This is where proxification is done.
 - Concealers - These are API Interceptors whose only purpose is to hide the origin. These trick the site code into thinking that everything is normal. Concealers are not only needed to later on construct the correct requests, so that they can pass through the SW and be handled in the Bare Client, but they are also needed to prevent the site from thinking anything is abnormal. Our goal with web proxies is to emulate the original behavior of the site, so we need these for them to function.
 - Revealers - These are the APIs or browser features that need to be concealed
-- > This section assumes that you have already read the [Glossary for aero](../../../docs/Index.md#glossary)
+- [Shim](<https://en.wikipedia.org/wiki/Shim_(computing)>)
+- [Polyfill](<https://en.wikipedia.org/wiki/Polyfill_(programming)>)
+- Backwards-polyfill - This refers to a polyfill whose purpose is to provide legacy APIs to modern browsers
+
+> This section assumes that you have already read the [Glossary for aero](../../../docs/Index.md#glossary)
 
 ## Directory listing
 

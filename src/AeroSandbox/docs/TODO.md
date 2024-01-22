@@ -29,3 +29,5 @@
 - [ ] Support proxifying MutationEvents (deprecated) before they are removed from Chrome soon - https://w3c.github.io/uievents/#interface-mutationevent
 
 - [ ] Migrate the HTML Rewrites to the the rewriting rules
+
+- [ ] URL Encoding / Hash support
