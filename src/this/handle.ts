@@ -264,6 +264,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 		if (!("$aero" in window))
 			console.warn("Unable to initalize $aero");
 
+		// TODO: Pack in $aero.bc
+		$aero.bc = new BareClient(backends[0]);
+
 		// Protect from overwriting, in case $aero scoping failed
 		Object.freeze($aero);
 	</script>
