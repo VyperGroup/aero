@@ -11,3 +11,7 @@ In this case the key is the channel, if it exists, or instead the message data o
 ## Storage
 
 This is simply involves escaping the directory names (in the Filesystem API exclusively) or the the store names.
+
+## Propery escaping
+
+For example, in the WebRTC interception, the iceServers is escaped, because it is modified for internal use. The other alternative would be to make a copy of the RTCPeerConnection class, which would be a lot of overhead.
