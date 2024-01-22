@@ -25,15 +25,22 @@ Whenever there are multiple subheadings in a "Methods" heading, if there is a ðŸ
 
 ## Order of which to read
 
-### The Basics
+### Foreword
 
 1. [Common Misconceptions](./Common%20Misconceptions.md)
 2. [Web Standards](./Web%20Standards.md)
 3. [JSDoc](./JSDoc.md)
-4. [The Purpose of a SW](./The%20Purpose%20of%20a%20SW.md)
-5. [Request Intereption](./Request%20Interception.md)
-6. [The No-parse Philosophy](./The%20No-parse%20Philosophy.md)
-7. [Sandboxing](../../src/AeroSandbox/Index.md)
+
+### The Basics
+
+1. [The Purpose of a SW](./The%20Purpose%20of%20a%20SW.md)
+2. [Request Intereption](./Request%20Interception.md)
+3. [The No-parse Philosophy](./The%20No-parse%20Philosophy.md)
+4. [Sandboxing](../../src/AeroSandbox/Index.md)
+
+#### Extra things
+
+1. [URL Encoding](./URL%20Encoding.md)
 
 ## If you want to help contribute
 
