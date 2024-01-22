@@ -3,7 +3,7 @@ const { flags } = config;
 
 import afterPrefix from "$aero/shared/afterPrefix";
 
-// dom.d.ts doesn't support this yet
+// TODO: Import the W3 WebIDL typings dom.d.ts doesn't support this yet
 declare let launchQueue: any;
 
 if ("launchQueue" in window)
