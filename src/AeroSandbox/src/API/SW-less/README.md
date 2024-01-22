@@ -64,3 +64,8 @@ If you want
 - to respect the "Service-Worker-Allowed" header, set it to "checkAllow"
 - to respect the secure origin restriction, set it to "secureOrigin"
 - both, set it to "both"
+
+## Cons of SW-less
+
+- Less performance, since you have to instantiate it in every tab
+- Requires a lot of extra hooks into browser features
