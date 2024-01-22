@@ -24,7 +24,7 @@ if (flags.wrtc) {
 		},
 		get(target, prop) {
 			return typeof prop === "string" && escape("iceServers").test(prop)
-				? `_${prop}`
+				? target[`_${prop}`]
 				: Reflect.get(target, prop);
 		},
 		set(target, prop, value) {
