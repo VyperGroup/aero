@@ -1,13 +1,12 @@
 # aero's Sandboxing library Dev Docs
 
-## How automatic API interception would work
+## Storage Isolation
 
-The essence of API interception is parsing standard documents to create concealers, which are API interceptors
+Isolating the cookies to a certain key. In the case of a proxy, this would likely be the proxy origin itself.
 
-### WHATWG
-
-1. Scan for every class
-
-#### Example from the [Response class](BareClientExtenders)
-
-response.url = ...
+```ts
+createAeroSandboxBundle({
+  storageId: `Your key here`,
+  ...
+});
+```
