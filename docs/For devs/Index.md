@@ -2,7 +2,21 @@
 
 This index only lists features that are used in aero by default
 
-Whenever there are multiple subheadings in a "Methods" heading, if there is a 🏆 emoji, it means that it is the default method that aero uses. The medals signify the fallback number.
+## Style
+
+### Proposals
+
+Any subheading that ends with 🧪 means that it is a Proposal and that aero will support it eventually. These documents will contain the simple future tense only for things that haven't yet been implemented
+
+Any file that soley consists of proposals it will have `PROPOSAL` at the end of the file's name and the main heading will have 🧪 at the end of it, if everything in the document is unfinalized. You can also put 🧪 wherever needed. Treat them as a TODO.
+
+### Drafts
+
+These are similar to Proposals, but for documents that will change much, and should be treated as a rough collection of my ideas, not anything to base the future work on. These use the emoji 📝. For any subheadings that are ready to be in the proposal, add 🧪 to the subheading.
+
+### Alternate methods
+
+Whenever there are multiple subheadings in a `Methods`` heading, if there is a 🏆 emoji at the end, it means that it is the default method that aero uses. The medals signify the fallback number. The awards must come before the 🧪.
 
 ## Glossary
 
