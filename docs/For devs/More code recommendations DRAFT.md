@@ -1,3 +1,3 @@
 # More code 📝
 
-## Bitwise eums when possible
+## Use Bitwise eums when possible
