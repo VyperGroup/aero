@@ -29,4 +29,18 @@ declare global {
 }
 ````
 
-it's not safe to implicitly declare a property as any. Instead, you should be using the WebIDL interfaces provided in the standard documents themselves. I recommend using [webidl2ts](https://github.com/giniedp/webidl2ts) for this purpose.
+it's not safe to implicitly declare a property as any. Instead, you should be using the WebIDL interfaces provided in the standard documents themselves. I recommend using [webidl2ts](https://github.com/giniedp/webidl2ts) for this purpose. This is especially useful for supporting standards that are in the draft stages.
+
+## [Origin Trials](https://developer.chrome.com/origintrials/#/trials/active)
+
+[Explainer](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/explainer.md)
+[Explainer FAQ](http://googlechrome.github.io/OriginTrials/developer-guide.html)
+[Data Science](https://rviscomi.dev/2023/07/origin-trials-and-tribulations)
+
+It's important to support these ahead of time, because the APIs simply being in an Origin Trial shows that they probably will be implemented in the near feature
+
+### Links to the Origin Trials for every browser
+
+- [Chrome](https://developer.chrome.com/origintrials/#/trials/active)
+- [Edge](https://microsoftedge.github.io/MSEdgeExplainers/origin-trials)
+- [Mozilla](https://wiki.mozilla.org/Origin_Trials)
