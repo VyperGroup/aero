@@ -12,6 +12,7 @@ createAeroSandboxBundle({
     enable: true, // This is necessary to use Faker
     allowFakerExcludes: true
   }
+  ...
 })
 ```
 
