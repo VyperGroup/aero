@@ -9,6 +9,8 @@ If you want to find something to contribute to, search in your editor for TODO c
 - [ ] Nested SW support
 - [ ] Completely move any remnants of middleware to the proxy-middleware repo and instead recommend the users to reference that repo for the middleware in the docs.
 - [ ] Move everything from [src/shared](../../src/shared/) to the AeroSandboxing library as general utilities.
+- [ ] Implement optional url encoding like UV (this will be recommended against)
+- [ ] URL hash encoding support (this will be default)
 
 ## Commit renames
 
@@ -18,6 +20,8 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 - [x] Convert all of the TODO.xit files to MD
 - [ ] Properly capitalize the headings in the docs
+- [ ] Migrate all of the proposals to conform with my new standards
+- [ ] Create docs for docs.vyper.group
 
 ### Comments
 
@@ -36,8 +40,9 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Aero Config
 
-- [ ] Implement url encoding
+- [ ] Implement url encoding like UV
 
 ## BareClient
 
-- [ ] Move all of the middleware code into a modified BareClient
+- [x] Move all of the middleware code into a Bare V4 transport
+- [ ] Support BareClient V4
