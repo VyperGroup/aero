@@ -1,11 +1,11 @@
-# Aero's online docs 📝
+# Aero's online docs 📝 - Proposal
 
 This will be found on <https://docs.vyper.group/aero>
 
 Aero will use
 
 1. Docs: [Docusarious](https://docusaurus.io/)
-2. Searching: [DOCSEARCH](https://docsearch.algolia.com/) [Typesense](https://docsearch.algolia.com)
+2. Searching: [DOCSEARCH](https://docsearch.algolia.com/)
 3. AI assistance I would like to have something like [inkeep](https://inkeep.com/), but FOSS or more affordable
 
 > Many of these choices were inspired by [Bun's docs](https://bun.sh/docs) which are very well made
