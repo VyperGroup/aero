@@ -72,6 +72,6 @@ in JS
 <h1 fakerHide></h1>
 ```
 
-### How the faker API will be implemented
+### How the Faker API will be implemented
 
 If the Faker API is enabled in the config in compile time, special code will be added to the element interceptor. We obviously wouldn't want to bundle extra code if the Faker API support is turned off. I will use [Babel Macros](https://babeljs.io/blog/2017/09/11/zero-config-with-babel-macros) for this.
