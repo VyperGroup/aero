@@ -4,6 +4,8 @@ import getConfig from "./embeds/dynamic/getConfig";
 import config from "$aero_config";
 const { prefix, aeroPrefix, flags, debug } = config;
 
+import { BareClient } from "@mercuryworkshop/bare-mux";
+
 // Utility
 import matchWildcard from "./util/match";
 import afterPrefix from "$aero/shared/afterPrefix";
@@ -52,7 +54,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	// Construct proxy fetch instance
 	// TODO: Try each backend until there is a success
-	const bare = new createBareClient(backends[0]);
+	const bc = new BareClient(backends);
 
 	const reqUrl = new URL(req.url);
 
@@ -173,7 +175,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) opts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await bare.fetch(new URL(req.url).href, {
+	const resp = await bc.fetch(new URL(req.url).href, {
 		method: req.method,
 		headers: req.headers,
 	});

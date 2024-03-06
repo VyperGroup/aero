@@ -82,7 +82,7 @@
     "@ffmpeg/core": "^0.12.4",
     "@ffmpeg/ffmpeg": "^0.12.7",
     "@ffmpeg/types": "^0.12.2",
-    "@tomphttp/bare-client": "^1.1.2-beta.3",
+    "@mercuryworkshop/bare-mux": "^1.0.4",
     "@types/tampermonkey": "^4.0.10",
     "@types/ua-parser-js": "^0.7.39",
     "@types/web-app-manifest": "^1.0.7",
