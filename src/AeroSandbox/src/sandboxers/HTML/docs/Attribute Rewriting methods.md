@@ -1,58 +1,52 @@
-# The HTML Attribute Sandboxing Methods
+# Attribute Rewriting Methods
 
-The rewriting and emulation code is found [here](../../src/rewriters/shared/rules.ts). This is an abstraction to support as many methods as possible.
+The the common rewriting code is found [here](../shared/rules.ts). This is an abstraction to support as many methods as possible.
 
-## Misc
+## Navigation Events to intercept redirect hrefs
 
-Script elements with inline code and elements with integrity values set need to be cloned due to the browser's security restrictions.
+This will be available in aero and will supplement the other methods. If this is enabled, the other methods will not try to rewrite the href themselves and rely on this supplemental method of doing it.
 
-## Methods
+See the [doc](../../../../docs/Redirection%20Interception%20DRAFT.md) for more details
 
-### Parsing
+> Keep in mind Navigation Events are still in the draft stage
 
-This won't be included in aero, due to it causing double parsing and it is on the server, which slows down the proxy and is against aero's goals.
+## Full HTML rewriting
 
-> This was the only and traditional method of HTML attribute rewriting, prior to aero's existance.
+With all of these methods you have to write concealers for every attribute that you modify
 
-### DomParser
+### DOMParser + Escaping that HTML
 
-This involves (in an injected script):
+With these methods, you also have to write code inside of your HTML element interceptors that rewrite the HTML elements.
 
-1. A doctype declaration and storing the HTML inside of a string in a script on the site, rather than the original response body
-2. Using DomParser inside of the HTML string
-3. Rewriting those elements
-4. Appending the elements to the document. This is an improvement to [the parser method](#parsing).
+#### SW
 
-### MutationObserver
+There is no DOMParser support in a SW. You could always polyfill DOMParser to run the same rewriting code as [Injected Script](#inject-🏆), but I recommend using [parse5](https://parse5.js.org) for the performance, since we don't need to recreate an entire DOM.
 
-HTML is intercepted and rewritten through a Mutation Observer where important elements are rewritten. The only problem with this is that Mutation Observers send events for everything and those event handlers are blocking, which really slows down the site.
+Return the rewritten HTML as the response body.
 
-> This was the original method adopted by aero
+#### Inject 🏆
 
-### 🥈 Custom Elements + Rewriting the `is` Attribute
+1. Inject a script and escape the HTML in a JS string
+2. Run DOMParser on it
+3. Rewrite the HTML elements according to the rules
+4. Inject that document into the main DOM
+5. Make sure to delete the injected script
 
-This doesn't use MutationObservers and is faster than the traditional method, because it doesn't intercept every HTML attribute. It also works in browsers that don't support Mutation Observers but support custom elements.
+This method is faster because:
 
-This requires hooks into the element creation APIs to prevent
+1. It does not bottleneck the SW
+2. It does not parse twice, although it does introduce two extra DOM operations (4-5)
 
-> This is used in Faker
+#### Mutation Observer
 
-1.  Create a custom element that extends the native element
-2.  For that element, add the is attribute set to the custom element, when it is created. You can do this in a mutation observer, but you could also do it then.
-    > Here are two methods that would work without a MutationObserver or Mutation Events
-        - Inserting the HTML through the DOM APIs in a script and add the is property to all of them that way
-        - Register a Mutation Observer that rewrites all of the native elements to use add the is property
+1. Inject a Mutation Observer to intercept HTML, rather than parsing it
+2. Rewrite the HTML elements according to the rules
+3. Inside of the concealers, you need to conceal the script you are in (that is running the Mutation Observer)
 
-### 🏆 Attribute Emulation
+Pros:
 
-This doesn't use mutation events, mutation observers, or web components
+- It is easier, but not by much, to implement because it requires less code inside of the DOM API interceptors, because you don't have to write any code to rewrite the HTML inside of those interceptors; you only have to focus on writing concealers.
 
-As you probably know, when you overwrite a property it looses its functionality. You would instead have to make a custom element that extends a native one, if you want to maintain functionality and intercept (proxy). This avoids the need for that. Every current HTML element that needs to be rewritten can actually be overwritten and emulated.
+Cons:
 
-For example here's the attribute:
-
-- [ ] href - For links, you can add a click event, that uses window.open, and disable functionality of href, making you respect the rel attribute. I will make it so that you can choose to globally intercept all click events (simpler) or specifically link elements (faster). When using href for linking stylesheets, this is a bit tricky. You would have to inline the stylesheets.
-  - [ ] Find out if inline stylesheets are different from external ones
-- [ ] meta - Some of these attributes will have to be emulated
-- [ ] src - You will have to inline the script and then hide the innerHTML. While inlining, you need to inject a single line that proxies document.scriptElement to return one that doesn't have the rewritten attributes, similarly to how document.scriptElement needs to be proxied so that integrity seems to still. You will also have to run it all inside of a scope {}, so that it can't access unscoped vars from other scripts.
-- [ ] integrity - This needs to be emulated anyways, due to the script being rewritten, so it doesn't actually matter
+- There is a significant delay compared to parsing.

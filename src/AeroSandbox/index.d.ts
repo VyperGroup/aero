@@ -29,6 +29,17 @@ type SWlessRuntimeConfig = {
 	extendedAPI: boolean;
 };
 
+// TODO: Convert this to bitwise flags and make them settable on the main aero config
+enum  { 
+			// AeroSandbox support options
+			legacy: boolean /** legacy: Enable support for deprecated features; Recommended */;
+			experimental: boolean /** experimental: Enable features that aren't widely adopted by the 3 major browsers or in Draft; Recommended */;
+			nonstandard: boolean; // Browser-specific code; Recommended
+			originTrialOnly: boolean; // Recommended
+			
+			concealNamespace: boolean /** This is to prevent sites from detecting the proxy by searching for $aero */;\
+}
+
 declare namespace AeroSandboxTypes {
 	export interface $location {
 		// TODO: Define
@@ -46,7 +57,8 @@ declare namespace AeroSandboxTypes {
 		emulator?: Function;
 	}
 	// Bundler types
-	export type AeroSandboxConfig = {
+	export type Config = {
+		support
 		/**
 		 * This is not needed, if you are running this on aero itself, since it will automatically have the proper namespace already (no need for mapping).
 		 */
@@ -64,5 +76,17 @@ declare namespace AeroSandboxTypes {
 		// Extra features
 		FakerAPI?: FakerAPIConfig; // I recommend disabling: redirectors, if you enable it because it would probably not be necessary
 		SWlessRuntime?: SWlessRuntimeConfig;
+		rewriters: {
+			html: {
+				/** DOMParser is be the default */
+				mode: "DOMParser" | "Mutation Observer",
+				replaceRedirectorsWithNavigationEvents: {
+					/** This will be enabled by default*/
+					enabled: boolean;
+					/** This is to remove functionality. If this is false, it will try to detect if navigation events are in the browser, and if they are it won't intercept the redirectors, but the code would still be in the bundle. */
+					treeShake: boolean;
+				},
+			},
+		},
 	};
 }

@@ -3,10 +3,14 @@
 // href
 const hrefRules = new Map<any, AeroSandboxTypes.EscapeRule[]>();
 
+hrefRules.set(HTMLAnchorElement, {
+	attr: "href",
+});
 hrefRules.set(HTMLAreaElement, {
 	attr: "href",
 });
-// TODO: ...(finish the rest of the elements)
+// TODO: Support xlink:href attributes - https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href
+// TODO: ...(support the rest of the elements)
 
 // src
 
