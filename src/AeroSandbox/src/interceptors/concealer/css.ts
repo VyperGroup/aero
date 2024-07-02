@@ -1,9 +1,6 @@
 /** Concealers for methods that return `CSSStyleSheet` (shadow root stylesheets)
  * This file should be required into a bundle for AeroSandbox, so there are no exports
  *
- * @author Ryan Wilson
- * @license AGPL-3.0-or-later
- *
  * @see https://drafts.csswg.org/cssom/#dom-documentorshadowroot-stylesheets
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet#obtaining_a_stylesheet - These explain all of the methods of obtaining `CSSStyleSheet`. TODO: Finish intercepting all of those revealers.
  */

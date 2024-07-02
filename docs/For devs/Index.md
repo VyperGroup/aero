@@ -24,6 +24,7 @@ Whenever there are multiple subheadings in a `Methods`` heading, if there is a ð
 - Origin
   - Origin: This is the origin of the site, as given by location.origin
   - Proxy Origin: This is usually whatever is after `${proxySiteUrl}/${proxyPrefix}/...` With the ... being the URL decoded, if it was encoded. In aero's sandboxing library, you can get this from proxyLocation().origin. The whole essence of proxification.
+    > Be very careful. If you see `the proxy site's origin` that means the actual origin of the proxy site, not the origin in the proxified location
 - Proxified: This means that an object has been intercepted to reflect it, as if it was running under the proxy origin rather than the real origin.
 - Emulation: This means that you are replicating a browser feature, without intercepting the API. In some cases, this is the possible way to do things. Especially when you consider that with the security headers, where you can only specify an origin, not a pathname (that would contain the proxy origin in it).
 - Double parsing - This refers to the phenomenon when proxies parse the entire document rather than intercept what's needed. This causes the parser to be parsing it twice, since the browser engine has already parsed the entire document for its own purposes.

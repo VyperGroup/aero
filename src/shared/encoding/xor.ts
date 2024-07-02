@@ -1,5 +1,5 @@
 // Lookup Table Type
-type LookupTables = Map<string, Uint8Array>;
+type LookupTable = Map<string, Uint8Array>;
 
 /**
  * This isn't your typical XOR encoder.
@@ -8,7 +8,7 @@ type LookupTables = Map<string, Uint8Array>;
  */
 export default class XOR {
 	// key, the precomputed XOR lookup table
-	lookupTables: LookupTables;
+	lookupTables: LookupTable;
 
 	constructor(precompKeys: string) {
 		this.lookupTables = new Map();
@@ -53,7 +53,7 @@ export default class XOR {
 		return urlLookupTable;
 	}
 
-	encode(urlStr: string, key: string) {
+	encodeUrl(urlStr: string, key: string) {
 		let urlLookupTable = this.#getLookupTable(key);
 
 		const textArr = new TextEncoder().encode(urlStr);
@@ -73,7 +73,7 @@ export default class XOR {
 
 		return new TextDecoder().decode(resultArr);
 	}
-	decode(text: string, key: string) {
+	decodeUrl(text: string, key: string) {
 		let urlLookupTable = this.#getLookupTable(key);
 
 		const textArr = new TextEncoder().encode(text);
