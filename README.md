@@ -1,5 +1,7 @@
 # aero
 
+![aero logo](./aero.png)
+
 Aero is a safe, developer friendly, and innovative interception web proxy with many features. Aero provides full site support without much delay, while also having a clean and organized codebase.
 
 ## What is a web proxy?
