@@ -1,6 +1,6 @@
 # aero
 
-![aero logo](./aero.png)
+![aero logo](./aero.webp)
 
 Aero is a safe, developer friendly, and innovative interception web proxy with many features. Aero provides full site support without much delay, while also having a clean and organized codebase.
 
@@ -27,6 +27,7 @@ It is highly recommended that you install [aero middleware](https://github.com/P
 ## Notable Contributions
 
 - [Divide](https://github.com/e9x) for standardizing interception proxies with [TompHTTP](https://github.com/tomphttp/bare-server-node)
+- [ThinLiquid](https://github.com/ThinLiquid) for the logo
 
 Don't be afraid to help 😄
 Nobody is unqualified to work on aero
