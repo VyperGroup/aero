@@ -22,9 +22,10 @@ The solution to this is running your rewriters inside of a Shared Worker. You mi
 
 Adding this optimization to your SW proxy would help the SW load times and the sites' tabs being proxied. You don't need a SW-powered proxy to take advantage of this optimization. If you have a server-only proxy, you still load rewriters into your client-side JS injects.
 
-### Note when implementing
+### Notes when implementing
 
-One catch is that you must have initiated the rewriters before the SW commenced. You need to register the Worker in the same script bundle that you use to register the SW before you register the SW.
+- One catch is that you must have initiated the rewriters before the SW commenced. You need to register the Worker in the same script bundle that you use to register the SW before you register the SW.
+- Make this a configurable option and not have to force rewriter SharedWorkers
 
 ## Closing words
 
