@@ -12,7 +12,7 @@ It would help to learn what a [SharedWorker is](https://developer.mozilla.org/en
 
 I've already explained why you should use bare-mux. One of the most commonly used things in proxy is the client used to send requests to be proxied. In a SW proxy, the Service Worker uses it when it intercepts the fetch event, and your client-side JS injects probably use it to proxy the WS because the fetch event doesn't have events for WS. If you use bare-mux 2.0, you can initialize the same client in both the SW and the client-side JS injects, and as a result, it would do the proxying magic in another thread. Before version 2.0, bare-mux never ran in a SharedWorker, so you should update it if you are on old versions.
 
-## One of the best optimizations you can make to your proxy
+## One of the best optimizations you can make to your proxy (SharedWorker-based rewriting)
 
 A significant slow-down in proxies is that you need to initialize your rewriters when you initialize SW, and inside the client side, JS injects each time you load another site in your proxy. It doesn't matter too much for the SW itself because it is registered and loaded once until it updates, but it does matter more for the client-side JS. This is made especially worse if the rewriters you are initalizing use parsers that have to fetched and loaded each time.
 

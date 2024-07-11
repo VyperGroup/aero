@@ -11,6 +11,8 @@ If you want to find something to contribute to, search in your editor for TODO c
 - [ ] Move everything from [src/shared](../../src/shared/) to the AeroSandboxing library as general utilities.
 - [ ] Implement optional url encoding like UV (this will be recommended against)
 - [ ] URL hash encoding support (this will be default)
+- [x] Make a new global aero logging method at $aero.log
+- [ ] Make aero the first quad-threaded proxy: switch to bare-mux 2.0 and SharedWorker-based rewriting
 
 ## Commit renames
 
@@ -22,6 +24,8 @@ If you want to find something to contribute to, search in your editor for TODO c
 - [ ] Properly capitalize the headings in the docs
 - [ ] Migrate all of the proposals to conform with my new standards
 - [ ] Create docs for docs.vyper.group
+- [ ] Convert the aero logo into an SVG
+- [x] Get a new aero logo
 
 ### Comments
 
@@ -42,7 +46,7 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 - [ ] Implement url encoding like UV
 
-## BareClient
+## Bare Client
 
-- [x] Move all of the middleware code into a Bare V4 transport
-- [ ] Support BareClient V4
+- [x] Move all of the middleware code into a bare-mux transport
+- [ ] Support bare-mux
