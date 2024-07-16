@@ -2,6 +2,8 @@
 
 The the common rewriting code is found [here](../shared/rules.ts). This is an abstraction to support as many methods as possible.
 
+> ⚠️ WARNING: This document is highly out of date; please don't read it. It will be updated soon.
+
 ## Navigation Events to intercept redirect hrefs
 
 This will be available in aero and will supplement the other methods. If this is enabled, the other methods will not try to rewrite the href themselves and rely on this supplemental method of doing it.
@@ -20,9 +22,9 @@ With these methods, you also have to write code inside of your HTML element inte
 
 #### SW
 
-There is no DOMParser support in a SW. You could always polyfill DOMParser to run the same rewriting code as [Injected Script](#inject-🏆), but I recommend using [parse5](https://parse5.js.org) for the performance, since we don't need to recreate an entire DOM.
+There is no DOMParser support in a SW. You could always polyfill DOMParser to run the same rewriting code as [Injected Script](#inject-🏆), but I recommend using [parse5](https://parse5.js.org) for the performance, since we don't must recreate an entire DOM.
 
-Return the rewritten HTML as the response body.
+Return the rewrote HTML as the response body.
 
 #### Inject 🏆
 
@@ -41,7 +43,7 @@ This method is faster because:
 
 1. Inject a Mutation Observer to intercept HTML, rather than parsing it
 2. Rewrite the HTML elements according to the rules
-3. Inside of the concealers, you need to conceal the script you are in (that is running the Mutation Observer)
+3. Inside of the concealers, you must conceal the script you are in (that is running the Mutation Observer)
 
 Pros:
 

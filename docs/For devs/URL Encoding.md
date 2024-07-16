@@ -1,10 +1,12 @@
 # URL Encoding methods in aero
 
-URL encoding involves modifying your redirection concealers to encode the changes (you need to decode the entire thing, unless it is to a new origin) and decode calls to find the url.
+URL encoding involves modifying your redirection concealers to encode the changes. You must decode the entire thing unless it is to a new origin and decode calls to find the URL.
+
+> TODO: Rewrite this part. It needs to be written better.
 
 ## UV-like URL Encoding 🥈
 
-Aero's config will be compatible with UV's config for this aspect
+Aero's config will be compatible with UV's config for this aspect.
 
 ## Hash based encoding 🏆 📝
 

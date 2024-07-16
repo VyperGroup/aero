@@ -1,23 +1,25 @@
 # Attribute Escaping
 
+> ⚠️ WARNING: This document is highly out of date; please don't read it. It will be updated soon.
+
 ## The traditional approach
 
-After the attributes have been modified by the rewriter, the unmodified version will be saved in an attibute. This creates a vector to where the proxy can be detected. To solve this the proxy:
+After the rewriter has modified the attributes, the unmodified version is saved in an attribute. Unfortunately, the new attribute creates a vector where the proxied site can detect the proxy. To solve this, the proxy:
 
-- intercepts the APIs that return an Element and ovewrites those API methods with a Proxy using apply
-- makes a copy of the return get that element through. The return value is provided from Reflect.apply
-- overwrites that Element with custom getters and setters for the element. where the copy of the return will be returned to the proxy
+- intercepts the APIs that return an HTML Element and overwrites those API methods with a Proxy using the apply function trap in the ES6 Proxy.
+- Make a copy of the return and get that HTML Element through the return value provided from `Reflect.apply`
+- overwrites that HTML element with custom getters and setters for the HTML Element. Where the copy of the return will be returned to the proxy
 
 ### The problem
 
-It's best to not have to proxy elements (DOM interception), if you don't need to, to prevent unnecessary overhead
+It's best not to have to proxy elements (DOM interception) if you don't need to to prevent unnecessary overhead.
 
 ## What aero does instead
 
 ### 🏆 With [attribute sandboxing](./Attribute%20Sandboxing%20methods.md/### 🏆 Attribute Emulation method)
 
-Aero doesn't actually need to escape the attributes, because with this method it doesn't need to keep track of the previous values.
+Aero doesn't need to escape the attributes because, with this method, it doesn't need to keep track of the previous values.
 
 ### With attribute sandboxing methods
 
-Instead of escaping, aero cleverly uses WeakMap to keep track of the old values. The key is the rewritten element and the value is the original. This also allows for garbage collector to clear up values on its own.
+Instead of escaping, aero cleverly uses WeakMap to keep track of the old values. The key is the rewrote element, and the value is the original. This method also allows garbage collectors to clear up values on their own. Essentially what this means is, when the Element is deleted it will be gone from the map so that less memory is used.

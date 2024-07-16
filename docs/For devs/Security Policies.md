@@ -2,19 +2,19 @@
 
 ## CORS
 
-Unlike other proxies that ignore the cors policy (delete them), aero abides by the intended security feature. Without these, sites can infer either the browser doesn't support modern security standards or that a proxy is being used. 
+Unlike other proxies that ignore the CORS policy by deleting them, aero abides by the intended security feature. These are necessary for sites to infer that the browser doesn't support modern security standards or a proxy is used.
 
 ### Testing
 
-It does this by sending the unproxied request and checking for a CORS error back.
+It does this by sending the unproxied request and checking for a CORS error.
 
-If `corsMode` is unset, it will default to `testing`, but if url encoding is set (`urlEncoder`), it will instead default to CORS Emulation.
+If `corsMode` is unset, it will default to `testing,` but if URL encoding is set (`urlEncoder`), it will default to CORS Emulation.
 
 > This is the only CORS method that doesn't use emulation
 
 ### Emulation
 
-Although [Testing](#testing) is useful, it reveals the URL, which defeats the purpose of URL encryption or obfuscation that may be in place. If you want to use CORS Emulation. set `corsMode` to `emulation`
+Although [Testing](#testing) is functional, it reveals the URL, which defeats the purpose of URL encryption or obfuscation that may be in place if you want to use CORS Emulation. set `corsMode` to `emulation`. It also has the added side effect of multiplying your request count by 2x. I will make the default mode emulation once it's complete.
 
 ## Sub-resource Integrity Emulation
 

@@ -1,4 +1,4 @@
-# aero's Sandboxing library Dev Docs
+# AeroSandbox library Dev Docs
 
 ## Storage Isolation
 
@@ -9,4 +9,33 @@ createAeroSandboxBundle({
   storageId: `Your key here`,
   ...
 });
+```
+
+## How to write an API Interceptor for AeroSandbox
+
+TODO: This is a stub...
+
+```ts
+export default {
+  proxifiedObj: new Proxy(Blob, {
+    apply(target, that, args) {
+      const [arr, opts] = args;
+
+      if (isHtml(opts.type))
+        args[0] = arr.map((html: string) => $aero.init + html);
+
+      let ret = Reflect.apply(target, that, args);
+
+      let size = 0;
+
+      args[0].forEach((html: string) => (size += html.length));
+
+      ret.size = size;
+
+      return ret;
+    },
+  }),
+  apiName: "Blob",
+  availableInWebWorkers: true,
+};
 ```

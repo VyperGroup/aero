@@ -1,5 +1,7 @@
 # How to use aero
 
+> ⚠️ WARNING: This document is highly out of date; please don't read it. It will be updated soon.
+
 ## _Coming soon, you will be able to add aero to your proxy automatically with aero-cli_
 
 ## Aero is API-compatible with UV
