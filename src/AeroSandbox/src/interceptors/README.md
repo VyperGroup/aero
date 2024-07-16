@@ -8,6 +8,7 @@ These folders contain the code for aero's API interception
 - **Concealers** - These are API Interceptors whose only purpose is to hide the origin. These trick the site code into thinking that everything is normal. Concealers are not only needed to later on construct the correct requests, so that they can pass through the SW and be handled in the Bare Client, but they are also needed to prevent the site from thinking anything is abnormal. Our goal with web proxies is to emulate the original behavior of the site, so we need these for them to function.
 - **Revealers** - These are the APIs or browser features that need to be concealed
   In this document, I describe what type of interceptors
+- **Request URL Proxifier** - These are API interceptors whose jobs are to rewrite the source/content URLs to fit under the proxy in the case that there is no proxy SW or the Clients API is unavailable for whatever reason. If you have a regular SW proxy I recommend disabling these in AeroSandbox.
 
 ## Directory listing
 
