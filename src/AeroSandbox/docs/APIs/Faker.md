@@ -1,6 +1,6 @@
 # Faker API (optional feature)
 
-Faker is an API that AeroSandbox can be built with, allowing the element's state to be fake. This is used to prevent sites from detecting modifications. This will be used in aero's middleware and my undetectable adblocker.
+Faker is an API that AeroSandbox can be built with, allowing the element's state to be fake. This prevents sites from detecting modifications. This will be used in aero's middleware and my undetectable adblocker.
 
 In your bundle file
 
