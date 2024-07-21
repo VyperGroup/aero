@@ -1,9 +1,17 @@
-open = new Proxy(open, {
-	apply(_target, _that, args) {
-		const [url] = args;
+import { APIInterceptor, ExposedContextsEnum } from "$aero/types";
 
-		args[0] = $aero.rewriteSrc(url);
+import rewriteSrc from "$aero/src/shared/src";
 
-		return Reflect.apply(...arguments);
-	},
-});
+export default {
+	proxifiedApi: new Proxy(open, {
+		apply(target, that, args) {
+			const [url] = args;
+
+			args[0] = rewriteSrc(url);
+
+			return Reflect.apply(target, that, args);
+		},
+	}),
+	globalProp: "open",
+	exposedContexts: ExposedContextsEnum.window,
+} as APIInterceptor;
