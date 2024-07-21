@@ -1,7 +1,7 @@
-import config from "$aero_config";
+import config from "$aero/config";
 const { flags } = config;
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
 // Frame checks
 /*

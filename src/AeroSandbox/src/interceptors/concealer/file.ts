@@ -1,4 +1,4 @@
-import { proxyGetString } from "$aero/shared/autoProxy/autoProxy";
+import { proxyGetString } from "$src/shared/autoProxy/autoProxy";
 
 proxyGetString("File", ["webkitRelativePath"]);
 

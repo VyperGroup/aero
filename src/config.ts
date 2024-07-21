@@ -1,3 +1,4 @@
+// This is horribly out of date do not look at the default config aero sandbox will build one day...
 const config: AeroTypes.config = {
 	prefix: "/go/",
 	aeroPathFilter: path =>
@@ -13,10 +14,6 @@ const config: AeroTypes.config = {
 		// Emulation
 		emulateSecureContext: false,
 		corsEmulation: true,
-		// Support options
-		legacy: true,
-		experimental: true,
-		nonstandard: true,
 		// Stealth
 		foolExtensions: false,
 		// Aero Sandbox options

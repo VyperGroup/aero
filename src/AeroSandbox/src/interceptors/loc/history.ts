@@ -1,6 +1,8 @@
-import rewriteSrc from "$aero/shared/src";
+import { APIInterceptor, ExposedContextsEnum } from "$aero/types";
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import rewriteSrc from "@src/shared/src";
+
+import { proxyLocation } from "@src/interceptors/loc/location";
 
 const historyState = {
 	apply(target: any, that: ProxyHandler<object>, args: any[]) {
@@ -17,7 +19,7 @@ const historyState = {
 				args[3] = rewriteSrc(url, proxyLocation().href);
 			}
 		} catch (error) {
-			console.error(
+			$aero.error(
 				"An error occurred while intercepting the source in the History API interceptor: ",
 				error
 			);
@@ -27,5 +29,15 @@ const historyState = {
 	},
 };
 
-history.pushState = new Proxy(history.pushState, historyState);
-history.replaceState = new Proxy(history.replaceState, historyState);
+export default [
+	{
+		proxifiedObj: new Proxy(history.pushState, historyState),
+		globalProp: "history.pushState",
+		exposedContexts: ExposedContextsEnum.window,
+	},
+	{
+		proxifiedObj: new Proxy(history.replaceState, historyState),
+		globalProp: "history.replaceState",
+		exposedContexts: ExposedContextsEnum.window,
+	},
+] as APIInterceptor[];

@@ -1,4 +1,4 @@
-import prefix from "$aero_config";
+import prefix from "$aero/config";
 
 import { proxyLocation } from "sandbox/src/proxyLocation";
 

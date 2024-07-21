@@ -1,12 +1,18 @@
-import config from "$aero_config";
+import { APIInterceptor, ExposedContextsEnum } from "$aero/types";
+
+import config from "config";
 const { flags } = config;
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
-if (flags.emulateSecureContext) {
-	const bak = isSecureContext;
-
-	Object.defineProperty(window, "isSecureContext", {
-		get: () => proxyLocation().protocol === "https:" || bak,
-	});
-}
+export default {
+	modifyObjectProperty() {
+		Object.defineProperty(window, "isSecureContext", {
+			get: () =>
+				flags.emulateSecureContext ||
+				proxyLocation().protocol === "https:",
+		});
+	},
+	globalProp: "isSecureContext",
+	exposedContexts: ExposedContextsEnum.window,
+} as APIInterceptor;

@@ -1,20 +1,24 @@
-import isHtml from "$aero/shared/isHTML";
+import { APIInterceptor } from "$aero/types";
+import isHtml from "$src/shared/isHTML";
 
-Blob = new Proxy(Blob, {
-	apply(target, that, args) {
-		const [arr, opts] = args;
+export default {
+	proxifiedObj: new Proxy(Blob, {
+		apply(target, that, args) {
+			const [arr, opts] = args;
 
-		if ($aero.isHtml(opts.type))
-			args[0] = arr.map((html: string) => $aero.init + html);
+			if (isHtml(opts.type))
+				args[0] = arr.map((html: string) => $aero.init + html);
 
-		let ret = Reflect.apply(target, that, args);
+			let ret = Reflect.apply(target, that, args);
 
-		let size = 0;
+			let size = 0;
 
-		args[0].forEach((html: string) => (size += html.length));
+			args[0].forEach((html: string) => (size += html.length));
 
-		ret.size = size;
+			ret.size = size;
 
-		return ret;
-	},
-});
+			return ret;
+		},
+	}),
+	globalProp: "Blob",
+} as APIInterceptor;

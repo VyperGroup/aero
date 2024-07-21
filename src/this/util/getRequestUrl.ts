@@ -17,11 +17,11 @@ function getRequestUrl(
 	proxyUrl: URL,
 	path: string,
 	isHomepage: boolean,
-	isiFrame: boolean,
+	isiFrame: boolean
 ): string {
 	const noPrefix = path.split(prefix)[1];
 
-	// If it is the first request, there is no need to do any relative url checking
+	// If it is the first request, there is no must do any relative url checking
 	if (typeof noPrefix === "string" && isHomepage)
 		return new URL(noPrefix).href;
 
@@ -46,8 +46,8 @@ function getRequestUrl(
 			) {
 				let noPrefixSplit = noPrefix?.split("/");
 
-				console.log(proxyEndingPath);
-				console.log(noPrefixSplit);
+				$aero.log(proxyEndingPath);
+				$aero.log(noPrefixSplit);
 
 				noPrefixSplit.splice(
 					noPrefixSplit.length - 1,
@@ -56,7 +56,7 @@ function getRequestUrl(
 				);
 				retUrl = noPrefixSplit.join("/");
 
-				console.log(noPrefixSplit);
+				$aero.log(noPrefixSplit);
 			}
 			*/
 

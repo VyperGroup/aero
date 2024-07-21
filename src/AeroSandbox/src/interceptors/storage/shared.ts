@@ -1,4 +1,4 @@
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
 // TODO: Consider renaming this to "proxyKey"
 const storagePrefix = () => `${proxyLocation().origin}_`;

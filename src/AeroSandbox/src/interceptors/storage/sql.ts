@@ -1,31 +1,39 @@
-import config from "$aero_config";
-const { prefix, flags } = config;
+import { APIInterceptor, SupportEnum } from "$aero/types";
 
-if (flags.legacy) {
-	const handler = {
-		apply(target, that, args) {
-			const [key]: [string] = args;
+import config from "$aero/config";
+const { prefix } = config;
 
-			const newKey = prefix + key;
+const handler = {
+	apply(target, that, args) {
+		const [key]: [string] = args;
 
-			args[0] = newKey;
+		const newKey = prefix + key;
 
-			const item = localStorage.getItem("dbNames");
-			if (item !== null) {
-				const dbNames: string[] = JSON.parse(item);
-				if (dbNames.includes(newKey))
-					localStorage.setItem(
-						"dbNames",
-						JSON.stringify(dbNames.push(newKey)),
-					);
-			}
+		args[0] = newKey;
 
-			return Reflect.apply(target, that, args);
-		},
-	};
+		const item = localStorage.getItem("dbNames");
+		if (item !== null) {
+			const dbNames: string[] = JSON.parse(item);
+			if (dbNames.includes(newKey))
+				localStorage.setItem(
+					"dbNames",
+					JSON.stringify(dbNames.push(newKey))
+				);
+		}
 
-	if ("openDatabase" in window)
-		window.openDatabase = new Proxy(window.openDatabase, handler);
-	if ("openDatabaseSync" in window)
-		window.openDatabaseSync = new Proxy(window.openDatabaseSync, handler);
-}
+		return Reflect.apply(target, that, args);
+	},
+};
+
+export default [
+	{
+		proxifiedObj: new Proxy(openDatabase, handler),
+		globalProp: "openDatabase",
+		supports: SupportEnum.deprecated | SupportEnum.shippingChromium,
+	},
+	{
+		proxifiedObj: new Proxy(openDatabaseSync, handler),
+		globalProp: "openDatabaseSync",
+		supports: SupportEnum.deprecated | SupportEnum.shippingChromium,
+	},
+] as APIInterceptor[];

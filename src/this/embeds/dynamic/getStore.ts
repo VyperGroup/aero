@@ -14,12 +14,12 @@ export default (dbName: string, func: Function) => {
 			const store = transaction.objectStore("config");
 
 			if (store instanceof IDBOpenDBRequest) func(store);
-			else console.error(`Unable to get store for config`);
+			else $aero.error(`Unable to get store for config`);
 		};
 	};
 
 	req.onerror = err => {
-		console.error(
+		$aero.error(
 			`Error initializing the db for dynamic config updates\n${err}`
 		);
 	};

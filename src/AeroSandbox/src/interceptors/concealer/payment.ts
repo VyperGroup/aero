@@ -1,25 +1,32 @@
-import config from "$aero_config";
-const { flags } = config;
+import { APIInterceptor, SupportEnum } from "$aero/types";
 
-import { proxyGetString } from "$aero/shared/autoProxy/autoProxy";
+import { proxyGetString } from "$src/shared/autoProxy/autoProxy";
 
-import rewriteSrc from "$aero/shared/src";
-
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import rewriteSrc from "$src/shared/src";
 
 // Only supported on Chromium
-if ("PaymentRequest" in window)
-	PaymentRequest = new Proxy(PaymentRequest, {
-		construct(_target, _prop, args) {
-			let [methods] = args;
+export default [
+	{
+		proxifiedObj: new Proxy(PaymentRequest, {
+			construct(target, prop, args) {
+				let [methods] = args;
 
-			args[0] = methods.map(method => $aero.rewriteSrc(method));
+				args[0] = methods.map(method => rewriteSrc(method));
 
-			return Reflect.construct(...arguments);
-		},
-	});
-
-if (flags.legacy && "MerchantValidationEvent" in window)
-	proxyGetString("MerchantValidationEvent", ["validationURL"]);
-
-// TODO: Conceal https://w3c.github.io/payment-handler/#dom-paymentrequestevent-toporigin
+				return Reflect.construct(target, prop, args);
+			},
+		}),
+		globalProp: "PaymentRequest",
+		supports: SupportEnum.draft | SupportEnum.shippingChromium,
+	},
+	{
+		proxifiedObj: proxyGetString("MerchantValidationEvent", [
+			"validationURL",
+		]),
+		globalProp: "MerchantValidationEvent",
+		supports:
+			SupportEnum.deprecated |
+			SupportEnum.draft |
+			SupportEnum.shippingChromium,
+	},
+] as APIInterceptor[];

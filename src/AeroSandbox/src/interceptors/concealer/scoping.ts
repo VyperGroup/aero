@@ -1,6 +1,6 @@
-declare var $aero: AeroTypes.GlobalAeroCTX;
+import { APIInterceptor } from "$aero/types";
 
-import rewriteScript from "$aero/shared/script";
+import rewriteScript from "$src/shared/script";
 
 // Scope Checking
 $aero.check = val => (val === location ? $location : val);
@@ -13,6 +13,10 @@ $aero.eval = new Proxy(eval, {
 		return Reflect.apply(target, that, args);
 	},
 });
+
+const i0 = {
+	proxifiedObj: 
+}
 
 Function = new Proxy(Function, {
 	construct(target, args) {
@@ -82,9 +86,15 @@ Object.getOwnPropertyDescriptor = new Proxy(Object.getOwnPropertyDescriptor, {
 });
 
 // Conceal $aero from in operator
-window = new Proxy(window, {
-	has(target, key) {
-		return key !== "$aero" && Reflect.has(target, key);
-	},
-});
-z;
+
+
+export default [
+	{
+		proxifiedObj: new Proxy(window, {
+			has(target, key) {
+				return key !== "$aero" && Reflect.has(target, key);
+			},
+		}),
+		globalProp: "",
+	}
+] as APIInterceptor[];

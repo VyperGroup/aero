@@ -1,10 +1,11 @@
 /*
-import config from "$aero_config";
+import config from "$aero/config";
 const { flags } = config;
 
-import rewriteSrc from "$aero/shared/hared/src";
+import rewriteSrc from "$src/shared/hared/src";
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
+
 
 if (flags.nestedWorkers)
 	if ("serviceWorker" in navigator) {
@@ -15,7 +16,7 @@ if (flags.nestedWorkers)
 				return undefined;
 			},
 		});
-		
+
 		/*
 		// This api is only exposed in secure contexts
 		navigator.serviceWorker.register = new Proxy(
@@ -28,7 +29,7 @@ if (flags.nestedWorkers)
 						opts.type === "module"
 					}`;
 
-					console.error(
+					$aero.error(
 						`Registering a nested service worker\n${path} ➜ ${args[0]}`
 					);
 

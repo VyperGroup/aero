@@ -1,11 +1,11 @@
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
 // Custom protocols
 export default {
 	get(scheme: string): string {
 		return scheme.replace(
 			new RegExp(`^(web+${$aero.sandbox.proxyLocation().origin}+)`),
-			"web+",
+			"web+"
 		);
 	},
 	set(scheme: string): string {

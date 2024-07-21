@@ -1,9 +1,10 @@
 declare var $aero: AeroTypes.GlobalAeroCTX;
 
 /*
-import rewriteSrc from "$aero/shared/src";
+import rewriteSrc from "$src/shared/src";
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
+
 
 Navigator.prototype.sendBeacon = new Proxy(Navigator.prototype.sendBeacon, {
 	apply(target, that, args) {

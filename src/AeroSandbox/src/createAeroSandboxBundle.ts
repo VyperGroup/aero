@@ -1,9 +1,12 @@
+// TODO: I'm deleting this file once I transition to using AeroSandbox
+
 function importAll(ctx) {
 	ctx.keys().forEach(ctx);
 }
 
 export default (config: AeroSandboxTypes.config) => {
 	// Set the defaults assuming that you are using aero
+	// TODO: Remove these
 	config.redirectors ??= true;
 	config.concealers ??= true;
 	config.htmlInterception ?? true;

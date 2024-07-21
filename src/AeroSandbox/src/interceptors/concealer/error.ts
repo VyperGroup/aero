@@ -1,15 +1,17 @@
-import config from "$aero_config";
-const { aeroPrefix, flags } = config;
+import { APIInterceptor, SupportEnum } from "$aero/types";
 
-import afterPrefix from "$aero/shared/afterPrefix";
+import config from "$aero/config";
+const { aeroPrefix } = config;
+
+import afterPrefix from "$src/shared/afterPrefix";
 
 /*
 Error emulation
 These properties are not standard, so functionality is different in browsers
 These interceptors will probably change a lot over time
 */
-if (flags.nonstandard) {
-	Error = new Proxy(Error, {
+export default {
+	proxifiedObj: new Proxy(Error, {
 		construct(target, args) {
 			const res = Reflect.construct(target, args);
 
@@ -26,7 +28,7 @@ if (flags.nonstandard) {
 			if (typeof res.stack !== "undefined")
 				if (navigator.userAgent.includes("Firefox")) {
 					const match = /Firefox\/([\d\.]+)/g.exec(
-						navigator.userAgent,
+						navigator.userAgent
 					);
 
 					if (match !== null && match.length === 2) {
@@ -35,9 +37,9 @@ if (flags.nonstandard) {
 						res.stack = res.stack.replace(
 							new RegExp(
 								`^(@)(.+)(\\d+${ver >= 30 ? ":\\d+" : ""})$`,
-								"g",
+								"g"
 							),
-							(_match, g1, g2, g3) => g1 + afterPrefix(g2) + g3,
+							(_match, g1, g2, g3) => g1 + afterPrefix(g2) + g3
 						);
 					}
 				} else if (navigator.userAgent.includes("Chrome"))
@@ -46,20 +48,22 @@ if (flags.nonstandard) {
 						.map(line =>
 							line.includes(location.origin + aeroPrefix)
 								? ""
-								: line,
+								: line
 						)
 						.join("\n")
 						.replace(
 							/^(at )([A-Za-z\.]+ )?.+(?=:\d+:\d+)/g,
-							(_match, g1, g2, g3) => g1 + g2 + afterPrefix(g3),
+							(_match, g1, g2, g3) => g1 + g2 + afterPrefix(g3)
 						)
 						.replace(
 							/(?<=\().+(?=:\d+:\d+\))/g,
-							(_match, g1, g2) => g1 + afterPrefix(g2),
+							(_match, g1, g2) => g1 + afterPrefix(g2)
 						);
 			// TODO: Support Safari
 
 			return res;
 		},
-	});
-}
+	}),
+	globalProp: "Error",
+	supports: SupportEnum.nonstandard,
+} as APIInterceptor;

@@ -1,11 +1,12 @@
-import proxy from "$aero/shared/autoProxy/autoProxy";
+import proxy from "$src/shared/autoProxy/autoProxy";
 
-import afterPrefix from "$aero/shared/afterPrefix";
+import afterPrefix from "$src/shared/afterPrefix";
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
 import { storageKey } from "$aero_browser/misc/storage";
 
+// TODO: Adopt the new API Interceptor design
 // Sender
 // FIXME: Breaks on Google
 /*

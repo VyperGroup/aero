@@ -1,7 +1,12 @@
+import { APIInterceptor } from "$aero/types";
+
 // Only supported on Chromium
-if ("WebTransport" in window)
-	WebTransport = new Proxy(WebTransport, {
+export default {
+	proxifiedObj: new Proxy(WebTransport, {
 		construct(target, args) {
-			// TODO: Extend the bare spec to support WebTransportx
+			// I'm waiting for the bare/wisp spec to support WebTransport
+			return Reflect.construct(target, args);
 		},
-	});
+	}),
+	globalProp: "WebTransport",
+} as APIInterceptor;

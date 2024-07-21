@@ -1,13 +1,13 @@
 // Handled by val-loader (val.ts)
 
 // Importing necessary modules
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
 /**
  * An API interceptor for import.meta.resolve that prevents the paths from going behind the proxy origin.
  *
  * The params are given from val-loader
- * @see https://github.com/webpack-contrib/val-loader
+ * @see {@link https://github.com/webpack-contrib/val-loader}
  */
 export default () => {
 	return {

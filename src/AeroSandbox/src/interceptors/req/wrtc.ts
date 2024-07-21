@@ -1,10 +1,16 @@
-import config from "$aero_config";
-const { flags, wrtcBackends } = config;
+import {
+	AltProtocolEnum,
+	APIInterceptor,
+	ExposedContextsEnum,
+} from "$aero/types";
+
+import config from "$aero/config";
+const { wrtcBackends } = config;
 
 import escape from "$aero_browser/misc/escape";
 
-if (flags.wrtc) {
-	RTCPeerConnection = new Proxy(RTCPeerConnection, {
+export default {
+	proxifiedObj: new Proxy(RTCPeerConnection, {
 		construct(target, args) {
 			let [config] = args;
 
@@ -23,7 +29,8 @@ if (flags.wrtc) {
 			return ret;
 		},
 		get(target, prop) {
-			return typeof prop === "string" && escape("iceServers").test(prop)
+			return typeof prop === "string" &&
+				escapeWithOrigin("iceServers").test(prop)
 				? target[`_${prop}`]
 				: Reflect.get(target, prop);
 		},
@@ -32,5 +39,8 @@ if (flags.wrtc) {
 				? (target[`_${prop}`] = value)
 				: Reflect.set(target, prop, value);
 		},
-	});
-}
+	}),
+	globalProp: "RTCPeerConnection",
+	forAltProtocol: AltProtocolEnum.webRTC,
+	exposedContexts: ExposedContextsEnum.window,
+} as APIInterceptor;

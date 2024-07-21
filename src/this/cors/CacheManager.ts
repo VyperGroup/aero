@@ -110,7 +110,7 @@ export default class extends Cache {
 			const secs = parseInt(
 				dirs
 					.find(dir => dir.startsWith("max-age"))
-					// FIXME Breaks on https://dailymail.com
+					// FIXME: Breaks on https://dailymail.com
 					.split("=")
 					.pop()
 			);

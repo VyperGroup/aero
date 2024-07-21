@@ -25,10 +25,10 @@ if (flags.workers)
 			try {
 				if (
 					location.pathname.startsWith(
-						new URL(location.origin, scope).pathname,
+						new URL(location.origin, scope).pathname
 					)
 				) {
-					// TODO: This is just for show. I would actually need to get inside of the brackets, ignoring the function header
+					// TODO: This is just for show. I would actually must get inside of the brackets, ignoring the function header
 					// TODO: Type this thing correctly
 					const swHandler = new Function(handler(event));
 					return swHandler();
@@ -36,7 +36,7 @@ if (flags.workers)
 			} catch (err) {
 				if (err instanceof TypeError)
 					throw new Error(
-						`Invalid scope for a nested sw fetch event handler:\nscope: ${scope}\nhandler: ${handler.toString()}. Check to ensure the safeguards for invalid URLs in the interception of navigator.serviceworker.register are effective enough to prevent this outcome.`,
+						`Invalid scope for a nested sw fetch event handler:\nscope: ${scope}\nhandler: ${handler.toString()}. Check to ensure the safeguards for invalid URLs in the interception of navigator.serviceworker.register are effective enough to prevent this outcome.`
 					);
 			}
 		} catch (err) {

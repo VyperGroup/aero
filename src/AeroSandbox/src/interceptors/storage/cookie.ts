@@ -1,14 +1,9 @@
-import config from "$aero_config";
+import config from "$aero/config";
 const { prefix, flags } = config;
 
-import {
-	proxyLocation,
-	upToProxyOrigin,
-} from "$aero_browser/misc/proxyLocation";
+import { proxyLocation, upToProxyOrigin } from "$src/interceptors/loc/location";
 
-import { rewriteGetCookie, rewriteSetCookie } from "$aero/shared/hared/cookie";
-
-declare var cookieStore, CookieChangeEvent;
+import { rewriteGetCookie, rewriteSetCookie } from "$src/shared/hared/cookie";
 
 function getOriginalCookie(cookie) {
 	// Not done
@@ -20,7 +15,7 @@ if (flags.misc && "cookieStore" in window) {
 		apply(target, that, args) {
 			const [cookie] = args;
 
-			cookie.domain = $location.domain;
+			cookie.domain = proxyLocation().domain;
 			cookie.path = upToProxyOrigin() + cookie.path;
 
 			args[0] = cookie;

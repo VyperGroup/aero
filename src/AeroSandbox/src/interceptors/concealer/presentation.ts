@@ -1,25 +1,31 @@
-import { proxyGetString } from "$aero/shared/autoProxy/autoProxy";
+import { APIInterceptor, SupportEnum } from "$aero/types";
 
-import rewriteSrc from "$aero/shared/src";
+import { proxyGetString } from "$src/shared/autoProxy";
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import rewriteSrc from "$src/shared/src";
 
-declare let PresentationRequest: any;
+export default [
+	{
+		proxifiedObj: new Proxy(PresentationRequest, {
+			construct(that, args) {
+				// Could either be a string or an array
+				let [urls] = args;
 
-if ("Presentation" in window) {
-	PresentationRequest = new Proxy(PresentationRequest, {
-		construct(_that, args) {
-			// Could either be a string or an array
-			let [urls] = args;
+				if (Array.isArray(urls))
+					urls = urls.map(url => rewriteSrc(url));
+				else urls = rewriteSrc(urls);
 
-			if (Array.isArray(urls))
-				urls = urls.map(url => $aero.rewriteSrc(url));
-			else urls = $aero.rewriteSrc(urls);
+				args[0] = urls;
 
-			args[0] = urls;
-
-			return Reflect.construct(...arguments);
-		},
-	});
-	proxyGetString("PresentationConnection", ["url"]);
-}
+				return Reflect.construct(that, args);
+			},
+		}),
+		globalProp: "PresentationRequest",
+		supports: SupportEnum.draft | SupportEnum.shippingChromium,
+	},
+	{
+		proxifiedObj: proxyGetString("PresentationConnection", ["url"]),
+		globalProp: "PresentationConnection",
+		supports: SupportEnum.draft | SupportEnum.shippingChromium,
+	},
+] as APIInterceptor[];

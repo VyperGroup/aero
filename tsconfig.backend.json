@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "baseUrl": "./src",
-    "composite": true
-  },
-  "include": ["src/altBackends/**/*.ts", "index.d.ts"]
-}

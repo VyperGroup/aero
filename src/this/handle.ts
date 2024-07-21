@@ -16,6 +16,8 @@ import clear from "./cors/clear";
 import isHTML from "$aero/shared/isHTML";
 import getPassthroughParam from "./util/getPassthroughParam";
 import escapeJS from "./util/escapeJS";
+// Cosmetic
+import { AeroLogger } from "$aero_sandbox/src/shared/genBubbleStyle.ts";
 
 // Security
 // CORS Emulation
@@ -24,13 +26,13 @@ import HSTSCacheEmulation from "./cors/HSTSCacheEmulation";
 // Integrity check
 import integral from "./embeds/integral";
 // Cache Emulation
-import CacheManager from "./cors/CacheManager";
+import CacheManager from "$cors/CacheManager";
 
 // Rewriters
-import rewriteReqHeaders from "./rewriters/reqHeaders";
-import rewriteRespHeaders from "./rewriters/respHeaders";
-import rewriteCacheManifest from "./rewriters/cacheManifest";
-import rewriteManifest from "./rewriters/webAppManifest";
+import rewriteReqHeaders from "$rewriters/reqHeaders";
+import rewriteRespHeaders from "$rewriters/respHeaders";
+import rewriteCacheManifest from "$rewriters/cacheManifest";
+import rewriteManifest from "$rewriters/webAppManifest";
 import rewriteScript from "$aero/shared/script";
 
 import init from "./handlers/init";
@@ -38,6 +40,10 @@ init();
 
 // Not defined by TS. I might have to install the service worker types.
 declare var clients;
+
+self.logger = new AeroLogger();
+
+self.bc = new BareClient();
 
 /**
  * Handles the requests
@@ -54,7 +60,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	// Construct proxy fetch instance
 	// TODO: Try each backend until there is a success
-	const bc = new BareClient(backends);
 
 	const reqUrl = new URL(req.url);
 
@@ -79,7 +84,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	let frameSec = getPassthroughParam(params, "frameSec");
 
-	var clientUrl;
+	var clientUrl: URL;
 	// Get the origin from the user's window
 	if (event.clientId !== "") {
 		// Get the current window
@@ -88,6 +93,16 @@ async function handle(event: FetchEvent): Promise<Response> {
 		if (client)
 			// Get the url after the prefix
 			clientUrl = new URL(afterPrefix(client.url));
+	}
+
+	if (!clientUrl) {
+		// TODO: Make a custom fatalErr for SWs that doesn't modify the DOM but returns the error simply instead of overwriting the site with an error site
+		return logger.fatalErr("No clientUrl found tragic error fr.");
+	}
+
+	if (self.nestedSWs.size !== 0) {
+		// TODO: Implement
+		// TODO: Start by checking the proxy origin is the same as the client's proxyOrigin comparing nestedSw.item(n).proxyOrigin to clientUrl.origin
 	}
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
@@ -166,7 +181,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		});
 
 	// TODO: Import bare type
-	let opts: BareFetchInit = {
+	let opts: RequestInit = {
 		method: req.method,
 		headers: rewriteReqHeaders(reqHeaders, clientUrl),
 	};
@@ -194,11 +209,11 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (cachedResp) return cachedResp;
 
 	// Rewrite the response headers
-	const rewrittenRespHeaders = rewriteRespHeaders(resp.headers, clientUrl);
+	const rewroteRespHeaders = rewriteRespHeaders(resp.headers, clientUrl);
 
 	// Overwrite the response headers (they are immutable)
 	Object.defineProperty(resp, "headers", {
-		value: rewrittenRespHeaders,
+		value: rewroteRespHeaders,
 		configurable: false,
 	});
 
@@ -218,13 +233,14 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (isNavigate && html) {
 		body = await resp.text();
 
+		// TODO: Eliminate _IMPORT_ recursion somehow
 		if (body !== "") {
 			let base = /* html */ `
 <!DOCTYPE html>
 <head>
     <!-- Fix encoding issue -->
     <meta charset="utf-8">
-    
+
     <!-- Favicon -->
     <!--
     Delete favicon if /favicon.ico isn't found
@@ -250,21 +266,29 @@ async function handle(event: FetchEvent): Promise<Response> {
 		if (!window.sec)
 			window.sec = {};
 
-        // Aero's global namespace
-        var $aero = {
-			// Security
-			sec:  { ...sec, ...${JSON.stringify(sec)} },
-			// This is used to later copy into an iFrame's srcdoc; this is for an edge case
-			init: \`_IMPORT_\`,
-			afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${${prefix}})\`, "g"), ""),
-			afterOrigin: url => url.replace(new RegExp(\`^(\${location.origin})\`, "g"), "")
-		};
+		{
+			// Aero's global namespace
+			// The only things defined in here at this time are what is needed to be passed through the SW context to the client context. The rest is defined in the client when the aero bundle for the client is loaded.
+			// TODO: Document the must define a global window.$aero before calling AeroSandbox.fakeOrigin in the MD doc for how to use AeroSandbox when it is created
+			window.$aero = {
+				// Security
+				sec:  { ...sec, ...${JSON.stringify(sec)} },
+				// This is used to later copy into an iFrame's srcdoc; this is for an edge case
+				init: \`_IMPORT_\`,
+				afterPrefix: url => url.replace(new RegExp(\`^(\${location.origin}\${${prefix}})\`, "g"), ""),
+				// TODO: This clearly isn't needed for the global context and definitively isn't used for passthrough, so remove it and move it to a module in AeroSandbox. It is a utility function for API interception.
+				afterOrigin: url => url.replace(new RegExp(\`^(\${location.origin})\`, "g"), "")
+			};
+		}
 		delete window.sec;
     </script>
 	<script>
-		// Sanity check
-		if (!("$aero" in window))
-			console.warn("Unable to initalize $aero");
+		// Sanity check (I'm loosing it)
+		if (!("$aero" in window)) {
+			const err = "Unable to initalize $aero";
+			console.error(err);
+			document.write(err)
+		}
 
 		// TODO: Pack in $aero.bc
 		$aero.bc = new BareClient(backends[0]);
@@ -303,7 +327,7 @@ ${body}
 {
 	const bak = decodeURIComponent(escape(atob(\`${escapeJS(script)}\`)));
 	${integral(isMod)}
-}			
+}
 `
 			);
 		} else body = rewriteScript(script, isMod);
@@ -338,7 +362,7 @@ self.location = proxyLocation;
 			: /* js */ `
 importScripts("${aeroPrefix}worker/worker.js");
 importScripts("${aeroPrefix}worker/sharedworker.js");
-	
+
 ${body}
 		`;
 	// No rewrites are needed; proceed as normal

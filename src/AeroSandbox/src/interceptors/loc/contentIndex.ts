@@ -1,9 +1,10 @@
-import rewriteSrc from "$aero/shared/src";
+import rewriteSrc from "$src/shared/src";
 
-import afterPrefix from "$aero/shared/afterPrefix";
+import afterPrefix from "$src/shared/afterPrefix";
 
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
+// FIXME:
 /*
 if ("serviceWorker" in navigator && "index" in ServiceWorkerRegistration) {
 	ServiceWorkerRegistration.index.add = new Proxy(ServiceWorkerRegistration.index.add, {

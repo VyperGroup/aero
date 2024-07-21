@@ -6,7 +6,7 @@ import rewriteSrc from "$aero/shared/src";
  * Aero's web app manifest rewriter
  * @param - The original response body.
  * @param - The URL of the proxy itself; used by the src rewriter.
- * @see https://w3c.github.io/manifest/#web-application-manifest
+ * @see {@link https://w3c.github.io/manifest/#web-application-manifest}
  */
 export default (body: string, proxyUrl: URL): string => {
 	const json: WebAppManifest = JSON.parse(body);

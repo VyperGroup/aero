@@ -1,3 +1,8 @@
-import { proxyGetString } from "$aero/shared/autoProxy/autoProxy";
+import { APIInterceptor, ExposedContextsEnum } from "$aero/types";
+import { proxyGetString } from "$src/shared/stringProxy";
 
-proxyGetString("PushSubscription", ["endpoint"]);
+export default {
+	proxifiedObj: proxyGetString("PushSubscription", ["endpoint"]),
+	globalProp: "PushSubscription",
+	exposedContexts: ExposedContextsEnum.window,
+} as APIInterceptor;
