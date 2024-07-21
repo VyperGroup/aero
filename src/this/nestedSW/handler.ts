@@ -26,7 +26,8 @@ function rewriteSource(sourceCode: string) {
 const createNestedSWFetchSandbox = (nestedSWListener) => {
 	
 }
-const createNestedSWRunnerSandbox = (sourceCode, nestedSW) => {
+// TODO: Sandbox the Content Index and Cache APIs
+const createNestedSWRunnerSandbox = (sourceCode: string, nestedSW) => {
 	const proxified: NestedSWAPIInterceptors = {
 		addEventListener: new Proxy(self.addEventListener, {
 			apply(_target, _that, args) {
