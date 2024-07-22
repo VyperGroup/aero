@@ -33,7 +33,7 @@ let { var1, var2 } = ...;
 ->
 
 ```ts
-<fakeVar>.fakeObjectDestructure =AeroGel releasing tonight
+<fakeVar>.fakeObjectDestructure =
  ([var1, var2], ...);
 ```
 
