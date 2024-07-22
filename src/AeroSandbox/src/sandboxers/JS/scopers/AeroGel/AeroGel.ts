@@ -11,6 +11,18 @@ class AeroGel {
 	 */
 	jailScript(script: string) {
 		// TODO: Implement
+		return /* js */ `
+			!() => {
+				${this.rewriteScript(script)}
+		  	}().call({
+				window: proxyNamespace.aeroGel.proxyWindow,
+				globalThis: proxyNamespace.aeroGel.proxyWindow
+				location: proxyNamespace.aeroGel.proxyWindow.proxyLocation
+		 	 });
+		`;
+	}
+	rewriteScript(script: string) {
+		// TODO: Rewrite
 		return script;
 	}
 }

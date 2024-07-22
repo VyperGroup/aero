@@ -54,8 +54,11 @@ const windowProxyInterceptor: APIInterceptor = {
 		if (
 			Object.values(ctx.specialInterceptionFeatures).includes("aeroGel")
 		) {
+			// Prevent detection by checking if the fakeWindow was inherited from the real window.
+			const winProto = Object.getPrototypeOf(window);
 			return new Proxy(window, {
 				get(target, prop) {
+					if (prop === "__proto__") return winProto;
 					if (prop === "location") return locationProxy;
 					if (typeof target[prop] === "function")
 						return target[prop].bind(window);
@@ -63,6 +66,9 @@ const windowProxyInterceptor: APIInterceptor = {
 				},
 				set(target, prop, value) {
 					return (target[prop] = value);
+				},
+				getPrototypeOf(_target) {
+					return () => winProto;
 				},
 			});
 		}
