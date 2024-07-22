@@ -35,8 +35,12 @@ interface AeroSandboxConfig {
 	proxyGlobalContext: "$aero";
 }
 
+type overwriteRecordsType = { [key: string], Object };
+
 interface proxifiedObjGeneratorContext {
 	specialInterceptionFeatures?: InterceptionFeaturesEnum;
+	// might be removed I will just replace the <proxyContext> in the entire JS file  I am importingproxyGlobalContext: string;
+	overwriteRecords: overwriteRecordsType;
 }
 type proxifiyObjGenerator = (
 	ctx: proxifiedObjGeneratorContext
@@ -49,7 +53,8 @@ type objectPropertyModifier = (ctx: proxifiedObjGeneratorContext) => void;
 interface APIInterceptorGeneric {
 	/** This object path that excludes global objects and overwrites the property. *AeroSandbox* will also check if it exists in the global context. This is necessary if `proxifiedObjWorkerVersion` is set.
 	 * This is done so that if the api is only exposed to the window it will overwrite it on the window object specifically or else it would use self since that is also covered by the global context of windows and workers. THe reason why this is done is because I want an error to be thrown if a window API is mistakingly used in a worker's global scope.
-	 * TODO: // Throw an error if globalProp contains "<global context>.<props>"
+	 * TODO: Throw an error in AeroSandboxBuilder error if globalProp contains "<global context>.<props>"
+	 * NOTE: <proxyNamespace> is substituted with the proxyNamespace in the AeroSandboxConfig
 	 * @warning It will overwrite the entire global scope with your proxified object if you set it to `""`.
 	 */
 	globalProp: string | "";
@@ -60,10 +65,13 @@ interface APIInterceptorGeneric {
 	/* Aero uses self.<apiName> to overwrite the proxified object, but if the API is exclusively for the window, it uses window.<apiName> */
 	exposedContexts?: ExposedContextsEnum;
 	supports?: SupportEnum;
+	/** This number determines how late the API injectors will be injected. It is similar to the index property in CSS. If not set, the default is zero. */
+	insertLevel?: number;
 }
 type APIInterceptorForProxyObjects = APIInterceptorGeneric & {
 	/** This is specifically for objects that use the ES6 Proxy Object or re-implement the API from scratch. proxifiedObjGenFunc is a handler which returns the proxified object depending on the context given, which is determined by how the AeroSandboxBundler class is configured with the config in the constructor.*/
 	proxifiedObj?: Object | proxifiyObjGenerator;
+	exposedContexts: anyWorkerEnumMember;
 };
 type APIInterceptorForProxyObjectsInWorker = APIInterceptorGeneric & {
 	proxifiedObjWorkerVersion?: Object;
@@ -116,12 +124,20 @@ enum InterceptionFeaturesEnum {
 	nestedSWs,
 	/** This feature is nowhere near being finished; **do not enable** */
 	swLess,
+	aeroGel,
 	/** Only use this if you aren't using Custom Element "is" interception */
 	elementConcealment,
 	errorConcealment,
 	messageIsolation,
-	/** Only use this member if you aren't using it for a regular SW proxy*/
+	/** Only use this member if you aren't using it for a regular SW proxy */
 	requestUrlProxifier,
+}
+
+type AeroGelConfig = {
+	/**
+	 * TODO: Support the overwriteRecords instead of blindly overwriting `location` in the IIFE
+	 * */ 
+	overwriteRecords: overwriteRecordsType;
 }
 
 // This is the typical proxy config. This is only what is used to format and unformat urls.
