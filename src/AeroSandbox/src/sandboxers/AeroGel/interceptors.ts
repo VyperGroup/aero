@@ -10,16 +10,42 @@ proxyNamespace.aeroGel = {};
 const aeroGel = proxyNamespace.aeroGel;
 aeroGel.fakeVars = {};
 
-aeroGel.fakeVarsStore = new Map<string, any>();
-aeroGel.fakeVars = new Proxy(aeroGel.fakeVars, {
+aeroGel.fakeVarsStore = new Map<
+	string,
+	{
+		value: string;
+		isConst: boolean;
+	}
+>();
+
+const fakeVarsEmulationGetter = {
 	get(_target, prop) {
 		if (aeroGel.fakeVarsStore.has(prop))
-			return aeroGel.fakeVarsStore.get(prop);
+			return aeroGel.fakeVarsStore.get(prop.value);
 		else return undefined;
 	},
+};
+
+aeroGel.fakeVarsLet = new Proxy(aeroGel.fakeVars, {
+	...fakeVarsEmulationGetter,
 	set(_target, prop, value) {
-		aeroGel.fakeVarsStore.set(prop, value);
+		aeroGel.fakeVarsStore.set(prop, {
+			value,
+		});
 		return true;
+	},
+});
+aeroGel.fakeVarsConst = new Proxy(aeroGel.fakeVars, {
+	...fakeVarsEmulationGetter,
+	set(_target, prop, value) {
+		if (!aeroGel.fakeVarsStore.has(prop)) {
+			aeroGel.fakeVarsStore.set(prop, {
+				value,
+				isConst: true,
+			});
+			return true;
+		}
+		return false;
 	},
 });
 
