@@ -1,4 +1,8 @@
-import { AeroGelConfig, keywordReplacementType } from "$aero/types";
+import {
+	AeroGelConfig,
+	aerogelParser,
+	keywordReplacementType,
+} from "$aero/types";
 
 import esniff from "esniff";
 
@@ -14,8 +18,8 @@ export default class AeroGel {
 	applyNewConfig(config: AeroGelConfig) {
 		this.config = config;
 	}
-	public supportedParsers() {
-		let supports: string[] = [];
+	static supportedParsers(): aerogelParser[] {
+		let supports: aerogelParser[] = [];
 		if (INCLUDE_ESNIFF) supports.push("esniff");
 		return supports;
 	}

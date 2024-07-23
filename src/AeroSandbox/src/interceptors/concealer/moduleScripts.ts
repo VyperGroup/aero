@@ -1,17 +1,6 @@
-// Handled by val-loader (val.ts)
-
-// Importing necessary modules
+import { APIInterceptor } from "$aero/types";
 import { proxyLocation } from "$src/shared/proxyLocation";
 
-/**
- * An API interceptor for import.meta.resolve that prevents the paths from going behind the proxy origin.
- *
- * The params are given from val-loader
- * @see {@link https://github.com/webpack-contrib/val-loader}
- */
-export default () => {
-	return {
-		code: /* js */ `
 /**
  * Checks if a segment is a valid directory name.
  *
@@ -57,23 +46,24 @@ function removeOneLevel(path: string): string {
 	return modifiedPath;
 }
 
-import.meta.resolve = new Proxy(import.meta.resolve, {
-	apply(target, that, args) {
-		let ret = Reflect.apply(target, that, args);
+export default {
+	// @ts-ignore
+	proxifiedObj: new Proxy(import.meta.resolve, {
+		apply(target, that, args) {
+			let ret = Reflect.apply(target, that, args);
 
-		// Prevent the paths from going behind the proxy origin
-		let curr = ret;
-		while (
-			!new URL(curr, proxyLocation().href).href.startsWith(
-				proxyLocation().href
-			)
-		) {
-			curr = removeOneLevel(curr);
-		}
-		return curr;
-	},
-});
-
-`,
-	};
-};
+			// Prevent the paths from going behind the proxy origin
+			let curr = ret;
+			while (
+				!new URL(curr, proxyLocation().href).href.startsWith(
+					proxyLocation().href
+				)
+			) {
+				curr = removeOneLevel(curr);
+			}
+			return curr;
+		},
+	}),
+	// TODO: Define on $aero
+	globalProp: "<proxyNamespace>.moduleScripts.resolve",
+} as APIInterceptor;

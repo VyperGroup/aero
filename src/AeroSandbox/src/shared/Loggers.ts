@@ -1,3 +1,6 @@
+// Webpack Feature Flags
+var DEBUG: boolean;
+
 type htmlTemplatingCallback = (errStr: string) => string;
 
 const aeroBubbleStyle = genBubbleStyle("#0badfb");
@@ -5,19 +8,29 @@ const fatalErrBubbleStyle = genBubbleStyle("#db3631");
 
 // TODO: Support optionalSecondaryBubble after the branding and in the color green :)
 class GenericLogger {
-	log(branding: string, msg: string, optionalSeconaryBubble: string): void {
+	log(branding: string, msg: string, optionalSeconaryBubble?: string): void {
 		console.log(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
 	}
-	warn(branding: string, msg: string, optionalSeconaryBubble: string): void {
+	warn(branding: string, msg: string, optionalSeconaryBubble?: string): void {
 		console.warn(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
 	}
-	error(branding: string, msg: string, optionalSeconaryBubble: string): void {
-		console.error(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
-	}
-	fatalErr(
+	debug(
 		branding: string,
 		msg: string,
+		optionalSecondaryBubble?: string
 	): void {
+		if (DEBUG) {
+			console.debug(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
+		}
+	}
+	error(
+		branding: string,
+		msg: string,
+		optionalSeconaryBubble?: string
+	): void {
+		console.error(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
+	}
+	fatalErr(branding: string, msg: string): void {
 		console.error(
 			`%c${branding}%c ` + msg,
 			"%cfatal%c " + msg,
@@ -29,20 +42,35 @@ class GenericLogger {
 }
 
 class AeroLogger extends GenericLogger {
+	options: {
+		htmlTemplatingCallback?: htmlTemplatingCallback;
+	};
+
+	constructor(options?) {
+		super();
+		if (options) this.options = options;
+	}
+
 	log(msg: string): void {
 		super.log("aero SW", msg);
 	}
 	warn(msg: string): void {
 		super.warn("aero SW", msg);
 	}
+	debug(msg: string): void {
+		super.warn("aero SW", msg);
+	}
 	error(msg: string): void {
 		super.error("aero SW", msg);
 	}
-	fatalErr(
-		branding: string,
-		msg: string
-	): void {
-		super.fatalErr("aero", msg);
+	fatalErr(msg: string): Response {
+		super.fatalErr("aero SW", msg);
+		return new Response(
+			"htmlTemplatingCallback" in this.options
+				? "Fatal error: " + msg
+				: this.options.htmlTemplatingCallback(msg),
+			{ status: 500 }
+		);
 	}
 }
 
@@ -53,8 +81,8 @@ enum AeroSandboxLoggerTypes {
 // TODO: Support the seconary bubbling
 class AeroSandboxLogger extends GenericLogger {
 	options: {
-		htmlTemplatingCallback?: htmlTemplatingCallback
-	}
+		htmlTemplatingCallback?: htmlTemplatingCallback;
+	};
 
 	constructor(options) {
 		super();
@@ -89,8 +117,8 @@ class AeroSandboxLogger extends GenericLogger {
 		super.error("aero sandbox", msg);
 	}
 	fatalErr(
-		branding: string,
-		msg: string
+		msg: string,
+		branding?: string,
 		options?: {
 			type: AeroSandboxLoggerTypes;
 			name: string;

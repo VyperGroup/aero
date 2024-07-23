@@ -25,13 +25,13 @@ export default class ASTRewriter {
 		this.config = config;
 	}
 	// These two methods are here because it is possible to compile out the AST parsers and walkers that the user chooses in the build flags
-	public supportedParsers(): astParser[] {
+	static supportedParsers(): astParser[] {
 		let supports: astParser[] = [];
 		if (INCLUDE_AST_PARSER_OXC) supports.push("oxc");
 		if (INCLUDE_AST_PARSER_SEAFOX) supports.push("seafox");
 		return supports;
 	}
-	public supportedWalkers(): astWalker[] {
+	static supportedWalkers(): astWalker[] {
 		let supports: astWalker[] = [];
 		if (INCLUDE_AST_WALKER_TRAVERSE_THE_UNIVERSE)
 			supports.push("traverse_the_universe");

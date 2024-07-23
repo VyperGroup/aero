@@ -1,4 +1,12 @@
-# AeroGel
+# README
+
+TODO: This is a stub...
+
+## AST rewriting
+
+TODO: Describe...
+
+## AeroGel
 
 Aero uses minimal parsing and more interception than full-parse methods such as EST rewriting. AeroGel uses the tiniest RegExp parsing, and it is efficient. It wraps the objects you want to overwrite, but the browser doesn't allow you to overwrite in an IIFE. However, this brings the problem of let/const being block-scoped to the IIFE.
 

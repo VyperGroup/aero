@@ -135,9 +135,19 @@ enum InterceptionFeaturesEnum {
 
 // Rewriter Types
 // JS
-type aeroGelRewriterMode = "basic_regexp" | "est_parsing" | "aerogel";
+/** @warning Basic Regexp is unsupported as of now and will never be recommended */
+type rewriterMode = "aerogel" | "ast" | "basic_regexp";
+type aerogelParser = "esniff";
 type astParser = "oxc" | "seafox";
 type astWalker = "traverse_the_universe";
+interface RewriteOptions {
+	/** The script to rewrite */
+	script: string;
+	/** Whether the script is a module script */
+	isModule: boolean;
+	/** The code to insert */
+	insertCode: string;
+}
 type keywordReplacementType = {
 	[key: string]: {
 		keywordLen: number;
@@ -145,6 +155,7 @@ type keywordReplacementType = {
 	};
 };
 interface GenericJSParserConfig {
+	proxyNamespace: string;
 	/** These must be on some sort of global object */
 	objPaths: {
 		proxy: {
@@ -155,13 +166,16 @@ interface GenericJSParserConfig {
 			let: string;
 			const: string;
 		}
-	}
+	},
 }
 interface AeroGelConfig extends GenericJSParserConfig  {
 	/**
 	 * TODO: Support the overwriteRecords instead of blindly overwriting `location` in the IIFE
 	 * */ 
 	overwriteRecords: overwriteRecordsType;
+	parserConfig: {
+		parser: aerogelParser;
+	},
 }
 interface ASTRewriterConfig extends GenericJSParserConfig {
 	parserConfig: {
@@ -171,7 +185,24 @@ interface ASTRewriterConfig extends GenericJSParserConfig {
 		walker: astWalker;
 	}
 }
-
+interface AeroJSParserConfig {
+	proxyNamespace: string;
+	/** EST parsing recommended */
+	modeDefault: rewriterMode;
+	/** AeroGel recommended */
+	modeModule: rewriterMode;
+	modeConfigs: {
+		generic: GenericJSParserConfig;
+		aerogel: {};
+		ast: {};
+	};
+	/** These arrays are sorted in order of your preference */
+	preferredParsers: {
+		aerogel: aerogelParser[],
+		ast: astParser[]
+	}
+	preferredASTWalkers: astWalker[];
+}
 
 // This is the typical proxy config. This is only what is used to format and unformat urls.
 type ProxyConfig = {
