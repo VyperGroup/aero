@@ -133,12 +133,33 @@ enum InterceptionFeaturesEnum {
 	requestUrlProxifier,
 }
 
-type AeroGelConfig = {
+// Rewriter Types
+// JS
+type aeroGelRewriterMode = "basic_regexp" | "est_parsing" | "aerogel";
+type astParser = "oxc" | "seafox";
+type astWalker = "traverse_the_universe";
+interface GenericJSParserConfig {
+	/** These must be on some sort of global object */
+	proxyObjPaths: {
+		window: string;
+		location: string;
+	}
+}
+interface AeroGelConfig extends GenericJSParserConfig  {
 	/**
 	 * TODO: Support the overwriteRecords instead of blindly overwriting `location` in the IIFE
 	 * */ 
 	overwriteRecords: overwriteRecordsType;
 }
+interface ASTRewriterConfig extends GenericJSParserConfig {
+	parserConfig: {
+		parser: astParser;
+	},
+	walkerConfig: {
+		walker: astWalker;
+	}
+}
+
 
 // This is the typical proxy config. This is only what is used to format and unformat urls.
 type ProxyConfig = {

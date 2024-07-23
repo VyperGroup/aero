@@ -8,6 +8,25 @@ TODO: Bring back parts of the old version of this doc
 
 TODO: Finish writing this section
 
+You bind a scope to an object on GlobalThis whose prototype is the window, overwrite the variables you want to conceal on that window and pass in the variables you want to override as arguments through Function.prototype.call(). You want to create a new Function() and pass in the script's content through a function with the parameters of the variables you want to overwrite. You need to overwrite and proxy globalThis, eval, and location. This will be the function that you use to execute the call. Inside the function, you must take the script content and scope every instance of var, let, and const to "jail" it, which is remarkably cheap and easy to parse.
+
+Scoping method 1:
+
+You either put an open parenthesis after the "var" and a prefix before the "var" keyword and then a closed parenthesis right before the statement ends while replacing the assignment operator with commas so that it is all one big method that emulates a variable in var/let/const. You would need to be careful not to match deconstructors.
+
+Scoping method #2
+
+You could also do emu*<var/let/const>.<var_name> = ... (emu* is the chosen prefix in this case) and emulate the variable with getters and setters. You would need to do emu*decon*<var/let/const> = ... (its own unique prefix), and you copy those object properties into the tree you are storing your existing emulated variables. The trees would be different
+Yes, you are parsing but it is extremely cheap
+
+### more
+
+The trick to not sharing block-scoped scripts everywhere and sharing only in the top level of the script is to make emu*<let/const> equal to emu_var in the top level and in the function scopes emu*<let/const> needs to be modified to have its own private var tree. This would be done by proxifying Function.prototype to make every function contain code to declare its own private var tree in a trap variable named emu\_<let/const>.
+
+You could do some advanced parsing to make every top-level let/var/const to be emu*var unless it is inside of a function scope where it would be emu*<let/const> if it were a let or const declaration, but that would be expensive and require a real parser; LAME!
+
+What you need to watch for is that eval can't be overwritten in strict functions and module scripts don't share the same block scope as normal scripts. They have their own private one.
+
 ## DSPC
 
 ## Traditional JS parsing
@@ -28,7 +47,7 @@ The essence of the [polyfill](https://github.com/ambit-tsai/shadowrealm-api) wor
 // proxyRealmLocation.ts (aero.sandbox.proxyRealm.js)
 
 ```ts
-import { proxyLocation } from "$src/interceptors/loc/location";
+import { proxyLocation } from "$src/shared/proxyLocation";
 
 fakeLocation = proxyLocation();
 
