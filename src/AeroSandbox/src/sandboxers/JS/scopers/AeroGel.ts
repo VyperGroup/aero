@@ -1,8 +1,11 @@
-import { AeroGelConfig } from "$aero/types";
+import { AeroGelConfig, keywordReplacementType } from "$aero/types";
+
+import esniff from "esniff";
 
 // Webpack Feature Flags
-var INCLUDE_AEROGEL_MINIMAL: boolean, INCLUDE_ESNIFF: boolean;
+var INCLUDE_ESNIFF: boolean;
 
+// TODO: Setup test cases
 export default class AeroGel {
 	config: AeroGelConfig;
 	constructor(config: AeroGelConfig) {
@@ -14,7 +17,6 @@ export default class AeroGel {
 	public supportedParsers() {
 		let supports: string[] = [];
 		if (INCLUDE_ESNIFF) supports.push("esniff");
-		if (INCLUDE_AEROGEL_MINIMAL) supports.push("aerogel_minimal");
 		return supports;
 	}
 	/** This essentially the rewriter
@@ -27,24 +29,62 @@ export default class AeroGel {
 			!() => {
 				${isModule ? script : this.rewriteScript(script)}
 		  	}().call({
-				window: ${this.config.proxyObjPaths.window},
-				globalThis: ${this.config.proxyObjPaths.window},
-				location: ${this.config.proxyObjPaths.location}
+				window: ${this.config.objPaths.proxy.window},
+				globalThis: ${this.config.objPaths.proxy.window},
+				location: ${this.config.objPaths.proxy.location}
 		 	 });
 		`;
 	}
 	/** This method is specifically for `var keyword rewriting` */
 	rewriteScript(script: string): string {
-		if (INCLUDE_AEROGEL_MINIMAL) {
-			// TODO: Implement
-			$aero.logger.fatalErr(
-				"AeroGel minimal is unsupported at the moment!"
-			);
-		}
 		if (INCLUDE_ESNIFF) {
-			// TODO: Implement
-			$aero.logger.fatalErr("Esniff is unsupported at the moment!");
+			let letIndicies = [];
+			let constIndicies = [];
+			esniff(script, emitter => {
+				emitter.on("trigger:let", accessor => {
+					if (accessor.scopeDepth === 0)
+						letIndicies.push(accessor.index);
+				});
+				emitter.on("trigger:const", accessor => {
+					if (accessor.scopeDepth === 0)
+						constIndicies.push(accessor.index);
+				});
+			});
+			let keywordReplacements: keywordReplacementType = {};
+			letIndicies.forEach(index => {
+				keywordReplacements[index] = {
+					keywordLen: 3,
+					replacementStr: this.config.objPaths.fakeVars.let,
+				};
+			});
+			constIndicies.forEach(index => {
+				keywordReplacements[index] = {
+					keywordLen: 5,
+					replacementStr: this.config.objPaths.fakeVars.const,
+				};
+			});
+			script = this.replaceKeywords(script, keywordReplacements);
 		}
 		return script;
+	}
+	replaceKeywords(
+		str: string,
+		keywordReplacements: keywordReplacementType
+	): string {
+		const charArr = Array.from(str);
+		let totalAddedToIndex = 0;
+		for (const [indexStr, { keywordLen, replacementStr }] of Object.entries(
+			keywordReplacements
+		)) {
+			const index = parseInt(indexStr);
+			const replacementArr = Array.from(replacementStr);
+			totalAddedToIndex += replacementArr.length - keywordLen;
+			charArr.splice(
+				index + totalAddedToIndex,
+				keywordLen,
+				replacementStr
+			);
+		}
+		return charArr.join("");
 	}
 }

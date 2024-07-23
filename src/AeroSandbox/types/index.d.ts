@@ -138,11 +138,23 @@ enum InterceptionFeaturesEnum {
 type aeroGelRewriterMode = "basic_regexp" | "est_parsing" | "aerogel";
 type astParser = "oxc" | "seafox";
 type astWalker = "traverse_the_universe";
+type keywordReplacementType = {
+	[key: string]: {
+		keywordLen: number;
+		replacementStr: string;
+	};
+};
 interface GenericJSParserConfig {
 	/** These must be on some sort of global object */
-	proxyObjPaths: {
-		window: string;
-		location: string;
+	objPaths: {
+		proxy: {
+			window: string;
+			location: string;
+		}
+		fakeVars: {
+			let: string;
+			const: string;
+		}
 	}
 }
 interface AeroGelConfig extends GenericJSParserConfig  {

@@ -48,11 +48,11 @@ export default class ASTRewriter {
 			traverse(ast, node => {
 				if (node.type === "Identifier" && node.name === "location") {
 					// TODO: Include more checks to ensure that this is the proper `location` that we want to rewrite
-					node.name = this.config.proxyObjPaths.location;
+					node.name = this.config.objPaths.proxy.location;
 				}
 				if (node.type === "Identifier" && node.name === "window") {
 					// TODO: Include more checks to ensure that this is the proper `window` that we want to rewrite
-					node.name = this.config.proxyObjPaths.window;
+					node.name = this.config.objPaths.proxy.window;
 				}
 				if (
 					node.type === "Identifier" &&
