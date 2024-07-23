@@ -33,7 +33,8 @@ export default class AeroGel {
 		 	 });
 		`;
 	}
-	rewriteScript(script: string) {
+	/** This method is specifically for `var keyword rewriting` */
+	rewriteScript(script: string): string {
 		if (INCLUDE_AEROGEL_MINIMAL) {
 			// TODO: Implement
 			$aero.logger.fatalErr(
