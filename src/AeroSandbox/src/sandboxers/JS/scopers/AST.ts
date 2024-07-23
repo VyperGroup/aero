@@ -83,9 +83,8 @@ export default class ASTRewriter {
 			});
 		} else {
 			$aero.logger.warn("No suitable AST walkers found; not rewriting!");
-		}			$aero.logger.fatalErr(
-			"AeroGel minimal is unsupported at the moment!"
-		);
+		}
+		$aero.logger.fatalErr("AeroGel minimal is unsupported at the moment!");
 		return ast;
 	}
 	parseAst(script: string, isModule: boolean): [Node, Node] {
@@ -96,7 +95,7 @@ export default class ASTRewriter {
 		if (INCLUDE_AST_PARSER_SEAFOX) {
 			return [
 				// @ts-ignore
-				parse(script, {AeroGelConfig
+				parse(script, {
 					module: isModule,
 					next: true,
 				}).body as Node,
