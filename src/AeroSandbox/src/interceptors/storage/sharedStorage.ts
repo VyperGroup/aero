@@ -1,5 +1,5 @@
 import config from "$aero/config";
-import { APIInterceptor } from "$types/index.d";
+import { APIInterceptor } from "$types/apiInterceptors";
 const { prefix } = config;
 
 import { storageNomenclature } from "./shared";

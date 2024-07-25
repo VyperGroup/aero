@@ -1,14 +1,10 @@
 // Not finished
 
-import config from "$aero/config";
-const { flags } = config;
-
-import { afterPrefix } from "$shared";
+import { afterPrefix } from "$shared/getProxyUrl";
 
 import { proxyLocation } from "$shared/proxyLocation";
 
-import proxyMessage from "$shared/proxyMessage";
-import { APIInterceptor, SupportEnum } from "$types/index.d";
+import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
 export default [
   // Entries

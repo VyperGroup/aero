@@ -4,7 +4,7 @@
  * This whole file encompasses the {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API WebAuthn}, {@link https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API FedCM}, {@link https://wicg.github.io/web-otp WebOTP} APIs
  */
 
-import { APIInterceptor, ExposedContextsEnum } from "$types/index.d";
+import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
 
 import { proxyLocation } from "$shared/proxyLocation";
 import { afterPrefix } from "$shared/getProxyUrl";

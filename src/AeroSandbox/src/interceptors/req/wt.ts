@@ -1,4 +1,4 @@
-import { APIInterceptor } from "$types/index.d";
+import { APIInterceptor } from "$types/apiInterceptors";
 
 // Only supported on Chromium
 export default {

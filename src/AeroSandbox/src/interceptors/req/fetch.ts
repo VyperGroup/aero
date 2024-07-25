@@ -1,4 +1,4 @@
-import { APIInterceptor, ExposedContextsEnum } from "$types/index.d";
+import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
 import { handleFetchEvent } from "$aero_browser/util/swlessUtils";
 
 export default {

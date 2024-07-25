@@ -1,4 +1,4 @@
-import { APIInterceptor } from "$types/index.d";
+import { APIInterceptor } from "$types/apiInterceptors";
 import { proxyLocation } from "$shared/proxyLocation";
 
 /**

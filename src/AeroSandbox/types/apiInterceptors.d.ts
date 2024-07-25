@@ -1,19 +1,22 @@
-type overwriteRecordsType = { [key: string]; Object };
+import { overwriteRecordsType } from "$types/generic";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type revokableProxyRet = { proxy: any; revoke: () => void };
+export type revokableProxyRet = { proxy: any; revoke: () => void };
 interface proxifiedObjGeneratorContext {
   specialInterceptionFeatures?: InterceptionFeaturesEnum;
   // might be removed I will just replace the <proxyContext> in the entire JS file  I am importingproxyGlobalContext: string;
   overwriteRecords?: overwriteRecordsType;
 }
-type proxifiedObjType = revokableProxyRet | proxifiyObjGenerator;
-type proxifiyObjGenerator = (
+export type proxifiedObjType = revokableProxyRet | proxifiyObjGenerator;
+export type proxifiyObjGenerator = (
   ctx: proxifiedObjGeneratorContext
 ) => proxifiedObjType;
-type proxifyGetter = (ctx: proxifiedObjGeneratorContext) => any;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type proxifyGetter = (ctx: proxifiedObjGeneratorContext) => any;
 
-type objectPropertyModifier = (ctx: proxifiedObjGeneratorContext) => void;
+export type objectPropertyModifier = (
+  ctx: proxifiedObjGeneratorContext
+) => void;
 
 /** This is a generic type interface used for intersection in other interfaces below */
 interface APIInterceptorGeneric {
@@ -34,39 +37,45 @@ interface APIInterceptorGeneric {
   /** This number determines how late the API injectors will be injected. It is similar to the index property in CSS. If not set, the default is zero. */
   insertLevel?: number;
 }
-type APIInterceptorForProxyObjects = APIInterceptorGeneric & {
+export type APIInterceptorForProxyObjects = APIInterceptorGeneric & {
   /** This is specifically for objects that use the ES6 Proxy Object or re-implement the API from scratch. proxifiedObjGenFunc is a handler which returns the proxified object depending on the context given, which is determined by how the AeroSandboxBundler class is configured with the config in the constructor.*/
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
   proxifiedObj?: Object | proxifiyObjGenerator;
   exposedContexts: anyWorkerEnumMember;
 };
-type APIInterceptorForProxyObjectsInWorker = APIInterceptorGeneric & {
+export type APIInterceptorForProxyObjectsInWorker = APIInterceptorGeneric & {
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
   proxifiedObjWorkerVersion?: Object;
   exposedContexts: anyWorkerEnumMember;
 };
-type APIInterceptorForProxifiyingGetters = APIInterceptorGeneric & {
+export type APIInterceptorForProxifiyingGetters = APIInterceptorGeneric & {
   proxifyGetter?: proxifyGetter;
 };
-type APIInterceptorForModifyingObjectProperties = APIInterceptorGeneric & {
-  /** This is for overwriting properties with the `Object` type class  */
-  modifyObjectProperty: objectPropertyModifier;
-};
+export type APIInterceptorForModifyingObjectProperties =
+  APIInterceptorGeneric & {
+    /** This is for overwriting properties with the `Object` type class  */
+    modifyObjectProperty: objectPropertyModifier;
+  };
 // TODO: Make it possible in AeroSandbox to view the API Interceptor and determine if it should be included in AeroSandbox or not with a handler
 /** This is what is exported in every API Interceptor. Omitting any of the properties with the Enum type will act as if every member of the Enum is present. */
-type APIInterceptor =
+export type APIInterceptor =
   | APIInterceptorForProxyObjects
   | APIInterceptorForProxyObjectsInWorker
   | APIInterceptorForProxifiyingGetters
   | APIInterceptorForModifyingObjectProperties;
 
+// Support Enums
 // These enums are inspired by the WebIDL spec
-enum SupportEnum {
+// biome-ignore lint/style/useEnumInitializers: <explanation>
+export enum SupportEnum {
   deprecated,
   nonstandard,
   draft,
   shippingChromium,
   originTrialExclusive,
 }
-enum ExposedContextsEnum {
+// biome-ignore lint/style/useEnumInitializers: <explanation>
+export enum ExposedContextsEnum {
   dedicatedWorker,
   sharedWorker,
   audioWorklet,
@@ -77,7 +86,7 @@ enum ExposedContextsEnum {
   serviceWorker,
   window,
 }
-type anyWorkerEnumMember =
+export type anyWorkerEnumMember =
   | ExposedContextsEnum.animationWorklet
   | ExposedContextsEnum.audioWorklet
   | ExposedContextsEnum.dedicatedWorker
@@ -86,13 +95,14 @@ type anyWorkerEnumMember =
   | ExposedContextsEnum.serviceWorker
   | ExposedContextsEnum.sharedStorageWorklet
   | ExposedContextsEnum.sharedWorker;
-enum AltProtocolEnum {
+// biome-ignore lint/style/useEnumInitializers: <explanation>
+export enum AltProtocolEnum {
   webRTC,
   webSockets,
   webTransport,
 }
-
-enum InterceptionFeaturesEnum {
+// biome-ignore lint/style/useEnumInitializers: <explanation>
+export enum InterceptionFeaturesEnum {
   /** This member requires the correct context to be passed down in the proxy's global context */
   corsEmulation,
   /** This member requires the correct context to be passed down in the proxy's global context */

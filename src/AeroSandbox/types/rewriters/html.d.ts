@@ -14,6 +14,8 @@ export interface EscapeRule {
   mustContain?: string[];
   cannotContain?: string[];
   // Interception methods
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
   rewriter?: Function;
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
   emulator?: Function;
 }

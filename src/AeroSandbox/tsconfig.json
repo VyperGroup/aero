@@ -19,7 +19,6 @@
   },
   "include": [
     "src/**/*.ts",
-    "build/customBuilds/**/*.ts",
     "./config.ts",
     "types/**/*.d.ts",
     "src/interceptors/concealer/element.ts.old",

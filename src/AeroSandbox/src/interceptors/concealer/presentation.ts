@@ -1,4 +1,4 @@
-import { APIInterceptor, SupportEnum } from "$types/index.d";
+import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
 import { proxyGetString } from "$shared/stringProxy";
 

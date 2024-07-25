@@ -4,7 +4,7 @@ import {
   aerogelParser,
   astParser,
   astWalker,
-} from "../../../types/aeroSandbox";
+} from "../../../types/rewriters/js";
 
 import ASTRewriter from "./backends/AST";
 import AeroGel from "./backends/AeroGel";

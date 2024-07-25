@@ -1,13 +1,14 @@
-import type { AeroSandboxLogger } from "$aero/src/shared/Loggers";
-import type { BareTransport } from "@mercuryworkshop/bare-mux";
+import type { AeroSandboxLogger } from "$shared/Loggers";
+import type BareClient from "@mercuryworkshop/bare-mux";
 
-interface AeroGlobalType {
+export interface AeroGlobalType {
   $sec: {
     csp: string;
     init: string;
   };
   $bc: BareClient;
   logger: AeroSandboxLogger;
+  prefix: string;
 }
 
 declare global {

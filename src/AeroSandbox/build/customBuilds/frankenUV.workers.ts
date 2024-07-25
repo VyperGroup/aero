@@ -1,4 +1,4 @@
-import { UVRewriterWorkerMembers } from "$types/index.d";
+import { UVRewriterWorkerMembers } from "$types/customBuilds";
 import type { UVConfig } from "@titaniumnetwork-dev/ultraviolet";
 
 import { defaultProxyFeatures } from "../../build/featureMembers";

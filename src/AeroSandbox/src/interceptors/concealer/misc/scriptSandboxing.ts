@@ -2,7 +2,7 @@ import {
   APIInterceptor,
   ExposedContextsEnum,
   proxifiedObjGeneratorContext,
-} from "$types/index.d";
+} from "$types/apiInterceptors";
 
 import locationProxy from "$shared/proxyLocation";
 

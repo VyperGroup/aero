@@ -2,7 +2,7 @@ import {
   AltProtocolEnum,
   APIInterceptor,
   ExposedContextsEnum,
-} from "$types/index.d";
+} from "$types/apiInterceptors";
 
 import config from "$aero/config";
 const { wrtcBackends } = config;
