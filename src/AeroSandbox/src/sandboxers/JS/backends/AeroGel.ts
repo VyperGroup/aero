@@ -1,7 +1,7 @@
 import {
-  AeroGelConfig,
-  aerogelParser,
-  keywordReplacementType,
+	AeroGelConfig,
+	aerogelParser,
+	keywordReplacementType
 } from "../../../../types/aeroSandbox";
 
 //import esniff from "esniff";
@@ -11,25 +11,25 @@ var INCLUDE_ESNIFF: boolean;
 
 // TODO: Setup test cases
 export default class AeroGel {
-  config: AeroGelConfig;
-  constructor(config: AeroGelConfig) {
-    this.config = config;
-  }
-  applyNewConfig(config: AeroGelConfig) {
-    this.config = config;
-  }
-  static supportedParsers(): aerogelParser[] {
-    let supports: aerogelParser[] = [];
-    if (INCLUDE_ESNIFF) supports.push("esniff");
-    return supports;
-  }
-  /** This essentially the rewriter
-   * @param script The script to jail. Before it is jailed the let/const to fake vars RegExp rewriting occurs.
-   * @param isModule Module scripts don't need to be rewritten because they don't require fake vars for scope emulation since module scripts run in their own isolated scope.
-   * @example TODO: Provide an example
-   */
-  jailScript(script: string, isModule: boolean) {
-    return /* js */ `
+	config: AeroGelConfig;
+	constructor(config: AeroGelConfig) {
+		this.config = config;
+	}
+	applyNewConfig(config: AeroGelConfig) {
+		this.config = config;
+	}
+	static supportedParsers(): aerogelParser[] {
+		let supports: aerogelParser[] = [];
+		if (INCLUDE_ESNIFF) supports.push("esniff");
+		return supports;
+	}
+	/** This essentially the rewriter
+	 * @param script The script to jail. Before it is jailed the let/const to fake vars RegExp rewriting occurs.
+	 * @param isModule Module scripts don't need to be rewritten because they don't require fake vars for scope emulation since module scripts run in their own isolated scope.
+	 * @example TODO: Provide an example
+	 */
+	jailScript(script: string, isModule: boolean) {
+		return /* js */ `
 			!() => {
 				${isModule ? script : this.rewriteScript(script)}
 		  	}().call({
@@ -38,10 +38,10 @@ export default class AeroGel {
 				location: ${this.config.objPaths.proxy.location}
 		 	 });
 		`;
-  }
-  /** This method is specifically for `var keyword rewriting` */
-  rewriteScript(script: string): string {
-    /*
+	}
+	/** This method is specifically for `var keyword rewriting` */
+	rewriteScript(script: string): string {
+		/*
 		if (INCLUDE_ESNIFF) {
 			let letIndicies = [];
 			let constIndicies = [];
@@ -73,23 +73,27 @@ export default class AeroGel {
 			script = this.replaceKeywords(script, keywordReplacements);
 		}
 		*/
-    return script;
-  }
-  replaceKeywords(
-    str: string,
-    keywordReplacements: keywordReplacementType
-  ): string {
-    const charArr = Array.from(str);
-    let totalAddedToIndex = 0;
-    for (const [indexStr, replacementData] of Object.entries(
-      keywordReplacements
-    )) {
-      const { keywordLen, replacementStr } = replacementData;
-      const index = parseInt(indexStr);
-      const replacementArr = Array.from(replacementStr);
-      totalAddedToIndex += replacementArr.length - keywordLen;
-      charArr.splice(index + totalAddedToIndex, keywordLen, replacementStr);
-    }
-    return charArr.join("");
-  }
+		return script;
+	}
+	replaceKeywords(
+		str: string,
+		keywordReplacements: keywordReplacementType
+	): string {
+		const charArr = Array.from(str);
+		let totalAddedToIndex = 0;
+		for (const [indexStr, replacementData] of Object.entries(
+			keywordReplacements
+		)) {
+			const { keywordLen, replacementStr } = replacementData;
+			const index = parseInt(indexStr);
+			const replacementArr = Array.from(replacementStr);
+			totalAddedToIndex += replacementArr.length - keywordLen;
+			charArr.splice(
+				index + totalAddedToIndex,
+				keywordLen,
+				replacementStr
+			);
+		}
+		return charArr.join("");
+	}
 }

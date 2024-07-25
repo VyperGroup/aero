@@ -1,3 +1,3 @@
 module.exports = content => {
-  return content.replace(/<proxyNamespace>/g, "$aero");
+	return content.replace(/<proxyNamespace>/g, "$aero");
 };

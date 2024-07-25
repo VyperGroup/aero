@@ -11,45 +11,46 @@ import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
 // Proxy the getters for shadow root stylesheets
 
 function getSheet(sheet: CSSStyleSheet): CSSStyleSheet {
-  return new Proxy(sheet, {
-    get(target, prop: keyof CSSStyleSheet) {
-      if (prop === "href") {
-        return afterPrefix(target.href);
-      } else if (prop === "parentStyleSheet") {
-        // Parent recursion
-        const parentStyleSheet = target.parentStyleSheet;
-        if (parentStyleSheet !== null) return getSheet(parentStyleSheet);
-      }
-      return target[prop];
-    },
-  });
+	return new Proxy(sheet, {
+		get(target, prop: keyof CSSStyleSheet) {
+			if (prop === "href") {
+				return afterPrefix(target.href);
+			} else if (prop === "parentStyleSheet") {
+				// Parent recursion
+				const parentStyleSheet = target.parentStyleSheet;
+				if (parentStyleSheet !== null)
+					return getSheet(parentStyleSheet);
+			}
+			return target[prop];
+		}
+	});
 }
 
 // TODO: Inside of .xsl files spoof the conceal processing instructions nodes to hide their stylesheets
 function getProcessingInstructionSheet(
-  processingInstruction: ProcessingInstruction
+	processingInstruction: ProcessingInstruction
 ): ProcessingInstruction {
-  return new Proxy(processingInstruction, {
-    get(target, prop: keyof ProcessingInstruction) {
-      if (prop === "sheet") {
-        const sheet = target.sheet;
-        if (sheet !== null) return getSheet(sheet);
-      }
-      return target[prop];
-    },
-  });
+	return new Proxy(processingInstruction, {
+		get(target, prop: keyof ProcessingInstruction) {
+			if (prop === "sheet") {
+				const sheet = target.sheet;
+				if (sheet !== null) return getSheet(sheet);
+			}
+			return target[prop];
+		}
+	});
 }
 
 export default {
-  modifyObjectProperty: () =>
-    Object.defineProperty(document, "styleSheets", {
-      get: () => {
-        // Conceal each `CSSStyleSheet` from the `StyleSheetList`
-        const ret = Array.from(document.styleSheets).map(getSheet);
+	modifyObjectProperty: () =>
+		Object.defineProperty(document, "styleSheets", {
+			get: () => {
+				// Conceal each `CSSStyleSheet` from the `StyleSheetList`
+				const ret = Array.from(document.styleSheets).map(getSheet);
 
-        return ret;
-      },
-    }),
-  globalProp: "document.styleSheets",
-  exposedContexts: ExposedContextsEnum.window,
+				return ret;
+			}
+		}),
+	globalProp: "document.styleSheets",
+	exposedContexts: ExposedContextsEnum.window
 } as APIInterceptor;

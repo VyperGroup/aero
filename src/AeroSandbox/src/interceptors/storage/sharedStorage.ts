@@ -15,13 +15,13 @@ if (flags.nonstandard && "sharedStorage" in window) {
   */
 
 export default [
-  {
-    proxifiedObj: Proxy.revocable(window.sharedStorage, {
-      apply(target, that, args) {
-        // TODO: Implement
-        return Reflect.apply(target, that, args);
-      },
-    }),
-    globalProp: "sharedStorage",
-  },
+	{
+		proxifiedObj: Proxy.revocable(window.sharedStorage, {
+			apply(target, that, args) {
+				// TODO: Implement
+				return Reflect.apply(target, that, args);
+			}
+		}),
+		globalProp: "sharedStorage"
+	}
 ] as APIInterceptor[];
