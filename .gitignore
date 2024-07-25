@@ -4,9 +4,12 @@
 ## For NixOS
 mutable_node_modules
 
-# Webpack
+# Rspack
 /**/dist/
 
-# Aero
+# aero
+
+# aero dev server
+dev_server/
 
 # Unreleased features (Not finished) 👀
