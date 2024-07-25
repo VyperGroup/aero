@@ -7,7 +7,8 @@ import {
 import config from "$aero/config";
 const { wrtcBackends } = config;
 
-import escape from "$aero_browser/misc/escape";
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
+import escape from "$shared/escape";
 
 export default {
 	proxifiedObj: Proxy.revocable(RTCPeerConnection, {
@@ -29,15 +30,16 @@ export default {
 			return ret;
 		},
 		get(target, prop) {
-			return typeof prop === "string" &&
-				escapeWithOrigin("iceServers").test(prop)
+			return typeof prop === "string" && escape("iceServers").test(prop)
 				? target[`_${prop}`]
 				: Reflect.get(target, prop);
 		},
 		set(target, prop, value) {
-			return typeof prop === "string" && escape("iceServers").test(prop)
-				? (target[`_${prop}`] = value)
-				: Reflect.set(target, prop, value);
+			if (typeof prop === "string" && escape("iceServers").test(prop)) {
+				target[`_${prop}`] = value;
+				return true;
+			}
+			return Reflect.set(target, prop, value);
 		}
 	}),
 	globalProp: "RTCPeerConnection",

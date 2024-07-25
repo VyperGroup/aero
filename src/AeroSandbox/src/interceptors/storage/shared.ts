@@ -1,28 +1,29 @@
-import { proxyLocation } from "$shared/proxyLocation";
+import { escapeWithOrigin } from "$aero/src/shared/escape";
 
-const storagePrefix = () => `${proxyLocation().origin}_`;
+const storagePrefix = escapeWithOrigin;
 
 const storageNomenclature = {
 	apply(target, that, args) {
 		const [key] = args;
 
-		args[0] = storagePrefix() + key;
+		args[0] = storagePrefix(key);
 
 		return Reflect.apply(target, that, args);
 	}
 };
 
 function storageKey(key: string) {
-	const prefixSplit = key.split(storagePrefix());
+	const getUnproxifiedStorageKey = key.split(storagePrefix(""));
 
-	if (prefixSplit[0] === storagePrefix()) return prefixSplit.slice(1);
+	if (getUnproxifiedStorageKey[0] === storagePrefix(""))
+		return getUnproxifiedStorageKey.slice(1);
 	else return null;
 }
 
 function storageKeys(keys: string[]) {
 	let proxyKeys = [];
 
-	/*
+	/*escapeWithProxyOrigin
 	for (let key of keys) {
 		const prefixSplit = key.split(storagePrefix());
 

@@ -1,5 +1,8 @@
 // TODO: This is a WIP
 
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
+import escape from "$shared/escape";
+
 /**
  * This whole file encompasses the {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API WebAuthn}, {@link https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API FedCM}, {@link https://wicg.github.io/web-otp WebOTP} APIs
  */
@@ -99,7 +102,7 @@ export default [
 
 				const proxifiedCredentialObj = {
 					federated: {
-						id: escapeWithOrigin(credentialsObj.id)
+						id: escape(credentialsObj.id)
 					},
 					...credentialsObj
 				};
