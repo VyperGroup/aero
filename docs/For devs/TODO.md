@@ -29,6 +29,11 @@ If you want to find something to contribute to, search in your editor for TODO c
   - [ ] CF Workers
 - [ ] Make builds of aero that are made for older browsers
 
+## API Interceptor system
+
+- [ ] Finish the import code for the API Interceptors (init.ts in AeroSandbox)
+- [ ] Set the default import level to be one and bump the existing import levels of one
+
 ## Commit Renames
 
 - [ ] Remove the "- DRAFT" from the filenames (still keep them in the README.md headings)
