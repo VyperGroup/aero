@@ -22,7 +22,8 @@ function getRequestUrl(
 	const noPrefix = path.split(prefix)[1];
 
 	// If it is the first request, there is no must do any relative url checking
-	if (typeof noPrefix === "string" && isHomepage) return new URL(noPrefix).href;
+	if (typeof noPrefix === "string" && isHomepage)
+		return new URL(noPrefix).href;
 
 	// Don't hardcode origins
 	const absoluteUrl = origin !== workerOrigin;

@@ -66,7 +66,10 @@ const createNestedSWRunnerSandbox = (sourceCode: string, nestedSW) => {
 							...thisArg
 						};
 
-						return Reflect.apply(target, that, [thisArg, ...bindArgs]);
+						return Reflect.apply(target, that, [
+							thisArg,
+							...bindArgs
+						]);
 					}
 				});
 			}

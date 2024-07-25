@@ -1,12 +1,12 @@
 {
-  "recommendations": [
-    "biomejs.biome",
-    "amodio.tsl-problem-matcher",
-    "iulian-radu-at.find-unused-exports",
-    "mathiassoeholm.markdown-link-updater",
-    "wayou.vscode-todo-highlight",
-    "gruntfuggly.todo-tree",
-    "yoavbls.pretty-ts-errors",
-    "bierner.comment-tagged-templates"
-  ]
+	"recommendations": [
+		"biomejs.biome",
+		"amodio.tsl-problem-matcher",
+		"iulian-radu-at.find-unused-exports",
+		"mathiassoeholm.markdown-link-updater",
+		"wayou.vscode-todo-highlight",
+		"gruntfuggly.todo-tree",
+		"yoavbls.pretty-ts-errors",
+		"bierner.comment-tagged-templates"
+	]
 }

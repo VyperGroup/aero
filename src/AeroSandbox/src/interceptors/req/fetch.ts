@@ -12,7 +12,7 @@ export default {
 					? {
 							...args[0],
 							...opts
-						}
+					  }
 					: opts;
 
 			let headers: Record<string, string> = {};

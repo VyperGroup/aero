@@ -9,7 +9,7 @@ function genFakeClientId(loc?: string) {
 
 function handleFetchEvent(
 	partialFakeEvent: FakeEventPartial,
-	reqDest: string = ""
+	reqDest = ""
 ): Response | false {
 	let nonDefaultResp: Response | false = false;
 

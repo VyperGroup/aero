@@ -36,7 +36,9 @@ export default class HSTSCacheEmulation extends Cache {
 	 */
 	async processHSTS(hsts: string): Promise<void> {
 		const directives = hsts.toLowerCase().split(";");
-		const maxAgeDirective = directives.find(dir => dir.startsWith("max-age"));
+		const maxAgeDirective = directives.find(dir =>
+			dir.startsWith("max-age")
+		);
 		const includeSubdomainsDirective = directives.find(
 			dir => dir === "includeSubdomain"
 		);
