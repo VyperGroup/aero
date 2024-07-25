@@ -4,27 +4,13 @@ import * as config from "$aero/config";
 
 import rewriteSrc from "$shared/src";
 import rewriteHtmlSrc from "./htmlSrc";
-import scope from "$sandbox/JS/scopers/aeroGel";
-import rewriteScript from "$sandbox/JS/script";
 
-import checkCsp from "./csp";
+import allow from "./csp";
 import Cloner from "./Cloner";
 
 import { proxyLocation } from "$shared/proxyLocation";
 
 import block from "$cors/policy";
-
-// Rules
-import * as defaultRules from "./rules";
-
-import { AeroSandboxTypes } from "$types/index";
-
-// @ts-ignore
-const rulesArr: any = Object.values(defaultRules).map(rule => [...rule]);
-// What the rules for what we need to proxy in the scope of this module
-const defaultRulesCollection: Map<any, AeroSandboxTypes.Rule[]> = new Map(
-	rulesArr
-);
 
 //https://github.com/VyperGroup/aero/tree/e05df5a523749f93c82f7261d7e7c4aabc6f947c/src/AeroSandbox/src/sandboxers/HTML/custom-elements/mixins
 //https://github.com/VyperGroup/aero/blob/298ecc795cd1e7eb844a78543fcfb4d0ae4186bd/src/AeroSandbox/src/sandboxers/HTML/mutation-observers/html.ts
@@ -53,7 +39,7 @@ function set(el: HTMLElement, attr: string, val = "", backup = true): void {
 
 	// Even though DOMParser affects the DOM too there is no need to mark the element, since the changes aren't going to apply because this happens before the API interceptors are in play.
 	if (
-		$aero.rewriters.type ===
+		$aero.config.rewriters.html.type ===
 		AeroSandboxTypes.HTMLRewriterType.MutationObserver
 	) {
 		Object.defineProperty(el, attr, {
@@ -63,4 +49,182 @@ function set(el: HTMLElement, attr: string, val = "", backup = true): void {
 			set: Object.getOwnPropertyDescriptors(el).set
 		});
 	}
+}
+
+export default function rewriteElement(el: Element | Element, attr?: String) {
+	// Don't exclusively rewrite attributes or check for already observed elements
+	const isNew = typeof attr === "undefined";
+
+	if (
+		isNew &&
+		el instanceof HTMLScriptElement &&
+		!el.hasAttribute("rewritten")
+	) {
+		if (el.src) {
+			if (allow("script-src")) {
+				const url = new URL(el.src);
+
+				const isMod = el.type === "module";
+
+				const params = url.searchParams;
+
+				for (const v of params.getAll("isMod")) {
+					params.append("_isMod", v);
+				}
+				params.delete("isMod");
+				params.append("isMod", isMod.toString());
+
+				// TODO: Handle integrity in the sw. This would require external libraries to check hashes.
+				if (isMod && el.integrity) {
+					for (const integrityValue of params.getAll("integrity"))
+						url.searchParams.append("_integrity", integrityValue);
+
+					params.set("integrity", el.integrity);
+				}
+
+				set(el, "src", url.href);
+			} else set(el, "src", "");
+		}
+
+		if (
+			!el.src &&
+			!el.classList.contains(config.ignoreClass) &&
+			typeof el.innerHTML === "string" &&
+			el.innerHTML !== "" &&
+			// Ensure the script has a JS type
+			(el.type === "" ||
+				el.type === "module" ||
+				el.type === "text/javascript" ||
+				el.type === "application/javascript")
+		) {
+			// FIXME: Fix safeText so that it could be used here
+			el.innerHTML = $aero.js.wrapScript(
+				el.innerText,
+				el.type === "module"
+			);
+
+			// The inline code is read-only, so the element must be cloned
+			const cloner = new Cloner(el);
+
+			cloner.clone();
+			cloner.cleanup();
+		}
+	} else if (el instanceof SVGAElement) {
+		if (el.href) set(el, "href", rewriteHtmlSrc(el.href.baseVal));
+		else if (el.hasAttribute("xlink:href"))
+			set(
+				el,
+				"xlink:href",
+				rewriteHtmlSrc(el.getAttribute("xlink:href"))
+			);
+	} else if (
+		el instanceof HTMLAnchorElement ||
+		el instanceof HTMLAreaElement ||
+		el instanceof HTMLBaseElement
+	) {
+		if (el.href) {
+			set(el, "href", rewriteHtmlSrc(el.href));
+		} else if (el.hasAttribute("xlink:href"))
+			set(
+				el,
+				"xlink:href",
+				rewriteHtmlSrc(el.getAttribute("xlink:href"))
+			);
+	} else if (
+		el instanceof HTMLFormElement &&
+		// Don't rewrite again
+		!el._action &&
+		// Action is automatically created
+		el.action !== null
+	)
+		set(el, "action", rewriteHtmlSrc(el.action));
+	else if (el instanceof HTMLIFrameElement) {
+		if (el.src && allow("frame-src")) {
+			// Embed the origin as an attribute, so that the frame can reference it to do its checks
+			el["parentProxyOrigin"] = proxyLocation().origin;
+			set(el, "src");
+
+			// Inject aero imports if applicable then rewrite the Src
+			set(el, "src", el.src);
+		}
+		if (el.srcdoc)
+			// Inject aero imports
+			set(el, "srcdoc", $aero.init + el.srcdoc);
+
+		// Emulate CSP
+		// Delete
+		if (el.hasAttribute("csp")) set(el, "csp", "");
+		// Emulate
+		let sec: {
+			csp?: string;
+			perms?: string;
+			pr?: boolean;
+		} = {};
+		if (el["csp"]) {
+			sec.csp = el["csp"];
+			set(el, "csp", "");
+		}
+		if (el.allow) {
+			sec.perms = el.allow;
+			set(el, "allow", "");
+		}
+		if (el["allowPaymentRequest"]) {
+			sec.pr = el["allowPaymentRequest"];
+			set(el, "allowpaymentrequest", "");
+		}
+		el.addEventListener(
+			"load",
+			() => (el.contentWindow["sec"] = JSON.stringify(sec))
+		);
+	} else if (el instanceof HTMLPortalElement && el["src"])
+		set(el, "src", rewriteHtmlSrc(el["src"]));
+	else if (el instanceof HTMLImageElement && el.src && !allow("img-src"))
+		set(el, "src", "");
+	else if (
+		el instanceof HTMLAudioElement ||
+		(el instanceof HTMLVideoElement && el.autoplay && block("autoplay"))
+	)
+		set(el, "autoplay");
+	else if (el instanceof HTMLMetaElement) {
+		switch (el.httpEquiv) {
+			case "content-security-policy":
+				// TODO: Enforce the CSP instead of deleting it
+				set(el, "content", "");
+				break;
+			case "refresh":
+				set(
+					el,
+					"content",
+					el.content.replace(
+						/^([0-9]+)(;)(\s+)?(url=)(.*)/g,
+						(_match, g1, g2, g3, g4, g5) =>
+							g1 +
+							g2 +
+							g3 +
+							g4 +
+							rewriteSrc(g5, proxyLocation().href)
+					)
+				);
+		}
+	}
+	/*
+	} else if (el instanceof HTMLLinkElement && el.rel === "manifest") {
+		set(el, "href", rewriteSrc(el.url, proxyLocation().href));
+	} else if (config.flags.legacy && tag instanceof HTMLHtmlElement) {
+		// Cache manifests
+		set(el, "manifest", rewriteSrc(el.url, proxyLocation().href.manifest));
+	}
+	*/
+
+	if (isNew && el.integrity !== "") {
+		const cloner = new Cloner(el);
+
+		cloner.clone();
+		cloner.cleanup();
+	}
+
+	if (typeof el.onload === "string")
+		set(el, "onload", scope(el.getAttribute("onload")));
+	if (typeof el.error === "string")
+		set(el, "onerror", scope(el.getAttribute("onload")));
 }

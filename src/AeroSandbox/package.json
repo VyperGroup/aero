@@ -42,6 +42,7 @@
 		"@types/webpack": "^5.28.5",
 		"@types/websql": "^0.0.30",
 		"astring": "^1.8.6",
+		"htmlparser2": "^9.1.0",
 		"node-source-walk": "^7.0.0",
 		"traverse-the-universe": "^2.1.2"
 	}
