@@ -1,5 +1,6 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+
 	"javascript": {
 		"formatter": {
 			"arrowParentheses": "asNeeded",
@@ -8,6 +9,6 @@
 		}
 	},
 	"files": {
-		"ignore": ["/src/AeroSandbox", "/dev_server", "/**/dist/**"]
+		"ignore": ["/src/AeroSandbox", "/dev_server", "/**/dist"]
 	}
 }
