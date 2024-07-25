@@ -14,18 +14,12 @@ Web Proxies can be used for:
 - Unblocking websites or browser features through emulation
 - Middleware
 
-## How do I become a proxy dev?
-
-That's great to hear! Sadly, there aren't many people who have an interest in this up-and-coming field. Proxies have more uses than unblocking; until recently, their potential has been unrealized.
-
-I recommend reading the proxy guide. TODO: Link to the proxy guide.
-I recommend reading the [Index for the Dev Docs](./docs/For%20devs/README.md). This information is valuable, even if you want to build your proxy! It's a great place to start and to put everything into perspective; I made this decision because I understand that seeing a sea of doc files is intimidating, and you may need help knowing where to start. Please don't let complexity dissuade you from your ambitions! Once you break it down, proxies have become much simpler due to recent innovations.
-
 ## How to build aero
 
-npm create rsbuild@latest
+`npm i`
+`npm run build`
 
-TODO: This is a stub...
+> Make sure to build AeroSandbox separately
 
 ## Related
 
@@ -34,6 +28,7 @@ It is highly recommended that you install [aero middleware](https://github.com/V
 ## Notable Contributions
 
 - [Divide](https://github.com/e9x) for standardizing interception proxies with [TompHTTP](https://github.com/tomphttp/bare-server-node)
+- [Percs](https://github.com/Percslol) for implementing Websocket support in aero
 - [ThinLiquid](https://github.com/ThinLiquid) for the logo
 
 Don't be afraid to help 😄
