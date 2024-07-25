@@ -1,4 +1,4 @@
-import afterPrefix from "$src/shared/afterPrefix";
+import afterPrefix from "$shared/afterPrefix";
 
 // TODO: Define the undefined APIs on the Window object. This file is very incomplete.
 

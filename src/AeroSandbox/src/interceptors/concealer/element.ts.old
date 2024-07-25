@@ -1,6 +1,6 @@
 // TODO: Fix this to match AeroSandbox's recent API interceptor changes
 
-import proxy from "$src/shared/autoProxy/autoProxy";
+import proxy from "$shared/stringProxy";
 
 import escapeWithOrigin from "$aero_browser/misc/escape";
 

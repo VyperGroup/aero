@@ -1,4 +1,4 @@
-import config from "$aero/config";
+import config from "../../../config";
 const { prefix } = config;
 
 // TODO: Rename this to getProxyURLFromRealURL

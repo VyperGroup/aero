@@ -1,5 +1,5 @@
 import config from "$aero/config";
-import { APIInterceptor } from "$aero/types";
+import { APIInterceptor } from "$types/index.d";
 const { prefix } = config;
 
 import { storageNomenclature } from "./shared";
@@ -15,13 +15,13 @@ if (flags.nonstandard && "sharedStorage" in window) {
   */
 
 export default [
-	{
-		proxifiedObj: new Proxy(window.sharedStorage, {
-			apply(target, that, args) {
-				// TODO: Implement
-				return Reflect.apply(target, that, args);
-			},
-		}),
-		globalProp: "sharedStorage",
-	},
+  {
+    proxifiedObj: Proxy.revocable(window.sharedStorage, {
+      apply(target, that, args) {
+        // TODO: Implement
+        return Reflect.apply(target, that, args);
+      },
+    }),
+    globalProp: "sharedStorage",
+  },
 ] as APIInterceptor[];

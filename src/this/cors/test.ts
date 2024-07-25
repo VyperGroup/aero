@@ -8,7 +8,7 @@ export default async (proxyUrl: string): Promise<boolean> => {
 			mode: "no-cors",
 			// Prevent the unnecessary transfer of the response body, if the request was actually fulfilled, which I doubt would happen anyways
 			method: "HEAD",
-			signal,
+			signal
 		});
 
 		// Don't actually send the request

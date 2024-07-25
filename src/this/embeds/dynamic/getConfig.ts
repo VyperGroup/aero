@@ -1,4 +1,4 @@
-import config from "$aero_config";
+import config from "$src/config";
 
 import getStore from "./getStore";
 

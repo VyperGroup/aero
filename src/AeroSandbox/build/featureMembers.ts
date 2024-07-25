@@ -1,4 +1,4 @@
-import { InterceptionFeaturesEnum } from "$aero/types";
+import { InterceptionFeaturesEnum } from "$types/index.d";
 
 // TODO: Put all of these terms in the API Interception Glossary
 
@@ -22,5 +22,5 @@ export {
 	miscOriginIsolators,
 	miscOriginConcealers,
 	defaultSWProxyFeatures,
-	defaultProxyFeatures,
+	defaultProxyFeatures
 };

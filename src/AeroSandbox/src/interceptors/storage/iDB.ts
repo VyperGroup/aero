@@ -1,4 +1,4 @@
-import { APIInterceptor } from "$aero/types";
+import { APIInterceptor } from "$types/index.d";
 
 import config from "$aero/config";
 
@@ -7,32 +7,35 @@ import { storageNomenclature } from "./shared";
 const { prefix } = config;
 
 export default [
-	{
-		proxifiedObj: new Proxy(indexedDB.open, storageNomenclature),
-		globalProp: "indexedDB.open",
-	},
-	{
-		proxifiedObj: new Proxy(indexedDB.deleteDatabase, storageNomenclature),
-		globalProp: "indexedDB.deleteDatabase",
-	},
-	{
-		proxifiedObj: new Proxy(indexedDB.databases, {
-			async apply(target, that, args) {
-				const dbs = (await Reflect.apply(
-					target,
-					that,
-					args
-				)) as IDBDatabaseInfo[];
+  {
+    proxifiedObj: Proxy.revocable(indexedDB.open, storageNomenclature),
+    globalProp: "indexedDB.open",
+  },
+  {
+    proxifiedObj: Proxy.revocable(
+      indexedDB.deleteDatabase,
+      storageNomenclature
+    ),
+    globalProp: "indexedDB.deleteDatabase",
+  },
+  {
+    proxifiedObj: Proxy.revocable(indexedDB.databases, {
+      async apply(target, that, args) {
+        const dbs = (await Reflect.apply(
+          target,
+          that,
+          args
+        )) as IDBDatabaseInfo[];
 
-				dbs.map(db => {
-					if (db instanceof Error) return db;
+        dbs.map(db => {
+          if (db instanceof Error) return db;
 
-					db.name = prefix + db.name;
+          db.name = prefix + db.name;
 
-					return db;
-				});
-			},
-		}),
-		globalProp: "indexedDB.databases",
-	},
+          return db;
+        });
+      },
+    }),
+    globalProp: "indexedDB.databases",
+  },
 ] as APIInterceptor[];

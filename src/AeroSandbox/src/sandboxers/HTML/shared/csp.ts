@@ -1,4 +1,4 @@
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { proxyLocation } from "$shared/proxyLocation";
 
 // TODO: Use policy.ts
 

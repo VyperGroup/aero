@@ -15,9 +15,9 @@ interface CookieStoreGetOptions {
 	url?: string;
 }
 enum CookieSameSite {
-	"strict",
-	"lax",
-	"none",
+	strict,
+	lax,
+	none
 }
 interface CookieInit {
 	name: string;

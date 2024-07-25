@@ -10,5 +10,5 @@ interface OTPCredentialRequestOptions {
 	transport?: Array<OTPCredentialTransportType>;
 }
 enum OTPCredentialTransportType {
-	"sms",
+	sms
 }

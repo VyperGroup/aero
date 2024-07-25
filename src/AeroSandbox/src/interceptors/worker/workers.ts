@@ -2,9 +2,9 @@
 import config from "$aero/config";
 const { flags } = config;
 
-import rewriteSrc from "$src/shared/hared/src";
+import rewriteSrc from "$shared/hared/src";
 
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { proxyLocation } from "$shared/proxyLocation";
 
 
 if (flags.nestedWorkers)

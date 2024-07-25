@@ -1,7 +1,4 @@
-import prefix from "$aero/config";
-
-import locationProxy from "$sandbox/proxyLocation";
-import { upToProxyLocation } from "util/upToProxyLocation";
+import locationProxy from "$shared/proxyLocation";
 
 // Prevent detection by instanceof
 let inheritedObject = {};
@@ -11,8 +8,8 @@ window["$location"] = locationProxy;
 window["$location"]["Symbol.toStringTag"] = "Location";
 
 Object.defineProperty(document, "domain", {
-  get: () => $location.hostname,
+	get: () => $location.hostname
 });
 Object.defineProperty(document, "URL", {
-  get: () => $location.href,
+	get: () => $location.href
 });

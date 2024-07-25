@@ -1,4 +1,4 @@
-import prefix from "config";
+import config from "../../../config";
 
 import afterPrefix from "./afterPrefix";
 
@@ -19,7 +19,7 @@ function proxy(
 				if (rewriteResult) ret = rewriteResult(ret, ...args);
 
 				return ret;
-			},
+			}
 		});
 }
 
@@ -39,7 +39,7 @@ function proxyGet(
 				}
 
 				return Reflect.get(target, theProp);
-			},
+			}
 		});
 }
 
@@ -53,12 +53,13 @@ function proxyConstructString(
 
 		for (const argNum of argNums)
 			map.set(argNum, function () {
-				return prefix + arguments[argNum];
+				return config.prefix + arguments[argNum];
 			});
 
 		return proxy(apiName, map);
 	}
-	if (res) return proxy(apiName, undefined, res => afterPrefix(res));
+	if (res)
+		return proxy(apiName, undefined, (res: string) => afterPrefix(res));
 }
 function proxyGetString(
 	apiName: string,

@@ -1,11 +1,8 @@
 {
   "recommendations": [
-    "ms-playwright.playwright",
+    "biomejs.biome",
     "amodio.tsl-problem-matcher",
     "iulian-radu-at.find-unused-exports",
-    "dbaeumer.vscode-eslint",
-    "jeremyrajan.webpack",
-    "editorconfig.editorconf",
     "mathiassoeholm.markdown-link-updater",
     "wayou.vscode-todo-highlight",
     "gruntfuggly.todo-tree",

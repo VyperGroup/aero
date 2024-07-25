@@ -6,10 +6,10 @@ import { AeroSandboxTypes } from "$types/index";
 const hrefRules = new Map<any, AeroSandboxTypes.EscapeRule[]>();
 
 hrefRules.set(HTMLAnchorElement, {
-  attr: "href",
+	attr: "href"
 });
 hrefRules.set(HTMLAreaElement, {
-  attr: "href",
+	attr: "href"
 });
 // TODO: Support xlink:href attributes - https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href
 // TODO: ...(support the rest of the elements)
@@ -20,22 +20,22 @@ hrefRules.set(HTMLAreaElement, {
 
 // element class, escape rules
 const integrityEscapeRules = new Map<
-  HTMLElement,
-  AeroSandboxTypes.EscapeRule[]
+	HTMLElement,
+	AeroSandboxTypes.EscapeRule[]
 >();
 
 integrityEscapeRules.set(HTMLScriptElement, [
-  {
-    attr: "integrity",
-  },
+	{
+		attr: "integrity"
+	}
 ]);
 integrityEscapeRules.set(HTMLLinkElement, [
-  {
-    attr: "integrity",
-    mustContain: ["stylesheet, preload", "modulepreload"],
-  },
+	{
+		attr: "integrity",
+		mustContain: ["stylesheet, preload", "modulepreload"]
+	}
 ]);
 
 export default {
-  integrityEscapeRules,
+	integrityEscapeRules
 };

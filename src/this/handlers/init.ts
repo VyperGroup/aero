@@ -1,9 +1,8 @@
 // Inits all handlers
 // Core functionality
-import nestedSW from "../nestedSW/handler";
+//import nestedSW from "../nestedSW/handler";
 // Dynamic updates
-import dynamic from "./dynamic";
+// TODO: Bring back Dynamic updates at a later date
 export default () => {
-	nestedSW();
-	dynamic();
+	//nestedSW();
 };

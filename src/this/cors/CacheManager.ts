@@ -1,4 +1,4 @@
-import config from "$aero_config";
+import config from "$src/config";
 const { cacheKey } = config;
 
 import Cache from "./Cache";
@@ -57,7 +57,7 @@ export default class extends Cache {
 			"If-None-Match",
 			"If-Unmodified-Since",
 			"If-Match",
-			"If-Range",
+			"If-Range"
 		];
 
 		return conditionalHeaders.some(header => headers.has(header));
@@ -76,7 +76,7 @@ export default class extends Cache {
 			"no-cache",
 			"no-store",
 			"only-if-cached",
-			"reload",
+			"reload"
 		];
 		return validCacheModes.includes(cacheMode);
 	}
@@ -100,10 +100,7 @@ export default class extends Cache {
 	 * @param - Expire HTTP Header for fallback
 	 * @returns
 	 */
-	async getAge(
-		cacheControl: string,
-		expiry: string
-	): Promise<number | false> {
+	async getAge(cacheControl: string, expiry: string): Promise<number | false> {
 		if (cacheControl) {
 			const dirs = cacheControl.split(";").map(dir => dir.trim());
 

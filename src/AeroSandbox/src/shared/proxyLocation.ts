@@ -1,13 +1,13 @@
-import config from "config";
+import config from "../../../config";
 
-import afterPrefix from "$shared/afterPrefix";
+import afterPrefix from "./afterPrefix";
 
 const proxyLocation = () => new URL(afterPrefix(location.href));
 const upToProxyOrigin = () => config.prefix + proxyLocation().origin;
 
 // Prevent detection by instanceof
 let inheritedObject = {};
-Reflect.setPrototypeOf(inheritedObject, Location.prototype);
+Reflect.setPrototypeOf(inheritedObject, Object.getPrototypeOf(location));
 
 const wrap = (url: string) => config.prefix + url;
 // TODO: Set locationProxy as not writable and not configurable
@@ -15,13 +15,22 @@ const locationProxy = new Proxy(inheritedObject, {
 	get(target, prop) {
 		function internal() {
 			if (typeof target[prop] === "function") {
-				const props = {
-					toString: () => proxyLocation().toString(),
-					assign: url => window.location.assign(wrap(url)),
-					replace: url => window.location.replace(wrap(url)),
+				// @ts-ignore
+				const props: any = {
+					toString: () => proxyLocation().toString()
 				};
 
-				return prop in props ? props[prop] : target[prop];
+				// These properties below are not defined in workers
+				if ("assign" in location)
+					props.assign = (url: string) =>
+						location["assign"](wrap(url));
+				if ("replace" in location)
+					props.replace = (url: string) =>
+						location["replace"](wrap(url));
+
+				return prop in props && prop in location
+					? props[prop]
+					: target[prop];
 			}
 
 			const fakeUrl = proxyLocation;
@@ -30,7 +39,8 @@ const locationProxy = new Proxy(inheritedObject, {
 			 * `ancestorOrigins` is only found in Chrome
 			 */
 			const customProps = {
-				ancestorOrigins: window.location.ancestorOrigins,
+				// TODO: Rewrite
+				//ancestorOrigins: location.ancestorOrigins,
 			};
 
 			if (prop in customProps) return customProps[prop];
@@ -50,7 +60,7 @@ const locationProxy = new Proxy(inheritedObject, {
 		else target[prop] = value;
 
 		return true;
-	},
+	}
 });
 
 export { locationProxy as default, proxyLocation, upToProxyOrigin };

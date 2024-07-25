@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"moduleResolution": "NodeNext",
+		"module": "NodeNext",
+		"baseUrl": "./",
+		"lib": ["ESNext"],
+		"paths": {},
+		"types": ["@types/node", "./types/index.d.ts"]
+	},
+	"include": ["webpack.config.ts", "./build/**.ts", "./types/index.d.ts"]
+}

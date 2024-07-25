@@ -1,20 +1,18 @@
-import config from "$aero_config";
-const { dynamicConfig, flags } = config;
+import config from "$src/config";
 
-import getStore from "this/embeds/dynamic/getStore";
+import getStore from "$embeds/dynamic/getStore";
 
-const { dbName, id } = dynamicConfig;
+var FEATURE_DYNAMIC_CONFIG_UPDATES: boolean;
 
 // For dynamic config updates
 // FIXME: This obviously wouldn't work
 export default () => {
-	if (flags.dynamicUpdates)
-		getStore(dbName, store => {
+	if (FEATURE_DYNAMIC_CONFIG_UPDATES)
+		getStore(config.dynamicConfig.dbName, store => {
 			self.addEventListener("message", (event: MessageEvent) => {
 				const config = event.data;
 
-				if (typeof config === "object" && config.id === id)
-					store.add(config);
+				if (typeof config === "object") store.add(config);
 			});
 		});
 };

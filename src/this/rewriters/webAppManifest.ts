@@ -1,6 +1,6 @@
-import { WebAppManifest } from "@types/web-app-manifest";
+import { WebAppManifest } from "web-app-manifest";
 
-import rewriteSrc from "$aero/shared/src";
+import rewriteSrc from "$sandbox/shared/src";
 
 /**
  * Aero's web app manifest rewriter
@@ -17,7 +17,7 @@ export default (body: string, proxyUrl: URL): string => {
 		"background_color",
 		"theme_color",
 		"shortcuts",
-		"screenshots",
+		"screenshots"
 	]) {
 		if (json[prop]) json[prop] = rewriteSrc(json[prop], proxyUrl.href);
 	}

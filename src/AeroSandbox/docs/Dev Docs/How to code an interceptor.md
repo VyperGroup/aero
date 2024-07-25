@@ -1,0 +1,3 @@
+# How to code an interceptor
+
+TODO: This is a stub...

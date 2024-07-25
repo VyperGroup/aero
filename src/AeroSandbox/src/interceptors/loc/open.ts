@@ -1,4 +1,4 @@
-import { APIInterceptor, ExposedContextsEnum } from "$aero/types";
+import { APIInterceptor, ExposedContextsEnum } from "$types/index.d";
 
 import rewriteSrc from "$aero/src/shared/src";
 
@@ -10,8 +10,8 @@ export default {
 			args[0] = rewriteSrc(url);
 
 			return Reflect.apply(target, that, args);
-		},
+		}
 	}),
 	globalProp: "open",
-	exposedContexts: ExposedContextsEnum.window,
+	exposedContexts: ExposedContextsEnum.window
 } as APIInterceptor;

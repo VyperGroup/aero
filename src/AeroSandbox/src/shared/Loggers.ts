@@ -1,7 +1,7 @@
 // Webpack Feature Flags
 var DEBUG: boolean;
 
-type htmlTemplatingCallback = (errStr: string) => string;
+type htmlTemplatingCallbackType = (errStr: string) => string;
 
 const aeroBubbleStyle = genBubbleStyle("#0badfb");
 const fatalErrBubbleStyle = genBubbleStyle("#db3631");
@@ -41,12 +41,14 @@ class GenericLogger {
 	}
 }
 
-class AeroLogger extends GenericLogger {
-	options: {
-		htmlTemplatingCallback?: htmlTemplatingCallback;
-	};
+interface LoggerOptions {
+	htmlTemplatingCallback?: htmlTemplatingCallbackType;
+}
 
-	constructor(options?) {
+class AeroLogger extends GenericLogger {
+	options: LoggerOptions;
+
+	constructor(options?: LoggerOptions) {
 		super();
 		if (options) this.options = options;
 	}
@@ -74,56 +76,25 @@ class AeroLogger extends GenericLogger {
 	}
 }
 
-enum AeroSandboxLoggerTypes {
-	ApiInterceptor,
-}
-
 // TODO: Support the seconary bubbling
 class AeroSandboxLogger extends GenericLogger {
-	options: {
-		htmlTemplatingCallback?: htmlTemplatingCallback;
-	};
+	options: LoggerOptions;
 
-	constructor(options) {
+	constructor(options: LoggerOptions) {
 		super();
-		options = options;
+		this.options = options;
 	}
 
-	log(
-		msg: string,
-		options?: {
-			type: AeroSandboxLoggerTypes;
-			name: string;
-		}
-	): void {
+	log(msg: string): void {
 		super.log("aero sandbox", msg);
 	}
-	warn(
-		msg: string,
-		options?: {
-			type: AeroSandboxLoggerTypes;
-			name: string;
-		}
-	): void {
+	warn(msg: string): void {
 		super.warn("aero sandbox", msg);
 	}
-	error(
-		msg: string,
-		options?: {
-			type: AeroSandboxLoggerTypes;
-			name: string;
-		}
-	): void {
+	error(msg: string): void {
 		super.error("aero sandbox", msg);
 	}
-	fatalErr(
-		msg: string,
-		branding?: string,
-		options?: {
-			type: AeroSandboxLoggerTypes;
-			name: string;
-		}
-	): void {
+	fatalErr(msg: string): void {
 		super.fatalErr("aero sandbox", msg);
 
 		if (this.options.htmlTemplatingCallback !== undefined)

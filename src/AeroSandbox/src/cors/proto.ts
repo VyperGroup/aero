@@ -1,4 +1,4 @@
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { proxyLocation } from "$shared/proxyLocation";
 
 // Custom protocols
 export default {
@@ -14,5 +14,5 @@ export default {
 		split.splice(1, 0, `${proxyLocation().origin}+`);
 
 		return split.join("");
-	},
+	}
 };

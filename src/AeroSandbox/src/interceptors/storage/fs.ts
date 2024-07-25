@@ -6,7 +6,7 @@ FileSystemDirectoryHandle.prototype.getDirectory = new Proxy(
 		apply: () => {
 			return Reflect.apply(...arguments);
 			// TODO: Implement this stub
-		},
+		}
 	}
 );
 FileSystemDirectoryHandle.prototype.setDirectory = new Proxy(
@@ -15,6 +15,6 @@ FileSystemDirectoryHandle.prototype.setDirectory = new Proxy(
 		apply: () => {
 			return Reflect.apply(...arguments);
 			// TODO: Implement this stub
-		},
+		}
 	}
 );

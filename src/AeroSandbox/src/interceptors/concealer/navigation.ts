@@ -3,89 +3,86 @@
 import config from "$aero/config";
 const { flags } = config;
 
-import afterPrefix from "$src/shared";
+import afterPrefix from "$shared";
 
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { proxyLocation } from "$shared/proxyLocation";
 
 import proxyMessage from "$aero/src/shared/proxyMessage";
-import { APIInterceptor, SupportEnum } from "$aero/types";
+import { APIInterceptor, SupportEnum } from "$types/index.d";
 
 export default [
-	// Entries
-	// FIXME:
-	{
-		proxifiedObj: new Proxy(navigation.entries, {
-			apply(target, that, args) {
-				const entries: any[] = Reflect.apply(target, that, args);
+  // Entries
+  // FIXME:
+  {
+    proxifiedObj: Proxy.revocable(navigation.entries, {
+      apply(target, that, args) {
+        const entries: any[] = Reflect.apply(target, that, args);
 
-				// We may delete some entries, so we will update the index with the new index
-				let i = 0;
+        // We may delete some entries, so we will update the index with the new index
+        let i = 0;
 
-				const newEntries: any[] = [];
+        const newEntries: any[] = [];
 
-				for (let entry of entries) {
-					const newEntry = entry;
+        for (let entry of entries) {
+          const newEntry = entry;
 
-					// The original property is a getter property, as the value will be changed dynamically
-					Object.defineProperty(newEntry, "url", {
-						get: () => entry.url.replace(afterPrefix, ""),
-					});
+          // The original property is a getter property, as the value will be changed dynamically
+          Object.defineProperty(newEntry, "url", {
+            get: () => entry.url.replace(afterPrefix, ""),
+          });
 
-					try {
-						if (
-							new URL(newEntry.url).origin !==
-							proxyLocation().origin
-						)
-							// The site is not supposed to see this entry
-							continue;
-					} catch {
-						continue;
-					}
+          try {
+            if (new URL(newEntry.url).origin !== proxyLocation().origin)
+              // The site is not supposed to see this entry
+              continue;
+          } catch {
+            continue;
+          }
 
-					Object.defineProperty(newEntry, "index", {
-						value: i++,
-					});
+          Object.defineProperty(newEntry, "index", {
+            value: i++,
+          });
 
-					newEntries.push(newEntry);
-				}
+          newEntries.push(newEntry);
+        }
 
-				return newEntries;
-			},
-		}),
-		globalProp: "navigation.entries",
-		supports: SupportEnum.draft | SupportEnum.shippingChromium,
-	},
-	{
-		proxifiedObj: () => proxyLocation().href,
-		globalProp: "navigation.transition.from",
-		supports: SupportEnum.draft | SupportEnum.shippingChromium,
-	},
-	{
-		proxifiedObj: new Proxy(navigation.addEventListener, {
-			apply(target, that, args) {
-				const [messageType, listener] = args;
+        return newEntries;
+      },
+    }),
+    globalProp: "navigation.entries",
+    supports: SupportEnum.draft | SupportEnum.shippingChromium,
+  },
+  {
+    proxifiedObj: () => proxyLocation().href,
+    globalProp: "navigation.transition.from",
+    supports: SupportEnum.draft | SupportEnum.shippingChromium,
+  },
+  {
+    proxifiedObj: Proxy.revocable(navigation.addEventListener, {
+      apply(target, that, args) {
+        const [messageType, listener] = args;
 
-				if (messageType === "currententrychange")
-					args[1] = (event: NavigationCurrentEntryChangeEvent) => {
-						if ("url" in event.from)
-							Object.defineProperty(event.from, "url", {
-								get: () => afterPrefix(event.from.url),
-								configurable: false,
-							});
+        if (messageType === "currententrychange")
+          args[1] = (event: NavigationCurrentEntryChangeEvent) => {
+            if ("url" in event.from)
+              Object.defineProperty(event.from, "url", {
+                get: () => afterPrefix(event.from.url),
+                configurable: false,
+              });
 
-						event.from.addEventListener = new Proxy(
-							event.from.addEventListener,
-							// @ts-ignore
-							i2.proxifiedObj
-						);
+            event.from.addEventListener = new Proxy(
+              event.from.addEventListener,
+              // @ts-ignore
+              i2.proxifiedObj
+            );
 
-						listener(event);
-					};
+            listener(event);
+          };
 
-				return Reflect.apply(target, that, args);
-			},
-		}),
-		globalProp: "navigation.addEventListener",
-		supports: SupportEnum.draft | SupportEnum.shippingChromium,
-	},
+        return Reflect.apply(target, that, args);
+      },
+    }),
+    globalProp: "navigation.addEventListener",
+    supports: SupportEnum.draft | SupportEnum.shippingChromium,
+  },
 ] as APIInterceptor[];

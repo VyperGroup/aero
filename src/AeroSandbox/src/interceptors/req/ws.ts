@@ -1,13 +1,28 @@
-import { backends, flags } from "$aero_config";
+import { AltProtocolEnum, APIInterceptor } from "$types/index.d";
 
-import { BareClient } from "@tomphttp/bare-client";
+import { BareClient } from "@mercuryworkshop/bare-mux";
 
-import rewriteSrc from "$aero/shared/src";
-import { proxyLocation } from "$aero_browser/misc/proxyLocation";
+import rewriteSrc from "$shared/src";
 
-declare var WebTransport;
+// TODO: (Percs) This file is incomplete
+let client = new BareClient();
 
-if (flags.ws) {
-	// TODO: Actually implement properly
-	WebSocket = $aero.bc.createWebsocket;
-}
+export default [
+  {
+    proxifiedObj: Proxy.revocable(WebSocket, {
+      construct(target, args) {
+        return client.createWebSocket(
+          args[0],
+          args[1],
+          target,
+          {
+            "User-Agent": navigator.userAgent,
+          },
+          ArrayBuffer.prototype
+        );
+      },
+    }),
+    forAltProtocol: AltProtocolEnum.webSockets,
+    globalProp: "Websocket",
+  },
+] as APIInterceptor[];

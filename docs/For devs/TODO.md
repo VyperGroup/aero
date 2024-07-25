@@ -35,6 +35,7 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Docs
 
+- [ ] Setup the build scripts work with IDEs (Zed and VSCode)
 - [x] Convert all of the TODO.xit files to MD
 - [ ] Properly capitalize the headings in the docs
 - [ ] Migrate all of the proposals to conform with my new standards

@@ -10,7 +10,7 @@ For testing purposes, here is a [demo of Payment Handlers](https://googlechrome.
 
 #### Through Emulation
 
-Payment Handler **Emulation** requires SW emulation or Nested SW support with custom poly-filled APIs. A Payment Handler creates a new browsing context with an SW mandated to facilitate payment events. This is a unique use case that the standard SW API does not support. Be careful; these SWs don't have the same handlers as normal ones. They are made for different purposes. The best option would be to fetch the source of the Payment Handler site, create a custom iframe for it, put in the source of that site, and inject your sandboxing library through a srcdoc. Make a config option on your sandboxing class to treat the SWs as Payment Handler SWs.
+Payment Handler **Emulation** requires SW emulation or Nested SW support with custom polyfilled APIs. A Payment Handler creates a new browsing context with an SW mandated to facilitate payment events. This is a unique use case that the standard SW API does not support. Be careful; these SWs don't have the same handlers as normal ones. They are made for different purposes. The best option would be to fetch the source of the Payment Handler site, create a custom iframe for it, put in the source of that site, and inject your sandboxing library through a srcdoc. Make a config option on your sandboxing class to treat the SWs as Payment Handler SWs.
 
 #### Through Enhanced Network Proxying
 

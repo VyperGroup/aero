@@ -10,6 +10,6 @@ if (
 		document.currentScript._integrity,
 		document.currentScript.innerHTML
 	);
-	`,
+	`
 	};
 };

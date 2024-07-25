@@ -1,5 +1,5 @@
-import { APIInterceptor } from "$aero/types";
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { APIInterceptor } from "$types/index.d";
+import { proxyLocation } from "$shared/proxyLocation";
 
 /**
  * Checks if a segment is a valid directory name.
@@ -8,7 +8,7 @@ import { proxyLocation } from "$src/shared/proxyLocation";
  * @returns {boolean} Whether the segment is a valid directory name.
  */
 function isValidDirectoryName(segment: string): boolean {
-	return segment.match(/^[a-zA-Z0-9\-_]+$/) !== null;
+  return segment.match(/^[a-zA-Z0-9\-_]+$/) !== null;
 }
 
 /**
@@ -23,47 +23,47 @@ function isValidDirectoryName(segment: string): boolean {
  * console.log(modifiedPath); // Outputs: "../dir1/dir2"
  */
 function removeOneLevel(path: string): string {
-	// Split the path into segments
-	let segments = path.split("/");
+  // Split the path into segments
+  let segments = path.split("/");
 
-	// Iterate over the segments in reverse order
-	for (let i = segments.length - 1; i >= 0; i--) {
-		// If the segment is ".." and the next segment is not a valid directory name
-		if (
-			segments[i] === ".." &&
-			i < segments.length - 1 &&
-			!isValidDirectoryName(segments[i + 1])
-		) {
-			// Remove this segment
-			segments.splice(i, 1);
-			break;
-		}
-	}
+  // Iterate over the segments in reverse order
+  for (let i = segments.length - 1; i >= 0; i--) {
+    // If the segment is ".." and the next segment is not a valid directory name
+    if (
+      segments[i] === ".." &&
+      i < segments.length - 1 &&
+      !isValidDirectoryName(segments[i + 1])
+    ) {
+      // Remove this segment
+      segments.splice(i, 1);
+      break;
+    }
+  }
 
-	// Join the segments back together into a path
-	let modifiedPath = segments.join("/");
+  // Join the segments back together into a path
+  let modifiedPath = segments.join("/");
 
-	return modifiedPath;
+  return modifiedPath;
 }
 
 export default {
-	// @ts-ignore
-	proxifiedObj: new Proxy(import.meta.resolve, {
-		apply(target, that, args) {
-			let ret = Reflect.apply(target, that, args);
+  // @ts-ignore
+  proxifiedObj: Proxy.revocable(import.meta.resolve, {
+    apply(target, that, args) {
+      let ret = Reflect.apply(target, that, args);
 
-			// Prevent the paths from going behind the proxy origin
-			let curr = ret;
-			while (
-				!new URL(curr, proxyLocation().href).href.startsWith(
-					proxyLocation().href
-				)
-			) {
-				curr = removeOneLevel(curr);
-			}
-			return curr;
-		},
-	}),
-	// TODO: Define on $aero
-	globalProp: "<proxyNamespace>.moduleScripts.resolve",
+      // Prevent the paths from going behind the proxy origin
+      let curr = ret;
+      while (
+        !new URL(curr, proxyLocation().href).href.startsWith(
+          proxyLocation().href
+        )
+      ) {
+        curr = removeOneLevel(curr);
+      }
+      return curr;
+    },
+  }),
+  // TODO: Define on $aero
+  globalProp: "<proxyNamespace>.moduleScripts.resolve",
 } as APIInterceptor;

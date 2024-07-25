@@ -1,4 +1,12 @@
-type getStoreHandler = (store: IDBObjectStore) => 
+import type { AeroLogger } from "$sandbox/shared/Loggers";
+declare const self: WorkerGlobalScope &
+	typeof globalThis & {
+		logger: AeroLogger;
+	};
+
+type getStoreHandler = (store: IDBObjectStore) => {
+	// TODO: Implement;
+};
 
 // A safe astraction to get the actual config store that aero needs
 export default (dbName: string, func: Function) => {
@@ -14,13 +22,13 @@ export default (dbName: string, func: Function) => {
 			const store = transaction.objectStore("config");
 
 			if (store instanceof IDBOpenDBRequest) func(store);
-			else $aero.error(`Unable to get store for config`);
+			else $aero.logger.error(`Unable to get store for config`);
 		};
 	};
 
 	req.onerror = err => {
-		$aero.error(
-			`Error initializing the db for dynamic config updates\n${err}`
+		self.logger.error(
+			`Error initializing the db for dynamic config updates: ${err}`
 		);
 	};
 };

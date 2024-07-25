@@ -1,23 +1,21 @@
-// Dynamic Config
-import getConfig from "./embeds/dynamic/getConfig";
+import { Sec } from "$aero/types/types";
+
 // Standard Config
-import config from "$aero_config";
-const { prefix, aeroPrefix, flags, debug } = config;
+import config from "$src/config";
+const { prefix, aeroPrefix } = config;
 
 import { BareClient } from "@mercuryworkshop/bare-mux";
 
 // Utility
-import matchWildcard from "./util/match";
-import afterPrefix from "$aero/shared/afterPrefix";
+import afterPrefix from "$sandbox/shared/afterPrefix";
 import getRequestUrl from "./util/getRequestUrl";
 import redir from "./util/redir";
-import headersToObject from "this/util/headersToObject";
-import clear from "./cors/clear";
-import isHTML from "$aero/shared/isHTML";
+import clear from "$cors/clear";
+import isHTML from "$sandbox/shared/isHTML";
 import getPassthroughParam from "./util/getPassthroughParam";
 import escapeJS from "./util/escapeJS";
 // Cosmetic
-import { AeroLogger } from "$aero_sandbox/src/shared/genBubbleStyle.ts";
+import { AeroLogger } from "$sandbox/shared/Loggers";
 
 // Security
 // CORS Emulation
@@ -33,16 +31,38 @@ import rewriteReqHeaders from "$rewriters/reqHeaders";
 import rewriteRespHeaders from "$rewriters/respHeaders";
 import rewriteCacheManifest from "$rewriters/cacheManifest";
 import rewriteManifest from "$rewriters/webAppManifest";
-import rewriteScript from "$aero/shared/script";
 
-import init from "./handlers/init";
-init();
+// TODO: Use JSRewriter class instead of rewriteScript
+import JSRewriter from "$sandbox/sandboxers/JS/JSRewriter";
 
-// Not defined by TS. I might have to install the service worker types.
-declare var clients;
+// TODO: Import the aero JS parser config types from aerosandbox into aero's sw typesa
+const jsRewriter = new JSRewriter(config.aeroSandbox.jsParserConfig);
+
+// TODO: import init from "./handlers/init";
+
+// Webpack Feature Flags
+var FEATURE_CORS_EMULATION: boolean,
+	FEATURE_INTEGRITY_EMULATION: boolean,
+	FEATURE_ENC_BODY_EMULATION: boolean,
+	FEATURE_CACHES_EMULATION: boolean,
+	FEATURE_CLEAR_EMULATION: boolean,
+	REWRITER_HTML: boolean,
+	REWRITER_XSLT: boolean,
+	REWRITER_JS: boolean,
+	REWRITER_CACHE_MANIFEST: boolean,
+	SUPPORT_LEGACY: boolean,
+	SUPPORT_WORKER: boolean,
+	DEBUG: boolean;
+
+type proxyOrigin = string;
+declare var self: WorkerGlobalScope &
+	typeof globalThis & {
+		logger: AeroLogger;
+		bc: BareClient;
+		nestedSWs: Map<proxyOrigin, NestedSW[]>;
+	};
 
 self.logger = new AeroLogger();
-
 self.bc = new BareClient();
 
 /**
@@ -58,21 +78,18 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// TODO: Dynamically switch backends
 	const { backends /*, wsBackends, wrtcBackends*/ } = getConfig();
 
-	// Construct proxy fetch instance
-	// TODO: Try each backend until there is a success
-
 	const reqUrl = new URL(req.url);
 
 	const params = reqUrl.searchParams;
 
 	// Don't rewrite request for aero's bundles
 	// TODO: Instead of this read the paths from the config instead of confining and marking aero code from the prefix. I will soon have the bundles be pointed out in the config just like other interception proxies do.
-	if (reqUrl.pathname.startsWith(aeroPrefix))
+	if (!DEBUG && reqUrl.pathname.startsWith(aeroPrefix))
 		// Cached to lower the paint time
 		return await fetch(req.url, {
 			headers: {
-				"cache-control": "private",
-			},
+				"cache-control": "private"
+			}
 		});
 
 	let isMod;
@@ -97,7 +114,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	if (!clientUrl) {
 		// TODO: Make a custom fatalErr for SWs that doesn't modify the DOM but returns the error simply instead of overwriting the site with an error site
-		return logger.fatalErr("No clientUrl found tragic error fr.");
+		return self.logger.fatalErr(
+			"No clientUrl found! This means your windows are not accessible to us."
+		);
 	}
 
 	if (self.nestedSWs.size !== 0) {
@@ -106,8 +125,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	}
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
-	const isHomepage =
-		req.mode === "navigate" && req.destination === "document";
+	const isNavigate = req.mode === "navigate" && req.destination === "document";
 
 	// This is used for determining the request url
 	const isiFrame = req.destination === "iframe";
@@ -119,28 +137,27 @@ async function handle(event: FetchEvent): Promise<Response> {
 			location.origin,
 			clientUrl,
 			reqUrl.pathname + reqUrl.search,
-			isHomepage,
+			isNavigate,
 			isiFrame
 		)
 	);
 
 	// Ensure the request isn't blocked by CORS
-	if (flags.corsEmulation && (await block(proxyUrl.href)))
+	if (FEATURE_CORS_EMULATION && (await block(proxyUrl.href)))
 		return new Response("Blocked by CORS", { status: 500 });
 
 	// Log request
-	if (debug.url)
-		console.debug(
-			req.destination == ""
-				? `${req.method} ${proxyUrl.href}`
-				: `${req.method} ${proxyUrl.href} (${req.destination})`
-		);
+	self.logger.debug(
+		req.destination == ""
+			? `${req.method} ${proxyUrl.href}`
+			: `${req.method} ${proxyUrl.href} (${req.destination})`
+	);
 
 	// Rewrite the request headers
 	const reqHeaders = req.headers;
 
-	let sec: AeroTypes.Sec;
-	if (flags.corsEmulation) {
+	let sec: Sec;
+	if (FEATURE_CACHES_EMULATION) {
 		if (proxyUrl.protocol === "http:") {
 			const hstsCacheEmulator = new HSTSCacheEmulation(
 				reqHeaders.get("strict-transport-security"),
@@ -153,60 +170,66 @@ async function handle(event: FetchEvent): Promise<Response> {
 				return redir(redirUrl.href);
 			}
 		}
-
-		sec = {
-			clear: reqHeaders.get("clear-site-data")
-				? JSON.parse(`[${reqHeaders.get("clear-site-data")}]`)
-				: undefined,
-			// TODO: Emulate
-			timing: reqHeaders.get("timing-allow-origin"),
-			permsFrame: frameSec?.["perms"],
-			perms: reqHeaders.get("permissions-policy"),
-			// These will beparsed later in frame.js, if needed
-			frame: reqHeaders.get("x-frame-options"),
-			// This is only referenced for getting the frame frameancesors for $aero.frame
-			csp: reqHeaders.get("content-security-policy"),
-		};
-
-		if ("clear" in sec) {
-			await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
-		}
 	}
-	const cache = new CacheManager(reqHeaders);
 
-	if (cache.mode === "only-if-cached")
-		// TODO: Emulate network error for your given browser. I would ideally do this through a compile-time macro that fetches the src code of the browsers.
-		return new Response("Can't find a cached response", {
-			status: 500,
-		});
+	if (FEATURE_CORS_EMULATION) {
+		if (reqHeaders.has("timing-allow-origin"))
+			this.timing = reqHeaders.get("timing-allow-origin");
+		if (reqHeaders.has("permissions-policy"))
+			this.perms = reqHeaders.get("permissions-policy");
+		if (reqHeaders.has("x-frame-options"))
+			this.frame = reqHeaders.get("x-frame-options");
+		if (reqHeaders.has("content-security-policy"))
+			this.csp = reqHeaders.get("content-security-policy");
+	}
 
-	// TODO: Import bare type
+	if (FEATURE_CLEAR_EMULATION && reqHeaders.get("clear-site-data")) {
+		this.clear = JSON.parse(`[${reqHeaders.get("clear-site-data")}]`);
+		if ("clear" in sec)
+			await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
+	} else this.clear = false;
+
+	let cache: CacheManager;
+	if (FEATURE_CACHES_EMULATION) {
+		cache = new CacheManager(reqHeaders);
+
+		if (cache.mode === "only-if-cached")
+			// TODO: Emulate network error for your given browser. I would ideally do this through a compile-time macro that fetches the src code of the browsers.
+			return new Response("Can't find a cached response", {
+				status: 500
+			});
+	}
+
+	rewriteReqHeaders(reqHeaders, clientUrl);
+
 	let opts: RequestInit = {
 		method: req.method,
-		headers: rewriteReqHeaders(reqHeaders, clientUrl),
+		headers: reqHeaders
 	};
 
 	// A request body should not be created under these conditions
 	if (!["GET", "HEAD"].includes(req.method)) opts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await bc.fetch(new URL(req.url).href, {
+	const resp = await self.bc.fetch(new URL(req.url).href, {
 		method: req.method,
-		headers: req.headers,
+		headers: req.headers
 	});
 
 	if (resp instanceof Error)
 		return new Response(resp.message, {
-			status: 500,
+			status: 500
 		});
 
-	const cacheAge = cache.getAge(
-		reqHeaders["cache-control"],
-		reqHeaders["expires"]
-	);
+	if (FEATURE_CACHES_EMULATION) {
+		const cacheAge = cache.getAge(
+			reqHeaders["cache-control"],
+			reqHeaders["expires"]
+		);
 
-	const cachedResp = await cache.get(reqUrl, cacheAge);
-	if (cachedResp) return cachedResp;
+		const cachedResp = await cache.get(reqUrl, cacheAge);
+		if (cachedResp) return cachedResp;
+	}
 
 	// Rewrite the response headers
 	const rewroteRespHeaders = rewriteRespHeaders(resp.headers, clientUrl);
@@ -214,7 +237,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Overwrite the response headers (they are immutable)
 	Object.defineProperty(resp, "headers", {
 		value: rewroteRespHeaders,
-		configurable: false,
+		configurable: false
 	});
 
 	const type = resp.headers.get("content-type");
@@ -230,7 +253,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	let body;
 	// Rewrite the body
 	// TODO: Pack these injected scripts with Webpack
-	if (isNavigate && html) {
+	if (REWRITER_HTML && isNavigate && html) {
 		body = await resp.text();
 
 		// TODO: Eliminate _IMPORT_ recursion somehow
@@ -290,7 +313,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 			document.write(err)
 		}
 
-		// TODO: Pack in $aero.bc
 		$aero.bc = new BareClient(backends[0]);
 
 		// Protect from overwriting, in case $aero scoping failed
@@ -302,6 +324,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 			body = base.replace(/_IMPORT_/, escapeJS(base)) + body;
 		}
 	} else if (
+		REWRITER_XSLT &&
 		isNavigate &&
 		(type.startsWith("text/xml") || type.startsWith("application/xml"))
 	) {
@@ -316,33 +339,35 @@ async function handle(event: FetchEvent): Promise<Response> {
 <?xml-stylesheet type="text/xsl" href="/aero/browser/xml/intercept.xsl"?>
 ${body}
 		`;
-	} else if (isScript) {
+		// @ts-ignore
+	} else if (REWRITER_JS && isScript) {
 		const script = await resp.text();
 
-		if (flags.corsEmulation) {
-			body = rewriteScript(
-				script,
-				isMod,
-				/* js */ `
-{
+		if (FEATURE_INTEGRITY_EMULATION) {
+			body = jsRewriter.wrapScript(script, {
+				isModule: isMod,
+				insertCode: /* js */ `
+  {
 	const bak = decodeURIComponent(escape(atob(\`${escapeJS(script)}\`)));
 	${integral(isMod)}
-}
-`
-			);
-		} else body = rewriteScript(script, isMod);
-	} else if (req.destination === "manifest") {
+  }
+  `
+			});
+			// @ts-ignore
+		} else
+			body = jsRewriter.wrapScript(script, {
+				isModule: isMod
+			});
+	} else if (REWRITER_CACHE_MANIFEST && req.destination === "manifest") {
 		let body = await resp.text();
 
 		// Safari exclusive
-		if (flags.legacy && type.includes("text/cache-manifest")) {
+		if (SUPPORT_LEGACY && type.includes("text/cache-manifest")) {
 			const isFirefox = reqHeaders["user-agent"].includes("Firefox");
 
 			body = rewriteCacheManifest(body, isFirefox);
 		} else body = rewriteManifest(body, proxyUrl);
-	}
-	// NeHSTSCacheEmulation
-	else if (flags.workers && req.destination === "worker")
+	} else if (SUPPORT_WORKER && req.destination === "worker")
 		body = isModWorker
 			? /* js */ `
 import { proxyLocation } from "${aeroPrefix}worker/worker";
@@ -353,7 +378,7 @@ importScripts("${aeroPrefix}worker/worker.js");
 
 ${body}
 		`;
-	else if (flags.workers && req.destination === "sharedworker")
+	else if (SUPPORT_WORKER && req.destination === "sharedworker")
 		body = isModWorker
 			? /* js */ `
 import { proxyLocation } from "${aeroPrefix}worker/worker";
@@ -368,27 +393,27 @@ ${body}
 	// No rewrites are needed; proceed as normal
 	else body = resp.body;
 
-	/*
-	FIXME: Fix whatever this is. I forgot where I was going with this.
-	resp.headers["x-aero-size-transfer"] = null;
-	resp.headers["x-aero-size-encbody"] = null;
+	if (FEATURE_ENC_BODY_EMULATION) {
+		// FIXME: Fix whatever this is. I forgot where I was going with this.
+		resp.headers["x-aero-size-transfer"] = null;
+		resp.headers["x-aero-size-encbody"] = null;
 
-	// TODO: x-aero-size-transfer
-	if (typeof body === "string") {
-		resp.headers["x-aero-size-body"] = new TextEncoder().encode(
-			body
-		).length;
-		// TODO: Emulate x-aero-size-encbody
-	} else if (body instanceof ArrayBuffer) {
-		resp.headers["x-aero-size-body"] = body.byteLength;
-		// TODO: Emulate x-aero-size-encbody
+		// TODO: x-aero-size-transfer
+		if (typeof body === "string") {
+			resp.headers["x-aero-size-body"] = new TextEncoder().encode(body).length;
+			// TODO: Emulate x-aero-size-encbody
+		} else if (body instanceof ArrayBuffer) {
+			resp.headers["x-aero-size-body"] = body.byteLength;
+			// TODO: Emulate x-aero-size-encbody
+		}
 	}
-	*/
 
 	resp.body = resp.status === 204 ? null : body;
 
-	// Cache the response
-	cache.set(reqUrl.href, resp, resp.headers.get("vary"));
+	if (FEATURE_CACHES_EMULATION) {
+		// Cache the response
+		cache.set(reqUrl.href, resp, resp.headers.get("vary"));
+	}
 
 	// Return the response
 	return resp;

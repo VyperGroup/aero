@@ -1,7 +1,7 @@
-import config from "$aero_config";
+import config from "$src/config";
 const { prefix } = config;
 
-import { rewriteSetCookie } from "$aero/shared/cookie";
+import { rewriteSetCookie } from "$sandbox/shared/cookie";
 import { rewriteAuthServer } from "./auth";
 
 const ignoredHeaders = [
@@ -18,7 +18,7 @@ const ignoredHeaders = [
 	// TODO: Emulate this
 	"strict-transport-security",
 	"x-content-type-options",
-	"x-frame-options",
+	"x-frame-options"
 ];
 
 function rewriteLocation(url: string): string {

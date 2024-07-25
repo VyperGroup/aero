@@ -20,6 +20,6 @@ export default () => {
 		// Exit script
 		if (blocked) throw new Error("Script blocked");
 	}
-	`,
+	`
 	};
 };

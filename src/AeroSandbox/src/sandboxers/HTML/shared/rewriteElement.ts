@@ -10,7 +10,7 @@ import rewriteScript from "$sandbox/JS/script";
 import checkCsp from "./csp";
 import Cloner from "./Cloner";
 
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { proxyLocation } from "$shared/proxyLocation";
 
 import block from "$cors/policy";
 
@@ -60,7 +60,7 @@ function set(el: HTMLElement, attr: string, val = "", backup = true): void {
 			// @ts-ignore
 			get: Object.getOwnPropertyDescriptors(elBak).get,
 			// @ts-ignore
-			set: Object.getOwnPropertyDescriptors(el).set,
+			set: Object.getOwnPropertyDescriptors(el).set
 		});
 	}
 }

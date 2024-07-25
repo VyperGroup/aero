@@ -10,6 +10,10 @@ These folders contain the code for aero's API interception
   In this document, I describe what type of interceptors
 - **Request URL Proxifier** - These are API interceptors whose jobs are to rewrite the source/content URLs to fit under the proxy in the case that there is no proxy SW or the Clients API is unavailable for whatever reason. If you have a regular SW proxy I recommend disabling these in AeroSandbox.
 
+### Origin-related
+
+TODO: this is a stub...
+
 ## Directory listing
 
 - concealers/ - The API interceptors whose purpose is to hide the origin.

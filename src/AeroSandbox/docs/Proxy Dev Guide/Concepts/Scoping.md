@@ -47,7 +47,7 @@ The essence of the [polyfill](https://github.com/ambit-tsai/shadowrealm-api) wor
 // proxyRealmLocation.ts (aero.sandbox.proxyRealm.js)
 
 ```ts
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { proxyLocation } from "$shared/proxyLocation";
 
 fakeLocation = proxyLocation();
 

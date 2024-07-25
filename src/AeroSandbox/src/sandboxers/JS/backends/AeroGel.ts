@@ -1,10 +1,10 @@
 import {
 	AeroGelConfig,
 	aerogelParser,
-	keywordReplacementType,
-} from "$aero/types";
+	keywordReplacementType
+} from "../../../../types/index";
 
-import esniff from "esniff";
+//import esniff from "esniff";
 
 // Webpack Feature Flags
 var INCLUDE_ESNIFF: boolean;
@@ -41,15 +41,18 @@ export default class AeroGel {
 	}
 	/** This method is specifically for `var keyword rewriting` */
 	rewriteScript(script: string): string {
+		/*
 		if (INCLUDE_ESNIFF) {
 			let letIndicies = [];
 			let constIndicies = [];
-			esniff(script, emitter => {
-				emitter.on("trigger:let", accessor => {
+			// @ts-ignore
+			esniff(script, (emitter: any) => {
+				// @ts-ignore
+				emitter.on("trigger:let", (accessor: any) => {
 					if (accessor.scopeDepth === 0)
 						letIndicies.push(accessor.index);
 				});
-				emitter.on("trigger:const", accessor => {
+				emitter.on("trigger:const", (accessor: any) => {
 					if (accessor.scopeDepth === 0)
 						constIndicies.push(accessor.index);
 				});
@@ -69,6 +72,7 @@ export default class AeroGel {
 			});
 			script = this.replaceKeywords(script, keywordReplacements);
 		}
+		*/
 		return script;
 	}
 	replaceKeywords(
@@ -77,9 +81,10 @@ export default class AeroGel {
 	): string {
 		const charArr = Array.from(str);
 		let totalAddedToIndex = 0;
-		for (const [indexStr, { keywordLen, replacementStr }] of Object.entries(
+		for (const [indexStr, replacementData] of Object.entries(
 			keywordReplacements
 		)) {
+			const { keywordLen, replacementStr } = replacementData;
 			const index = parseInt(indexStr);
 			const replacementArr = Array.from(replacementStr);
 			totalAddedToIndex += replacementArr.length - keywordLen;

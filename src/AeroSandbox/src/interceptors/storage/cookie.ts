@@ -1,16 +1,13 @@
-import config from "$aero/config";
-const { prefix, flags } = config;
-
 import { proxyLocation, upToProxyOrigin } from "$src/interceptors/loc/location";
 
-import { rewriteGetCookie, rewriteSetCookie } from "$src/shared/hared/cookie";
+import { rewriteGetCookie, rewriteSetCookie } from "$shared/hared/cookie";
 
 function getOriginalCookie(cookie) {
 	// Not done
 	return cookie;
 }
 
-if (flags.misc && "cookieStore" in window) {
+if ("cookieStore" in window) {
 	cookieStore.set = new Proxy(cookieStore.set, {
 		apply(target, that, args) {
 			const [cookie] = args;
@@ -21,7 +18,7 @@ if (flags.misc && "cookieStore" in window) {
 			args[0] = cookie;
 
 			return Reflect.apply(target, that, args);
-		},
+		}
 	});
 	/*
 	cookieStore.get = new Proxy(cookieStore.set, {
@@ -52,7 +49,7 @@ if (flags.misc && "cookieStore" in window) {
 				};
 
 			return Reflect.apply(target, that, args);
-		},
+		}
 	});
 }
 
@@ -60,6 +57,6 @@ if (flags.misc && "cookieStore" in window) {
 	let cookieBak = document.cookie;
 	Object.defineProperty(document, "cookie", {
 		get: () => rewriteGetCookie(cookieBak, proxyLocation()),
-		set: value => (cookieBak = rewriteSetCookie(value, proxyLocation())),
+		set: value => (cookieBak = rewriteSetCookie(value, proxyLocation()))
 	});
 }

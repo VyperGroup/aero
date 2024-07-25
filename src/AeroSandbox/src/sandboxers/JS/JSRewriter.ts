@@ -3,11 +3,11 @@ import {
 	RewriteOptions,
 	aerogelParser,
 	astParser,
-	astWalker,
-} from "$aero/types";
+	astWalker
+} from "../../../types/index";
 
-import ASTRewriter from "$sandbox/JS/backends/AST";
-import AeroGel from "$sandbox/JS/backends/AeroGel";
+import ASTRewriter from "./backends/AST";
+import AeroGel from "./backends/AeroGel";
 
 export default class JSRewriter {
 	config: AeroJSParserConfig;
@@ -61,11 +61,11 @@ export default class JSRewriter {
 		// @ts-ignore
 		const astRewriter = new ASTRewriter({
 			parserConfig: {
-				parser: parserOfChoice,
+				parser: parserOfChoice
 			},
 			walkerConfig: {
-				walker: walkerOfChoice,
-			},
+				walker: walkerOfChoice
+			}
 		});
 		return astRewriter.rewriteScript(script, isModule);
 	}
@@ -84,8 +84,8 @@ export default class JSRewriter {
 		// @ts-ignore
 		const aerogelRewriter = new AeroGel({
 			parserConfig: {
-				parser: parserOfChoice,
-			},
+				parser: parserOfChoice
+			}
 		});
 		return aerogelRewriter.jailScript(script, isModule);
 	}

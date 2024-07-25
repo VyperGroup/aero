@@ -6,7 +6,7 @@ import rewriteSrc from "@src/shared/src";
 
 import scope from "$sandbox/JS/scopers/aeroGel";
 
-import { proxyLocation } from "$src/shared/proxyLocation";
+import { proxyLocation } from "$shared/proxyLocation";
 
 /**
  * Extends src rewriting for processed html urls
