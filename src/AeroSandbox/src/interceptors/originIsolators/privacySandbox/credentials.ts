@@ -6,8 +6,8 @@
 
 import { APIInterceptor, ExposedContextsEnum } from "$types/index.d";
 
-import { proxyLocation } from "$aero/src/shared/proxyLocation";
-import afterPrefix from "$aero/src/shared/afterPrefix";
+import { proxyLocation } from "$shared/proxyLocation";
+import { afterPrefix } from "$shared/getProxyUrl";
 import type BareClient from "@mercuryworkshop/bare-mux";
 
 const credentialStore = new WeakMap<PasswordCredential, PasswordCredential>();

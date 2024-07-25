@@ -1,6 +1,6 @@
 import proxy from "$shared/stringProxy";
 
-import afterPrefix from "$shared/afterPrefix";
+import { afterPrefix } from "$shared/getProxyUrl";
 
 import { proxyLocation } from "$shared/proxyLocation";
 

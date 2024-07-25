@@ -2,7 +2,7 @@ import {
   astParser,
   astWalker,
   ASTRewriterConfig,
-} from "../../../../types/index";
+} from "../../../../types/aeroSandbox";
 
 // Parsers
 // import initWasm, { parseSync } from "@oxc-parser/wasm";

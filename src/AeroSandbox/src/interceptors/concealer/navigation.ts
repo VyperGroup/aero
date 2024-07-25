@@ -3,11 +3,11 @@
 import config from "$aero/config";
 const { flags } = config;
 
-import afterPrefix from "$shared";
+import { afterPrefix } from "$shared";
 
 import { proxyLocation } from "$shared/proxyLocation";
 
-import proxyMessage from "$aero/src/shared/proxyMessage";
+import proxyMessage from "$shared/proxyMessage";
 import { APIInterceptor, SupportEnum } from "$types/index.d";
 
 export default [

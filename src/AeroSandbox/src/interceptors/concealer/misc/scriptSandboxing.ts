@@ -6,7 +6,7 @@ import {
 
 import locationProxy from "$shared/proxyLocation";
 
-import type JSRewriter from "$aero/src/sandboxers/JS/JSRewriter";
+import type JSRewriter from "$src/sandboxers/JS/JSRewriter";
 
 // These interceptors conceal `location` and accessing `location` from the window object. The window proxy is injected directly into the `this` that IIFE that AeroSandbox is powered by.
 

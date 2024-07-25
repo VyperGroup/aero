@@ -1,4 +1,4 @@
-import afterPrefix from "$shared/afterPrefix";
+import { afterPrefix } from "$shared/getProxyUrl";
 
 // TODO: Define the undefined APIs on the Window object. This file is very incomplete.
 

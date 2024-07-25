@@ -3,7 +3,7 @@ import { APIInterceptor, SupportEnum } from "$types/index.d";
 import config from "$aero/config";
 const { aeroPrefix } = config;
 
-import afterPrefix from "$shared/afterPrefix";
+import { afterPrefix } from "$shared/getProxyUrl";
 
 /*
 Error emulation
