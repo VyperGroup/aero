@@ -16,10 +16,12 @@ Web Proxies can be used for:
 
 ## How to build aero
 
-`npm i`
-`npm run build`
+```
+npm i
+npm run build
+```
 
-> Make sure to build AeroSandbox separately
+> Ensure to build AeroSandbox separately
 
 ## Related
 
