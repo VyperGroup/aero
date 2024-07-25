@@ -1,12 +1,14 @@
 {
-	"name": "aerosandbox",
-	"version": "1.0.0",
-	"description": "This is a soon to be proxy-independent library (the shared code from aero needs to move into here) that lets you modify. It will work even without SW capabilities. This is where all the non-sw code of aero lays.",
-	"main": "index.js",
-	"directories": {
-		"doc": "docs",
-		"test": "tests"
-	},
+	"name": "aero-sandbox",
+	"version": "0.0.1",
+	"description": "(alpha)",
+	"main": "dist/sandbox.aero.js",
+	"files": [
+		"dist/sandbox.aero.js",
+		"dist/sandbox.aero.js.map",
+		"dist/jsRewriter.aero.js",
+		"dist/jsRewriter.aero.js.map"
+	],
 	"scripts": {
 		"check": "biome check --write",
 		"format": "biome format --write",
@@ -28,9 +30,7 @@
 		"babel-loader": "^9.1.3",
 		"navigation-api-types": "^0.5.1",
 		"seafox": "^1.7.1",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.5.2",
-		"webpack-feature-flags-plugin": "^1.0.1"
+		"typescript": "^5.5.2"
 	},
 	"dependencies": {
 		"@mercuryworkshop/bare-as-module3": "^2.2.2",
@@ -42,11 +42,7 @@
 		"@types/webpack": "^5.28.5",
 		"@types/websql": "^0.0.30",
 		"astring": "^1.8.6",
-		"esniff": "^2.0.1",
-		"extraverse": "^1.0.28",
 		"node-source-walk": "^7.0.0",
-		"traverse-the-universe": "^2.1.2",
-		"ts-loader": "^9.5.1",
-		"yufka": "^4.0.0"
+		"traverse-the-universe": "^2.1.2"
 	}
 }
