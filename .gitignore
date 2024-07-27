@@ -12,6 +12,6 @@ mutable_node_modules
 # aero
 
 # aero dev server
-dev_server/
+dev-server/
 
 # Unreleased features (Not finished) 👀
