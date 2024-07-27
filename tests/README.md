@@ -1,3 +1,0 @@
-# Aero Unit Tests
-
-TODO: Everything in this directory is a stub...
