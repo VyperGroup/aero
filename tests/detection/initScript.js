@@ -7,3 +7,9 @@ const failedTests = [];
 
 // testName: string, testHandler: Generator<string[], void, boolean.[] | () => boolean | async () => Promise<boolean>
 const tests = new Map();
+
+const JSRewriter = Mod.jsRewriter.default;
+
+const testProxyNamespace = "$aero";
+
+window[testProxyNamespace] = {};

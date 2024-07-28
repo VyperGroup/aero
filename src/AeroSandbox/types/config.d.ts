@@ -1,16 +1,10 @@
-import { HTMLRewriterModes } from "./rewriters/html";
+import { htmlRewriterMode } from "./rewriters/html";
+
+import type JSRewriter from "$sandbox/JS/JSRewriter";
 
 export type Config = {
-	rewriters: {
-		html: {
-			/** DOMParser is the default */
-			mode: HTMLRewriterModes;
-			replaceRedirectorsWithNavigationEvents: {
-				/** This will be enabled by default*/
-				enabled: boolean;
-				/** This is to remove functionality. If this is false, it will try to detect if navigation events are in the browser, and if they are it won't intercept the redirectors, but the code would still be in the bundle. */
-				treeShake: boolean;
-			};
-		};
-	};
+	prefix: string;
+	webrtcTurnServers: string[];
+	/** This is the runtime version that the user (through the Dynamic Config system if used) or site hoster can use to disable features in aero. Keep in mind these won't be tree shook out. **/
+	featureFlags;
 };

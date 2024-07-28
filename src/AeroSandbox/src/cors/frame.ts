@@ -1,6 +1,3 @@
-import config from "$aero/config";
-const { flags } = config;
-
 import { proxyLocation } from "$shared/proxyLocation";
 
 // Frame checks

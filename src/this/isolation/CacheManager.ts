@@ -1,6 +1,3 @@
-import config from "$src/config";
-const { cacheKey } = config;
-
 import Cache from "./Cache";
 
 export default class extends Cache {
@@ -165,7 +162,7 @@ export default class extends Cache {
 	}
 
 	async #getCache(): Promise<globalThis.Cache> {
-		return await caches.open(cacheKey);
+		return await caches.open(self.config.cacheKey);
 	}
 
 	// Convert expiry date to seconds

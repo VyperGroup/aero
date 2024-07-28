@@ -21,12 +21,12 @@ export default class JSRewriter {
 		if (rewriteOptions.isModule) {
 			if (this.config.modeModule === "ast")
 				return this.astRewrite(script, rewriteOptions.isModule);
-			else if (this.config.modeModule === "aerogel")
+			if (this.config.modeModule === "aerogel")
 				return this.aerogelRewrite(script, rewriteOptions.isModule);
 		} else {
 			if (this.config.modeDefault === "ast")
 				return this.astRewrite(script, rewriteOptions.isModule);
-			else if (this.config.modeDefault === "aerogel")
+			if (this.config.modeDefault === "aerogel")
 				return this.aerogelRewrite(script, rewriteOptions.isModule);
 		}
 		return script;
@@ -93,7 +93,7 @@ export default class JSRewriter {
 	wrapScript(script: string, rewriteOptions: RewriteOptions): string {
 		const lines = this.rewriteScript(script, rewriteOptions).split("\n");
 
-		let [first] = lines;
+		const [first] = lines;
 
 		const _meta = rewriteOptions.isModule
 			? `${this.config.proxyNamespace}.moduleScripts.resolve`

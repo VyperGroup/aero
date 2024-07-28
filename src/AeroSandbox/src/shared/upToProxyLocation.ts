@@ -1,5 +1,5 @@
-import prefix from "$aero/config";
+import sharedConfig from "./sharedConfig";
 
-import { proxyLocation } from "sandbox/src/proxyLocation";
+import { proxyLocation } from "./proxyLocation";
 
-export default () => prefix + proxyLocation().origin;
+export default () => sharedConfig("prefix") + proxyLocation().origin;

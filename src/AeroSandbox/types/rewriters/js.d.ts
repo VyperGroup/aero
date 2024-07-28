@@ -19,7 +19,8 @@ export type keywordReplacementType = {
 	};
 };
 export interface GenericJSParserConfig {
-	proxyNamespace: string;
+	/* Use null only if you don't have a proxy namespace you want to conceal */
+	proxyNamespace: string | null;
 	/** These must be on some sort of global object */
 	objPaths: {
 		proxy: {

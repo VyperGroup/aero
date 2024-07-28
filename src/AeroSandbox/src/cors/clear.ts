@@ -1,4 +1,3 @@
-import { flags } from "$aero/config";
 import { upToProxyOrigin } from "util/upToProxyLocation";
 import { storageNomenclature, storagePrefix } from "$aero_browser/misc/storage";
 
@@ -12,7 +11,7 @@ declare global {
 	}
 }
 
-if (flags.nonstandard) {
+if (/*flags.nonstandard*/ true) {
 	// Emulates the Clear Site Data header
 	navigator.serviceWorker.addEventListener("message", event => {
 		if (event.data === "clearExecutionContext") location.reload();

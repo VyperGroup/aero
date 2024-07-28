@@ -1,12 +1,10 @@
 import { defaultSWProxyFeatures } from "../featureMembers";
 
-import config from "$aero/config";
-
 import AeroSandbox from "../AeroSandboxBuilder";
 
 const buildConfig = {
 	proxyConfig: {
-		...config
+		...self.config
 	},
 	specialInterceptionFeatures: defaultSWProxyFeatures
 };

@@ -1,6 +1,3 @@
-import config from "$src/config";
-const { prefix } = config;
-
 /**
  * Gets the url that will actually be fetched
  * @param - The origin of the site
@@ -19,7 +16,7 @@ function getRequestUrl(
 	isHomepage: boolean,
 	isiFrame: boolean
 ): string {
-	const noPrefix = path.split(prefix)[1];
+	const noPrefix = path.split(self.config.prefix)[1];
 
 	// If it is the first request, there is no must do any relative url checking
 	if (typeof noPrefix === "string" && isHomepage)
@@ -34,7 +31,7 @@ function getRequestUrl(
 		//const proxyPath = proxyUrl?.pathname;
 
 		if (noPrefix) {
-			let retUrl = noPrefix;
+			const retUrl = noPrefix;
 
 			// FIXME: Correct relative urls that don't end with a slash; this is an edge case
 			/*

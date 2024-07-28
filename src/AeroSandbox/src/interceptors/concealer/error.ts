@@ -1,8 +1,5 @@
 import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
-import config from "$aero/config";
-const { aeroPrefix } = config;
-
 import { afterPrefix } from "$shared/getProxyUrl";
 
 /*
@@ -46,7 +43,9 @@ export default {
 					res.stack = res.stack
 						.split("\n")
 						.map(line =>
-							line.includes(location.origin + aeroPrefix)
+							line.includes(
+								location.origin /*+ config.aeroPrefix*/
+							)
 								? ""
 								: line
 						)

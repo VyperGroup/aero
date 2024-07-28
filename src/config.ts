@@ -1,35 +1,43 @@
-import { Config } from "$aero/types/types";
+import { boolFlag } from "$src/featureFlags";
 
-import { AeroJSProxyConfig } from "./AeroSandbox/types/aeroSandbox";
+import { Config } from "$types/config";
 
-// This is horribly out of date do not look at the default config aero sandbox will build one day...
-const config: Config = {
+declare const self: WorkerGlobalScope &
+	typeof globalThis & {
+		config: Config;
+	};
+
+self.config = {
 	prefix: "/go/",
-	aeroPrefix: "/aero",
+	pathToInitialSW: "/sw.js",
+	bundles: {
+		config: "/aero/config.aero.js",
+		sandbox: "/aero/sandbox/sandbox.aero.js"
+	},
 	aeroPathFilter: path =>
-		["aero.config.js", "uv.config.js", "aero.sandbox.ts"].includes(path), // This is probably wrong
-	webrtcTurnServers: ["stun:stun.l.google.com:19302"],
-	urlEncoder: () => {},
+		[
+			...Object.values(self.config.bundles),
+			"/aero/sandbox/config.aero.js"
+		].includes(path),
 	cacheKey: "httpCache",
 	dynamicConfig: {
 		dbName: "aero",
 		id: "update"
 	},
-	aeroJSParserConfig: AeroJSProxyConfig,
-	flags: {
-		// Emulation
-		emulateSecureContext: false,
-		corsEmulation: true,
-		// Aero Sandbox options
-		concealNamespace: true
-	},
-	debugMode: true,
-	debug: {
-		errors: true,
-		url: true,
-		src: true,
-		scoping: true
+	urlEncoder: url => url,
+	urlDecoder: url => url,
+	featureFlags: {
+		FEATURE_CORS_EMULATION: boolFlag(false),
+		FEATURE_INTEGRITY_EMULATION: boolFlag(false),
+		FEATURE_ENC_BODY_EMULATION: boolFlag(false),
+		FEATURE_CACHES_EMULATION: boolFlag(false),
+		FEATURE_CLEAR_EMULATION: boolFlag(false),
+		REWRITER_HTML: boolFlag(true),
+		REWRITER_XSLT: boolFlag(false),
+		REWRITER_JS: boolFlag(true),
+		REWRITER_CACHE_MANIFEST: boolFlag(true),
+		SUPPORT_LEGACY: boolFlag(false),
+		SUPPORT_WORKER: boolFlag(false),
+		DEBUG: boolFlag(true)
 	}
 };
-
-export default config;

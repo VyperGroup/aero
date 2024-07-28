@@ -8,6 +8,7 @@ export interface AeroSandboxConfig {
 	specialInterceptionFeatures?: InterceptionFeaturesEnum;
 	supports: SupportEnum;
 	proxyGlobalContext: "$aero";
+	webpackFeatureConfig: 
 }
 
 // This is the typical proxy config. This is only what is used to format and unformat urls.

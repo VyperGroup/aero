@@ -1,5 +1,5 @@
 {
-	const originalJsTests = document.getElementsById("JS_test");
+	const originalJsTests = document.getElementById("JS_test");
 
 	if (!originalJsTests)
 		throw new Error("The original JS rewrite tests are missing!");

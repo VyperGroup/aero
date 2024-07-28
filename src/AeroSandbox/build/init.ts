@@ -4,8 +4,15 @@ import {
 	proxifiedObjGeneratorContext
 } from "../types";
 
+import { htmlRewriterMode } from "../types/rewriters/html";
+
 import { buildConfig } from "./customBuilds/aero";
 import { buildConfig as buildConfigFrakenUV } from "./customBuilds/frankenUV.inject.ts";
+
+import { config } from "../src/config.ts";
+import { FeatureFlags } from "./featureFlags";
+
+declare const HTML_REWRITER_MODE: htmlRewriterMode;
 
 let proxifiedObjGenCtx: proxifiedObjGeneratorContext = {
 	...buildConfig.specialInterceptionFeatures
@@ -97,3 +104,25 @@ function resolveProxifiedObj(
 	else if (typeof proxifiedObj === "object") proxyObject = proxifiedObj;
 	return proxyObject;
 }
+
+// Run the HTML Interceptors as per the config
+const supportedHTMLRewriterModes: string[] = JSON.parse(
+	// @ts-ignore
+	SUPPORTED_HTML_REWRITER_MODES
+);
+
+const preferredMode = config.FeatureFlags.HTML_REWRITER_MODE;
+if (!supportedHTMLRewriterModes.includes(preferredMode)) {
+	throw new Error(
+		`This build of AeroSandbox does not support ${preferredMode}`
+	);
+}
+
+if (preferredMode === "mutation_observer")
+	import("../src/sandboxers/HTML/adaptors/useMutationObservers.ts");
+if (preferredMode === "custom_elements")
+	throw new Error("Unsupported rewriter mode!");
+if (preferredMode === "domparser")
+	import("../src/sandboxers/HTML/adaptors/useDOMParser.ts");
+if (preferredMode === "sw_parser")
+	import("../src/sandboxers/HTML/adaptors/useParser.ts");

@@ -1,6 +1,3 @@
-import config from "$src/config";
-const { prefix } = config;
-
 import { rewriteSetCookie } from "$sandbox/shared/cookie";
 import { rewriteAuthServer } from "./auth";
 
@@ -22,7 +19,7 @@ const ignoredHeaders = [
 ];
 
 function rewriteLocation(url: string): string {
-	return self.location.origin + prefix + url;
+	return self.location.origin + self.config.prefix + url;
 }
 
 export default (headers: Headers, proxyUrl: URL): void => {
@@ -33,9 +30,10 @@ export default (headers: Headers, proxyUrl: URL): void => {
 			case "location":
 				headers.set(key, rewriteLocation(value));
 				break;
+			/*
 			case "set-cookie":
 				headers.set(key, rewriteSetCookie(value, proxyUrl));
-				break;
+				break;*/
 			case "www-authenticate":
 				rewriteAuthServer(value, proxyUrl); // Assumes this handles header setting
 				break;

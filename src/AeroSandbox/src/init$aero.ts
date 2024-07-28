@@ -1,4 +1,15 @@
+import BareClient from "@mercuryworkshop/bare-mux";
+
 import { AeroGlobalType } from "$types/$aero.d";
 
-// The rest of the aero props are set in the SW injects before this file is executed
-// I have no use for this file yet
+// Sanity check
+if (!("$aero" in window)) {
+	const err = "Unable to initalize $aero";
+	console.error(err);
+	document.write(err);
+}
+
+$aero.bc = new BareClient();
+
+// Protect from overwriting, in case $aero scoping failed
+Object.freeze($aero);

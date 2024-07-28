@@ -1,9 +1,6 @@
-import config from "$aero/config";
-const { flags } = config;
-
 let swless: ServiceWorkerContainer = {};
 
-if (flags.workers) {
+if (/*flags.workers*/ true) {
 	// This will not need to use the original function, because all functionality is emulated here. This means that a Proxy object shouldn't be used here.
 	// TODO: In the second param: Get the options type from the internal type system used
 	swless.register = async (scriptUrl: string, options?: any): void => {

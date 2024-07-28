@@ -1,10 +1,12 @@
-import config from "../../../config";
+import sharedConfig from "./sharedConfig";
 
 import { afterPrefix } from "./getProxyUrl";
 
 function proxy(
 	api: string,
+	// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	mapRewriteArgs?: Map<number, Function>,
+	// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	rewriteResult?: Function
 ): ProxyHandler<object> {
 	if (api in window)
@@ -25,6 +27,7 @@ function proxy(
 
 function proxyGet(
 	api: string,
+	// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	mapReplaceProps: Map<string, Function>
 ): ProxyHandler<object> {
 	if (api in window)
@@ -51,9 +54,10 @@ function proxyConstructString(
 	if (argNums) {
 		const map = new Map<number, (...args: string[]) => string>();
 
+		// I forgot what this is for
 		for (const argNum of argNums)
-			map.set(argNum, function () {
-				return config.prefix + arguments[argNum];
+			map.set(argNum, () => {
+				return sharedConfig("prefix") + arguments[argNum];
 			});
 
 		return proxy(apiName, map);

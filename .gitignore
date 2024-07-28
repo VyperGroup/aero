@@ -6,8 +6,9 @@
 ## For NixOS
 mutable_node_modules
 
-# Rspack
+# Builds
 /**/dist/
+/tests/aero
 
 # aero
 

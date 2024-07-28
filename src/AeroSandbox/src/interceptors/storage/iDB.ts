@@ -1,10 +1,6 @@
 import { APIInterceptor } from "$types/apiInterceptors";
 
-import config from "$aero/config";
-
 import { storageNomenclature } from "./shared";
-
-const { prefix } = config;
 
 export default [
 	{
@@ -30,7 +26,7 @@ export default [
 				dbs.map(db => {
 					if (db instanceof Error) return db;
 
-					db.name = prefix + db.name;
+					db.name = self.config.prefix + db.name;
 
 					return db;
 				});

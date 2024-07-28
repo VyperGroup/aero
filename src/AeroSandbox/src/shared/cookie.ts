@@ -1,19 +1,26 @@
-import config from "../../../config";
-const { prefix } = config;
+import sharedConfig from "./sharedConfig";
 
 function rewriteGetCookie(cookie: string, proxyLoc: URL) {
 	return cookie
 		.replace(
-			new RegExp(`(?<=path\=)${prefix}${proxyLoc.origin}.*(?= )`, "g"),
+			new RegExp(
+				`(?<=path\=)${sharedConfig("prefix")}${proxyLoc.origin}.*(?= )`,
+				"g"
+			),
 			match =>
-				match.replace(new RegExp(`^(${prefix}${proxyLoc.origin})`), "")
+				match.replace(
+					new RegExp(
+						`^(${sharedConfig("prefix")}${proxyLoc.origin})`
+					),
+					""
+				)
 		)
 		.replace(/_path\=.*(?= )/g, "");
 }
 function rewriteSetCookie(cookie: string, proxyLoc: URL) {
 	return cookie.replace(
 		/(?<=path\=).*(?= )/g,
-		`${prefix}${proxyLoc.origin}$& _path=$&`
+		`${sharedConfig("prefix")}${proxyLoc.origin}$& _path=$&`
 	);
 }
 

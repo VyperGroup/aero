@@ -1,16 +1,12 @@
-import { Sec } from "$aero/types/types";
-
-// Standard Config
-import config from "$src/config";
-const { prefix, aeroPrefix } = config;
+import { Sec } from "$types/index";
 
 import { BareClient } from "@mercuryworkshop/bare-mux";
 
 // Utility
-import { afterPrefix } from "$sandbox/shared/afterPrefix";
+import { afterPrefix } from "$sandbox/shared/getProxyUrl";
 import getRequestUrl from "./util/getRequestUrl";
 import redir from "./util/redir";
-import clear from "$cors/clear";
+import clear from "$aero/src/this/isolation/execClearEmulationOnWindowClients";
 import isHTML from "$sandbox/shared/isHTML";
 import getPassthroughParam from "./util/getPassthroughParam";
 import escapeJS from "./util/escapeJS";
@@ -19,12 +15,12 @@ import { AeroLogger } from "$sandbox/shared/Loggers";
 
 // Security
 // CORS Emulation
-import block from "./cors/test";
-import HSTSCacheEmulation from "./cors/HSTSCacheEmulation";
+import block from "./isolation/corsTesting";
+import HSTSCacheEmulation from "./isolation/HSTSCacheEmulation";
 // Integrity check
 import integral from "./embeds/integral";
 // Cache Emulation
-import CacheManager from "$cors/CacheManager";
+import CacheManager from "$aero/src/this/isolation/CacheManager";
 
 // Rewriters
 import rewriteReqHeaders from "$rewriters/reqHeaders";
@@ -34,14 +30,16 @@ import rewriteManifest from "$rewriters/webAppManifest";
 
 // TODO: Use JSRewriter class instead of rewriteScript
 import JSRewriter from "$sandbox/sandboxers/JS/JSRewriter";
+import { Config } from "$types/index";
 
 // TODO: Import the aero JS parser config types from aerosandbox into aero's sw typesa
-const jsRewriter = new JSRewriter(config.aeroSandbox.jsParserConfig);
+//const jsRewriter = new JSRewriter(self.config.aeroSandbox.jsParserConfig);
 
 // TODO: import init from "./handlers/init";
 
 // Webpack Feature Flags
-var FEATURE_CORS_EMULATION: boolean,
+// biome-ignore lint/style/useSingleVarDeclarator: <explanation>
+let FEATURE_CORS_EMULATION: boolean,
 	FEATURE_INTEGRITY_EMULATION: boolean,
 	FEATURE_ENC_BODY_EMULATION: boolean,
 	FEATURE_CACHES_EMULATION: boolean,
@@ -55,8 +53,10 @@ var FEATURE_CORS_EMULATION: boolean,
 	DEBUG: boolean;
 
 type proxyOrigin = string;
-declare var self: WorkerGlobalScope &
+declare const self: WorkerGlobalScope &
 	typeof globalThis & {
+		config: Config;
+		handle;
 		logger: AeroLogger;
 		bc: BareClient;
 		nestedSWs: Map<proxyOrigin, NestedSW[]>;
@@ -76,21 +76,23 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	// Dynamic config
 	// TODO: Dynamically switch backends
-	const { backends /*, wsBackends, wrtcBackends*/ } = getConfig();
+	//const { backends /*, wsBackends, wrtcBackends*/ } = getConfig();
 
 	const reqUrl = new URL(req.url);
 
 	const params = reqUrl.searchParams;
 
-	// Don't rewrite request for aero's bundles
-	// TODO: Instead of this read the paths from the config instead of confining and marking aero code from the prefix. I will soon have the bundles be pointed out in the config just like other interception proxies do.
-	if (!DEBUG && reqUrl.pathname.startsWith(aeroPrefix))
-		// Cached to lower the paint time
-		return await fetch(req.url, {
-			headers: {
+	// Don't rewrite the requests for aero's own bundles
+	if (self.config.aeroPathFilter(reqUrl.pathname)) {
+		const reqOpts: RequestInit = {};
+		if (!DEBUG) {
+			// Cached to lower the paint time
+			reqOpts.headers = {
 				"cache-control": "private"
-			}
-		});
+			};
+		}
+		return await fetch(req.url);
+	}
 
 	let isMod;
 	const isScript = req.destination === "script";
@@ -99,9 +101,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 		isMod = isModParam && isModParam === "true";
 	}
 
-	let frameSec = getPassthroughParam(params, "frameSec");
+	const frameSec = getPassthroughParam(params, "frameSec");
 
-	var clientUrl: URL;
+	let clientUrl: URL;
 	// Get the origin from the user's window
 	if (event.clientId !== "") {
 		// Get the current window
@@ -119,11 +121,24 @@ async function handle(event: FetchEvent): Promise<Response> {
 		);
 	}
 
+	// Ignore content scripts from extensions
+	if (clientUrl.protocol === "chrome-extension:") {
+		self.logger.log("Ignoring content script");
+	}
+
+	if (!clientUrl.protocol.startsWith("http:")) {
+		// TODO: Support custom protocols
+		return self.logger.fatalErr(
+			`Unknown protocol used: ${clientUrl.protocol}. Full url ${clientUrl.href}`
+		);
+	}
+
+	/*
 	if (self.nestedSWs.size !== 0) {
 		// TODO: Implement
 		// TODO: Start by checking the proxy origin is the same as the client's proxyOrigin comparing nestedSw.item(n).proxyOrigin to clientUrl.origin
 	}
-
+	*/
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
 	const isNavigate =
 		req.mode === "navigate" && req.destination === "document";
@@ -148,8 +163,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 		return new Response("Blocked by CORS", { status: 500 });
 
 	// Log request
-	self.logger.debug(
-		req.destination == ""
+	self.logger.log(
+		req.destination === ""
 			? `${req.method} ${proxyUrl.href}`
 			: `${req.method} ${proxyUrl.href} (${req.destination})`
 	);
@@ -175,20 +190,22 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	if (FEATURE_CORS_EMULATION) {
 		if (reqHeaders.has("timing-allow-origin"))
-			this.timing = reqHeaders.get("timing-allow-origin");
+			sec.timing = reqHeaders.get("timing-allow-origin");
 		if (reqHeaders.has("permissions-policy"))
-			this.perms = reqHeaders.get("permissions-policy");
+			sec.perms = reqHeaders.get("permissions-policy");
 		if (reqHeaders.has("x-frame-options"))
-			this.frame = reqHeaders.get("x-frame-options");
+			sec.frame = reqHeaders.get("x-frame-options");
 		if (reqHeaders.has("content-security-policy"))
-			this.csp = reqHeaders.get("content-security-policy");
+			sec.csp = reqHeaders.get("content-security-policy");
 	}
 
+	/*
 	if (FEATURE_CLEAR_EMULATION && reqHeaders.get("clear-site-data")) {
-		this.clear = JSON.parse(`[${reqHeaders.get("clear-site-data")}]`);
+		sec.clear = JSON.parse(`[${reqHeaders.get("clear-site-data")}]`);
 		if ("clear" in sec)
 			await clear(sec.clear, await clients.get(event.clientId), proxyUrl);
-	} else this.clear = false;
+	} else sec.clear = false;
+	*/
 
 	let cache: CacheManager;
 	if (FEATURE_CACHES_EMULATION) {
@@ -201,9 +218,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 			});
 	}
 
-	rewriteReqHeaders(reqHeaders, clientUrl);
+	//rewriteReqHeaders(reqHeaders, clientUrl);
 
-	let opts: RequestInit = {
+	const opts: RequestInit = {
 		method: req.method,
 		headers: reqHeaders
 	};
@@ -224,8 +241,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	if (FEATURE_CACHES_EMULATION) {
 		const cacheAge = cache.getAge(
-			reqHeaders["cache-control"],
-			reqHeaders["expires"]
+			reqHeaders.get("cache-control"),
+			reqHeaders.get("expires")
 		);
 
 		const cachedResp = await cache.get(reqUrl, cacheAge);
@@ -233,13 +250,15 @@ async function handle(event: FetchEvent): Promise<Response> {
 	}
 
 	// Rewrite the response headers
-	const rewroteRespHeaders = rewriteRespHeaders(resp.headers, clientUrl);
+	//const rewroteRespHeaders = rewriteRespHeaders(resp.headers, clientUrl);
 
 	// Overwrite the response headers (they are immutable)
+	/*
 	Object.defineProperty(resp, "headers", {
 		value: rewroteRespHeaders,
 		configurable: false
 	});
+	*/
 
 	const type = resp.headers.get("content-type");
 
@@ -251,7 +270,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		// Not all sites respond with a type
 		typeof type === "undefined" || isHTML(type);
 	/** @type {string | ReadableStream} */
-	let body;
+	let body: string;
 	// Rewrite the body
 	// TODO: Pack these injected scripts with Webpack
 	if (REWRITER_HTML && isNavigate && html) {
@@ -259,7 +278,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 		// TODO: Eliminate _IMPORT_ recursion somehow
 		if (body !== "") {
-			let base = /* html */ `
+			const base = /* html */ `
 <!DOCTYPE html>
 <head>
     <!-- Fix encoding issue -->
@@ -275,51 +294,23 @@ async function handle(event: FetchEvent): Promise<Response> {
     <link href="/favicon.ico" rel="icon" type="image/x-icon">
 
     <script>
-        // Update the service worker
-        navigator.serviceWorker
-            .register("/sw.js", {
-                scope: ${prefix},
-                // Don't cache http request
-                updateViaCache: "none",
-                type: "module",
-            })
-            // Update service worker
-            .then(reg => reg.update())
-            .catch(err => console.error);
-
-		if (!window.sec)
-			window.sec = {};
-
 		{
-			// Aero's global namespace
+			// Aero's global proxy namespace
 			// The only things defined in here at this time are what is needed to be passed through the SW context to the client context. The rest is defined in the client when the aero bundle for the client is loaded.
-			// TODO: Document the must define a global window.$aero before calling AeroSandbox.fakeOrigin in the MD doc for how to use AeroSandbox when it is created
 			window.$aero = {
 				// Security
 				sec:  { ...sec, ...${JSON.stringify(sec)} },
 				// This is used to later copy into an iFrame's srcdoc; this is for an edge case
 				init: \`_IMPORT_\`,
-				prefix: ${prefix},
-
+				prefix: ${self.config.prefix}
 			};
 		}
 		delete window.sec;
     </script>
-	<script>
-		// Sanity check (I'm loosing it)
-		if (!("$aero" in window)) {
-			const err = "Unable to initalize $aero";
-			console.error(err);
-			document.write(err)
-		}
-
-		$aero.bc = new BareClient(backends[0]);
-
-		// Protect from overwriting, in case $aero scoping failed
-		Object.freeze($aero);
-	</script>
+	<script src="${self.config.bundles.sandbox}">
 </head>
 `;
+
 			// Recursion
 			body = base.replace(/_IMPORT_/, escapeJS(base)) + body;
 		}
@@ -330,7 +321,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 	) {
 		body = await resp.text();
 
-		/* xml */ `
+		// TODO: Update this to support modern aero
+		/*
+		xml body = `
 <config>
 {
 	prefix: ${prefix}
@@ -339,14 +332,15 @@ async function handle(event: FetchEvent): Promise<Response> {
 <?xml-stylesheet type="text/xsl" href="/aero/browser/xml/intercept.xsl"?>
 ${body}
 		`;
+		*/
 		// @ts-ignore
-	} else if (REWRITER_JS && isScript) {
+	} /*else if (REWRITER_JS && isScript) {
 		const script = await resp.text();
 
 		if (FEATURE_INTEGRITY_EMULATION) {
 			body = jsRewriter.wrapScript(script, {
 				isModule: isMod,
-				insertCode: /* js */ `
+				insertCode: /* js *\/ `
   {
 	const bak = decodeURIComponent(escape(atob(\`${escapeJS(script)}\`)));
 	${integral(isMod)}
@@ -358,7 +352,8 @@ ${body}
 			body = jsRewriter.wrapScript(script, {
 				isModule: isMod
 			});
-	} else if (REWRITER_CACHE_MANIFEST && req.destination === "manifest") {
+
+	} */ else if (REWRITER_CACHE_MANIFEST && req.destination === "manifest") {
 		let body = await resp.text();
 
 		// Safari exclusive
@@ -367,9 +362,10 @@ ${body}
 
 			body = rewriteCacheManifest(body, isFirefox);
 		} else body = rewriteManifest(body, proxyUrl);
-	} else if (SUPPORT_WORKER && req.destination === "worker")
+	} // TODO: Bring back worker support in aero
+	/*else if (SUPPORT_WORKER && req.destination === "worker")
 		body = isModWorker
-			? /* js */ `
+			? /* js *\/ `
 import { proxyLocation } from "${aeroPrefix}worker/worker";
 self.location = proxyLocation;
 `
@@ -380,16 +376,17 @@ ${body}
 		`;
 	else if (SUPPORT_WORKER && req.destination === "sharedworker")
 		body = isModWorker
-			? /* js */ `
+			? /* js *\/ `
 import { proxyLocation } from "${aeroPrefix}worker/worker";
 self.location = proxyLocation;
 `
-			: /* js */ `
+			: /* js *\/ `
 importScripts("${aeroPrefix}worker/worker.js");
 importScripts("${aeroPrefix}worker/sharedworker.js");
 
 ${body}
 		`;
+	*/
 	// No rewrites are needed; proceed as normal
 	else body = resp.body;
 
@@ -421,4 +418,4 @@ ${body}
 	return resp;
 }
 
-export default handle;
+self.handle = handle;

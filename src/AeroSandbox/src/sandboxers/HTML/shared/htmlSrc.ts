@@ -1,4 +1,4 @@
-import config from "$aero/config";
+import config from "$src/config";
 
 const { prefix } = config;
 

@@ -1,15 +1,12 @@
 import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
 
-import config from "config";
-const { flags } = config;
-
 import { proxyLocation } from "$shared/proxyLocation";
 
 export default {
 	modifyObjectProperty() {
 		Object.defineProperty(window, "isSecureContext", {
 			get: () =>
-				flags.emulateSecureContext ||
+				//flags.emulateSecureContext ||
 				proxyLocation().protocol === "https:"
 		});
 	},

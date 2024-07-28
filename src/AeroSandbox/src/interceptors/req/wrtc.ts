@@ -4,9 +4,6 @@ import {
 	ExposedContextsEnum
 } from "$types/apiInterceptors";
 
-import config from "$aero/config";
-const { wrtcBackends } = config;
-
 // biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
 import escape from "$shared/escape";
 
@@ -18,8 +15,8 @@ export default {
 			// Backup
 			const iceServersBak = config.iceServers;
 
-			if (config.iceServers && wrtcBackends.length > 0) {
-				config.iceServers = wrtcBackends;
+			if (config.iceServers && config.wrtcBackends.length > 0) {
+				config.iceServers = config.wrtcBackends;
 				args[0] = config;
 			}
 

@@ -1,5 +1,5 @@
 /*
-import config from "$aero/config";
+import config from "$src/config";
 const { flags } = config;
 
 import rewriteSrc from "$shared/hared/src";

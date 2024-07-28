@@ -19,9 +19,26 @@ Web Proxies can be used for:
 ```
 npm i
 npm run build
+cd src/AeroSandbox
+npm i
+npm run build
 ```
 
-> Ensure to build AeroSandbox separately
+## How to debug aero
+
+1. Install pm2
+2. Execute these commands
+
+  ```
+  ./deps.sh
+  pm2 start ecosystem.config.js
+  ```
+
+### Notes
+
+* You must run `pm2 restart <aero-build-watch/aero-sandbox-build-watch>` when you modify a compile-time Feature Flag
+
+## How to run unit tests
 
 ## Related
 

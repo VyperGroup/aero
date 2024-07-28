@@ -1,5 +1,14 @@
+import { Config } from "$aero/types/config";
+
+// @ts-ignore
+declare const self: WorkerGlobalScope &
+	typeof globalThis & {
+		config: Config;
+	};
+
 // Webpack Feature Flags
-var DEBUG: boolean;
+// biome-ignore lint/style/useSingleVarDeclarator: <explanation>
+let DEBUG: boolean;
 
 type htmlTemplatingCallbackType = (errStr: string) => string;
 
@@ -9,10 +18,10 @@ const fatalErrBubbleStyle = genBubbleStyle("#db3631");
 // TODO: Support optionalSecondaryBubble after the branding and in the color green :)
 class GenericLogger {
 	log(branding: string, msg: string, optionalSeconaryBubble?: string): void {
-		console.log(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
+		console.log(`%c${branding}%c ${msg}`, `${aeroBubbleStyle}`, "");
 	}
 	warn(branding: string, msg: string, optionalSeconaryBubble?: string): void {
-		console.warn(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
+		console.warn(`%c${branding}%c ${msg}`, `${aeroBubbleStyle}`, "");
 	}
 	debug(
 		branding: string,
@@ -20,7 +29,7 @@ class GenericLogger {
 		optionalSecondaryBubble?: string
 	): void {
 		if (DEBUG) {
-			console.debug(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
+			console.debug(`%c${branding}%c ${msg}`, `${aeroBubbleStyle}`, "");
 		}
 	}
 	error(
@@ -28,15 +37,14 @@ class GenericLogger {
 		msg: string,
 		optionalSeconaryBubble?: string
 	): void {
-		console.error(`%c${branding}%c ` + msg, `${aeroBubbleStyle}`, "");
+		console.error(`%c${branding}%c ${msg}`, `${aeroBubbleStyle}`, "");
 	}
 	fatalErr(branding: string, msg: string): void {
 		console.error(
-			`%c${branding}%c ` + msg,
-			"%cfatal%c " + msg,
+			`%c${branding}%c ${msg}`,
+			`%cfatal%c ${msg}`,
 			`${aeroBubbleStyle}`,
-			`${fatalErrBubbleStyle}`,
-			""
+			`${fatalErrBubbleStyle}`
 		);
 	}
 }
@@ -68,10 +76,19 @@ class AeroLogger extends GenericLogger {
 	fatalErr(msg: string): Response {
 		super.fatalErr("aero SW", msg);
 		return new Response(
-			"htmlTemplatingCallback" in this.options
-				? "Fatal error: " + msg
+			/*
+			// TODO: Fix
+			this.options && "htmlTemplatingCallback" in this.options
+				? `Fatal error:	 ${msg}`
 				: this.options.htmlTemplatingCallback(msg),
-			{ status: 500 }
+				*/
+			msg,
+			{
+				status: 500,
+				headers: {
+					"content-type": "text/html"
+				}
+			}
 		);
 	}
 }

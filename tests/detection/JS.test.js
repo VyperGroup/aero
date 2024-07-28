@@ -16,6 +16,8 @@ tests.set("scoping - string equivalency test", function* () {
 		yield ["window", "with template literals"];
 });
 
+tests.set("scoping - proxyNamespaceTests", function* () {});
+
 tests.set("scoping - encoding tests", function* () {
 	const a = "bG9jYXRpb24uaHJlZg=="; // location.href
 	const b = "d2luZG93LmxvY2F0aW9uLmhyZWY="; //  window.location.href
@@ -40,7 +42,7 @@ tests.set("scoping - encoding tests", function* () {
 });
 
 // Proxy "that" test
-tests.set('proxy "that" test', () => {
+tests.set('scoping - proxy "that" test', () => {
 	const res = new Proxy(
 		{},
 		{

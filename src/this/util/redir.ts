@@ -1,10 +1,7 @@
-import config from "$src/config";
-const { prefix } = config;
-
 export default (url: string) =>
 	new Response("", {
 		status: 307,
 		headers: {
-			location: prefix + url
+			location: $self.config.prefix + url
 		}
 	});

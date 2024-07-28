@@ -1,6 +1,3 @@
-import config from "$src/config";
-const { prefix, flags } = config;
-
 const clearCache = async (clear: string[], proxyUrl: URL): Promise<void> => {
 	if (clear.includes("'*'") || clear.includes("'cache'"))
 		await caches.delete(proxyUrl.origin);
@@ -13,7 +10,7 @@ const clearExecutionContexts = async (
 ): Promise<void> => {
 	if (clear.includes("'*'") || clear.includes("executionContexts")) {
 		const clientOrigin = new URL(
-			client.url.replace(new RegExp(`^(${prefix})`, "g"), "")
+			client.url.replace(new RegExp(`^(${self.config.prefix})`, "g"), "")
 		).origin;
 		if (clientOrigin === proxyUrl.origin)
 			client.postMessage("clearExecutionContext");

@@ -1,6 +1,6 @@
 // TODO: Rewrite each element ... Port this functionality over from the old rewriting code (pre-AeroSandbox)
 
-import * as config from "$aero/config";
+import * as config from "$src/config";
 
 import rewriteSrc from "$shared/src";
 import rewriteHtmlSrc from "./htmlSrc";
@@ -51,9 +51,18 @@ function set(el: HTMLElement, attr: string, val = "", backup = true): void {
 	}
 }
 
-export default function rewriteElement(el: Element | Element, attr?: String) {
+export default function rewriteElement(
+	el: Element | Element,
+	attr?: string
+): Element {
 	// Don't exclusively rewrite attributes or check for already observed elements
 	const isNew = typeof attr === "undefined";
+
+	// Check if the element's classes are any from the ignore classes
+	const elClassList = Array.from(el.classList);
+	for (const elClass of elClassList)
+		for (const ignoreClass of $aero.config.rewriters.html.ignoreClasses)
+			if (elClass === ignoreClass) return el;
 
 	if (
 		isNew &&
@@ -88,7 +97,6 @@ export default function rewriteElement(el: Element | Element, attr?: String) {
 
 		if (
 			!el.src &&
-			!el.classList.contains(config.ignoreClass) &&
 			typeof el.innerHTML === "string" &&
 			el.innerHTML !== "" &&
 			// Ensure the script has a JS type
@@ -207,16 +215,9 @@ export default function rewriteElement(el: Element | Element, attr?: String) {
 				);
 		}
 	}
-	/*
-	} else if (el instanceof HTMLLinkElement && el.rel === "manifest") {
-		set(el, "href", rewriteSrc(el.url, proxyLocation().href));
-	} else if (config.flags.legacy && tag instanceof HTMLHtmlElement) {
-		// Cache manifests
-		set(el, "manifest", rewriteSrc(el.url, proxyLocation().href.manifest));
-	}
-	*/
 
-	if (isNew && el.integrity !== "") {
+	if (isNew && "integrity" in el && el.integrity !== "") {
+		// @ts-ignore
 		const cloner = new Cloner(el);
 
 		cloner.clone();

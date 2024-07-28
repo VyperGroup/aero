@@ -213,7 +213,7 @@ const locationConcealers: APIInterceptor[] = [
 	}
 ];
 
-const proxyProxyInterceptor = {
+const ProxyProxyInterceptor: APIInterceptor = {
 	/**
 	 * Fixes `that` in the Proxy handlers being used to reveal the window if the target in the Proxy object is a property on the windowon
 	 * You could solve this issue with EST parsing, but that would make JS parsing way slower than it is now, so I opted to use the same window proxy object that AeroGel already uses
@@ -277,7 +277,8 @@ const EventTargetInterceptor: APIInterceptor = {
 					)
 				) {
 					args[1] = event => {
-						event.source = proxyProxyInterceptor.proxifiedObj;
+						// @ts-ignore
+						event.source = ProxyProxyInterceptor.proxifiedObj(ctx);
 						handler(event);
 					};
 				}
@@ -289,7 +290,9 @@ const EventTargetInterceptor: APIInterceptor = {
 };
 
 export {
+	evalInterceptors,
+	locationConcealers,
 	windowProxyInterceptor,
-	proxyProxyInterceptor as ProxyProxyInterceptor,
+	ProxyProxyInterceptor,
 	EventTargetInterceptor
 };

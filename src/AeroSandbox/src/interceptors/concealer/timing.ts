@@ -2,7 +2,7 @@ import upToProxyLocation from "sandbox/src/util/upToProxyLocation";
 
 // FIXME:
 /*
-import { aeroPrefix } from "$aero/config";
+import { aeroPrefix } from "$src/config";
 
 import { afterPrefix } from "$shared/afterPrefix";
 

@@ -1,6 +1,3 @@
-import config from "$src/config";
-const { prefix } = config;
-
 /**
  * Rewrites a path specifically for CacheManifest files in proxies
  *
@@ -11,7 +8,7 @@ const { prefix } = config;
 function rewritePath(path: string, isFirefox: boolean): string {
 	// Firefox needs the protocol before the wildcard
 	if (!isFirefox && path === "*") {
-		return `${location.origin}${prefix}${path}`;
+		return `${location.origin}${self.config.prefix}${path}`;
 	}
 
 	// Handle absolute paths with wildcards
