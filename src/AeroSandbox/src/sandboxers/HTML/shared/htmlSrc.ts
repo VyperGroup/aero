@@ -9,7 +9,10 @@ import { proxyLocation } from "$shared/proxyLocation";
  * @param - The url to rewrite
  * @param - If its to rewrite an iFrame src
  */
-export default (src: string, isIFrame?: boolean): string => {
+export default (src: string | Blob, isIFrame?: boolean): string | Blob => {
+	// TODO: rewrite
+	if (src instanceof Blob) return src;
+
 	const url = $aero.proto.get(
 		src.replace(new RegExp(`^(${location.origin})`, "g"), "")
 	);

@@ -15,6 +15,8 @@ import block from "$cors/policy";
 //https://github.com/VyperGroup/aero/tree/e05df5a523749f93c82f7261d7e7c4aabc6f947c/src/AeroSandbox/src/sandboxers/HTML/custom-elements/mixins
 //https://github.com/VyperGroup/aero/blob/298ecc795cd1e7eb844a78543fcfb4d0ae4186bd/src/AeroSandbox/src/sandboxers/HTML/mutation-observers/html.ts
 
+// TODO: Transistion to the new htmlRules system
+
 const afterRewrote = new WeakMap<HTMLElement, boolean>();
 const elContainer = new WeakMap<HTMLElement, HTMLElement>();
 
