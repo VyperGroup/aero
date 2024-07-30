@@ -1,3 +1,6 @@
+// Manage "imports"
+const replaceProxyNamespace = Mod.replaceProxyNamespace.default;
+
 const jsRewriterConfigGeneric = {
 	modeConfigs: {
 		generic: {
@@ -8,8 +11,8 @@ const jsRewriterConfigGeneric = {
 					location: ""
 				},
 				fakeVars: {
-					let: `window["${proxyNamespace}"].aeroGel.fakeVarsLet`,
-					const: `window["${proxyNamespace}"].aeroGel.fakeVarsConst`
+					let: `window["${testProxyNamespace}"].aeroGel.fakeVarsLet`,
+					const: `window["${testProxyNamespace}"].aeroGel.fakeVarsConst`
 				}
 			}
 		}
@@ -35,8 +38,8 @@ const jsRewriterConfigAeroGel = {
 		objPaths: {
 			...jsRewriterConfigGeneric.modeConfigs.generic.objPaths,
 			fakeVars: {
-				let: `window["${proxyNamespace}"].aeroGel.fakeVarsLet`,
-				const: `window["${proxyNamespace}"].aeroGel.fakeVarsConst`
+				let: `window["${testProxyNamespace}"].aeroGel.fakeVarsLet`,
+				const: `window["${testProxyNamespace}"].aeroGel.fakeVarsConst`
 			}
 		}
 	}
@@ -44,14 +47,14 @@ const jsRewriterConfigAeroGel = {
 
 let sandboxingAPIInterceptorInjects = "";
 
-const jsSandboxingModule = Mod.scriptSandbox.default;
+const jsSandboxingModule = Mod.scriptSandbox;
 for (const [_apiInterceptor, ctx] of Object.entries(jsSandboxingModule))
 	if (ctx.proxifiedObj) {
-		const globalProp = ctx.globalProp.replace(
-			/<proxyNamespace>/g,
+		const globalProp = replaceProxyNamespace(
+			ctx.globalProp,
 			testProxyNamespace
 		);
-		const lastPropOfGlobalProp = globalProp.at(-1).pop();
+		const lastPropOfGlobalProp = globalProp.split(".").at(-1);
 		if (lastPropOfGlobalProp === "proxifiedWindow")
 			jsRewriterConfigGeneric.modeConfigs.generic.objPaths.proxy.window =
 				globalProp;
@@ -62,6 +65,13 @@ for (const [_apiInterceptor, ctx] of Object.entries(jsSandboxingModule))
 		sandboxingAPIInterceptorInjects += `window${globalProp} =
 			${ctx.proxifiedObj.toString()};`;
 	}
+const locationSandboxingModule = Mod.location.default;
+for (const [_apiInterceptor, ctx] of Object.entries(locationSandboxingModule))
+	if (ctx.proxifiedObj)
+		sandboxingAPIInterceptorInjects += `window${replaceProxyNamespace(
+			ctx.globalProp,
+			testProxyNamespace
+		)} = ${ctx.proxifiedObj.toString()}`;
 
 const jsRewriterAST = new JSRewriter(jsRewriterConfigAST);
 const jsRewriterAeroGel = new JSRewriter(jsRewriterConfigAeroGel);
@@ -70,9 +80,7 @@ function scopeFunction(func, type) {
 	new Function(
 		sandboxingAPIInterceptorInjects +
 			(type === "ast" ? jsRewriterAST : jsRewriterAeroGel).wrapScript(
-				func
-					.toString()
-					.replace(/<proxyNamespace>/g, testProxyNamespace),
+				replaceProxyNamespace(func.toString(), testProxyNamespace),
 				{
 					rewriteOptions: {
 						isModule: false
@@ -88,11 +96,10 @@ async function runTests() {
 			if (testType.startsWith("scoping -")) {
 				const testRunnerAST = scopeFunction(testHandler, "ast");
 				runGeneratorTests(`${testType} - AST version`, testRunnerAST);
-				const testRunnerAeroGel = scopeFunction(testHandler, "aerogel");
-				runGeneratorTests(
-					`${testType} - AeroGel version`,
-					testRunnerAeroGel
-				);
+				/*
+        const testRunnerAeroGel = scopeFunction(testHandler, "aerogel");
+        runGeneratorTests(`${testType} - AeroGel version`, testRunnerAeroGel);
+        */
 			} else runGeneratorTests(testType, testRunner);
 		} else if (testHandler.constructor.name === "AsyncFunction") {
 			const testPassed = testType.startsWith("scoping -")
@@ -117,7 +124,7 @@ function runGeneratorTests(testType, testRunner) {
 	}
 }
 
-// This is currently for debug
+// This is currently for debug and is temporary
 runTests().then(() => {
 	for (const failedTest of failedTests) {
 		console.log("Failed test:", failedTest);

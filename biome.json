@@ -9,6 +9,6 @@
 		}
 	},
 	"files": {
-		"ignore": ["/**/dist"]
+		"ignore": ["/**/dist", "/tests/aero"]
 	}
 }

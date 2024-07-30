@@ -67,3 +67,15 @@ export default {
 	}),
 	globalProp: `["<proxyNamespace>"].proxifiedLocation`
 } as APIInterceptor;
+
+/*
+TODO: Make these proper API Interceptors
+Object.defineProperty(document, "domain", {
+	// @ts-ignore
+	get: () => locationProxy.hostname
+});
+Object.defineProperty(document, "URL", {
+	// @ts-ignore
+	get: () => locationProxy.href
+});
+*/

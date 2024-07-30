@@ -10,6 +10,10 @@ const tests = new Map();
 
 const JSRewriter = Mod.jsRewriter.default;
 
+window.$aero = {};
+
 const testProxyNamespace = "$aero";
 
 window[testProxyNamespace] = {};
+
+$aero.logger = new Mod.loggers.AeroSandboxLogger();

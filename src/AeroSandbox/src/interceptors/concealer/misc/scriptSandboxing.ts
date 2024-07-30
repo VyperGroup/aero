@@ -1,25 +1,37 @@
-import {
+// FIXME: I have no idea why when I make this a library it doesn't work in the unit test builds
+import type {
 	APIInterceptor,
-	ExposedContextsEnum,
+	// ExposedContextsEnum,
 	proxifiedObjGeneratorContext
-} from "$types/apiInterceptors";
-
-import locationProxy from "$shared/proxyLocation";
+} from "../../../../types/apiInterceptors";
+// biome-ignore lint/style/useEnumInitializers: <explanation>
+enum ExposedContextsEnum {
+	dedicatedWorker,
+	sharedWorker,
+	audioWorklet,
+	animationWorklet,
+	layoutWorklet,
+	sharedStorageWorklet,
+	paintWorklet,
+	serviceWorker,
+	window
+}
 
 import type JSRewriter from "$src/sandboxers/JS/JSRewriter";
 
 // These interceptors conceal `location` and accessing `location` from the window object. The window proxy is injected directly into the `this` that IIFE that AeroSandbox is powered by.
 
 // Init
+/*
 const proxyNamespace = window["<proxyNamespace>"];
 proxyNamespace.aeroGel = {};
 const aeroGel = proxyNamespace.aeroGel;
 aeroGel.fakeVars = {};
 
-/*
+\/*
 // Scope Checking. This is for DPSC. TODO: Make DPSC configurable on AST parsing and only use it when in a block scope.
 $aero.check = val => (val === location ? $location : val);
-*/
+*\/
 
 aeroGel.fakeVarsStore = new Map<
 	string,
@@ -59,6 +71,7 @@ aeroGel.fakeVarsConst = new Proxy(aeroGel.fakeVars, {
 		return false;
 	}
 });
+*/
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 let fakeValueForProxyNamespace: any = null;
@@ -73,7 +86,8 @@ const windowProxyInterceptor: APIInterceptor = {
 			return new Proxy(window, {
 				get(target, prop) {
 					if (prop === "__proto__") return winProto;
-					if (prop === "location") return locationProxy;
+					if (prop === "location")
+						return window["<proxyNamespace>"].proxifiedLocation;
 					if (typeof target[prop] === "function")
 						return target[prop].bind(window);
 					// Don't allow access to the proxy namespace so emulate the property
@@ -167,7 +181,7 @@ const locationConcealers: APIInterceptor[] = [
 				let [obj, prop] = args;
 
 				if (obj === location || (obj === window && prop === "location"))
-					obj = locationProxy;
+					obj = window["<proxyNamespace>"].proxifiedLocation;
 
 				args[0] = obj;
 
@@ -186,7 +200,7 @@ const locationConcealers: APIInterceptor[] = [
 					// @ts-ignore
 					theTarget = ["<proxyNamespace>"].js.proxifiedWindow;
 				if (theTarget instanceof Location) {
-					locationProxy[prop] = value;
+					window["<proxyNamespace>"].proxifiedLocation[prop] = value;
 					return;
 				}
 				return Reflect.apply(target, that, args);
@@ -203,8 +217,10 @@ const locationConcealers: APIInterceptor[] = [
 					// @ts-ignore
 					theTarget = ["<proxyNamespace>"].js.proxifiedWindow;
 				if (theTarget instanceof Document)
-					if (theProp === "location") return locationProxy;
-				if (theTarget instanceof Location) return locationProxy;
+					if (theProp === "location")
+						return window["<proxyNamespace>"].proxifiedLocation;
+				if (theTarget instanceof Location)
+					return window["<proxyNamespace>"].proxifiedLocation;
 				[theProp];
 				return Reflect.apply(target, that, args);
 			}

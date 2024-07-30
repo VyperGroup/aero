@@ -64,8 +64,14 @@ const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	entry: testBuild
 		? {
+				// API Interceptors for the Script Sandbox
+				location: "./src/interceptors/loc/location.ts",
 				scriptSandbox:
-					"./src/interceptors/concealer/misc/scriptSandbox.ts",
+					"./src/interceptors/concealer/misc/scriptSandboxing.ts",
+				// Libs for the API Interceptors
+				loggers: "./src/shared/Loggers.ts",
+				replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
+				// The JS rewriter
 				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
 		  }
 		: {
