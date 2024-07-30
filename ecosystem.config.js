@@ -13,7 +13,24 @@ module.exports = {
 			script: "npm",
 			args: "run build",
 			env: {
-				DEBUG: ""
+				DEBUG: "true"
+			}
+		},
+		{
+			name: "aero-build-winterjs",
+			script: "npm",
+			args: "run build",
+			env: {
+				DEBUG: "true",
+				SERVER_ONLY: "winterjs"
+			}
+		},
+		{
+			name: "aero-build-cf-workers",
+			script: "npm",
+			args: "run build",
+			denv: {
+				SERVER_ONLY: "cf-workers"
 			}
 		},
 		{
@@ -22,7 +39,7 @@ module.exports = {
 			cwd: "src/AeroSandbox",
 			args: "run build",
 			env: {
-				DEBUG: ""
+				DEBUG: "true"
 			}
 		},
 		{
@@ -31,7 +48,7 @@ module.exports = {
 			cwd: "src/AeroSandbox",
 			args: "run build",
 			env: {
-				TEST_BUILD: ""
+				TEST_BUILD: "true"
 			}
 		}
 	]

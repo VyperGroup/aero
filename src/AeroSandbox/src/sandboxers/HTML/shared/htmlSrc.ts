@@ -1,10 +1,6 @@
-import config from "$src/config";
+import sharedConfig from "$shared/sharedConfig";
 
-const { prefix } = config;
-
-import rewriteSrc from "@src/shared/src";
-
-import scope from "$sandbox/JS/scopers/aeroGel";
+import rewriteSrc from "$src/shared/src";
 
 import { proxyLocation } from "$shared/proxyLocation";
 
@@ -18,7 +14,8 @@ export default (src: string, isIFrame?: boolean): string => {
 		src.replace(new RegExp(`^(${location.origin})`, "g"), "")
 	);
 
-	if (/^javascript:/g.test(url)) return scope(url);
+	if (/^javascript:/g.test(url))
+		return sharedConfig("rewriters").js.wrapScript(url);
 	if (/^data:/g.test(url)) {
 		if (isIFrame) {
 			const exp = /^data:text\/html(;base64)?,/g;
@@ -28,11 +25,12 @@ export default (src: string, isIFrame?: boolean): string => {
 			if (matches.length === 2)
 				return matches[0].replace(
 					exp,
-					"$&" +
-						encodeURIComponent($aero.init + decodeURIComponent(url))
+					`$&${encodeURIComponent(
+						$aero.init + decodeURIComponent(url)
+					)}`
 				);
 			if (matches.length === 1)
-				return "$&" + btoa($aero.init + atob(url));
+				return `$&${btoa($aero.init + atob(url))}`;
 		}
 		return url;
 	}
@@ -40,46 +38,7 @@ export default (src: string, isIFrame?: boolean): string => {
 		// Ignore about:blank
 		/^about:/g.test(url) ||
 		// Don't rewrite again
-		new RegExp(`^(${prefix})`).test(url)
-	)
-		return url;
-
-	return rewriteSrc(url, proxyLocation().href);
-};
-
-/**
- * Extends src rewriting for processed html urls
- * @param - The url to rewrite
- * @param - If its to rewrite an iFrame src
- */
-export default (src: string, isIFrame?: boolean): string => {
-	const url = $aero.proto.get(
-		src.replace(new RegExp(`^(${location.origin})`, "g"), "")
-	);
-
-	if (/^javascript:/g.test(url)) return scope(url);
-	if (/^data:/g.test(url)) {
-		if (isIFrame) {
-			const exp = /^data:text\/html(;base64)?,/g;
-
-			const matches = [...url.matchAll(exp)];
-
-			if (matches.length === 2)
-				return matches[0].replace(
-					exp,
-					"$&" +
-						encodeURIComponent($aero.init + decodeURIComponent(url))
-				);
-			if (matches.length === 1)
-				return "$&" + btoa($aero.init + atob(url));
-		}
-		return url;
-	}
-	if (
-		// Ignore about:blank
-		/^about:/g.test(url) ||
-		// Don't rewrite again
-		new RegExp(`^(${prefix})`).test(url)
+		new RegExp(`^(${sharedConfig("prefix")})`).test(url)
 	)
 		return url;
 

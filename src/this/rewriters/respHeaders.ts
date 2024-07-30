@@ -22,7 +22,11 @@ function rewriteLocation(url: string): string {
 	return self.location.origin + self.config.prefix + url;
 }
 
-export default (headers: Headers, proxyUrl: URL): void => {
+export default (
+	headers: Headers,
+	proxyUrl: URL,
+	referrerPolicy: string
+): void => {
 	for (const [key, value] of headers.entries()) {
 		if (ignoredHeaders.includes(key)) continue;
 
@@ -37,6 +41,7 @@ export default (headers: Headers, proxyUrl: URL): void => {
 			case "www-authenticate":
 				rewriteAuthServer(value, proxyUrl); // Assumes this handles header setting
 				break;
+			// TODO: Emulate the referrer-policy header
 			default:
 				headers.set(key, value);
 		}

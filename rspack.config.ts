@@ -1,4 +1,4 @@
-import { boolFlag, FeatureFlags } from "./src/featureFlags";
+import { boolFlag, FeatureFlagsRspack } from "./src/featureFlags";
 
 import path from "path";
 import rspack from "@rspack/core";
@@ -7,15 +7,18 @@ import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
 const debugMode = "DEBUG" in process.env;
+const serverMode = process.env.SERVER_MODE;
 
-const webpackFeatureFlags: FeatureFlags = {
+// @ts-ignore
+const webpackFeatureFlags: FeatureFlagsRspack = {
 	FEATURE_URL_ENC: boolFlag(false),
+	FEATURE_CORS_TESTING: boolFlag(false),
 	FEATURE_CORS_EMULATION: boolFlag(false),
 	FEATURE_INTEGRITY_EMULATION: boolFlag(false),
 	FEATURE_ENC_BODY_EMULATION: boolFlag(false),
 	FEATURE_CACHES_EMULATION: boolFlag(false),
 	FEATURE_CLEAR_EMULATION: boolFlag(false),
-	REWRITER_HTML: boolFlag(false),
+	REWRITER_HTML: boolFlag(true),
 	REWRITER_XSLT: boolFlag(false),
 	REWRITER_JS: boolFlag(false),
 	REWRITER_CACHE_MANIFEST: boolFlag(false),
@@ -23,6 +26,13 @@ const webpackFeatureFlags: FeatureFlags = {
 	SUPPORT_WORKER: boolFlag(false),
 	DEBUG: JSON.stringify(debugMode)
 };
+
+if (serverMode) {
+	webpackFeatureFlags.REQ_INTERCEPTION_CATCH_ALL = "referrer";
+	if (serverMode === "winterjs") webpackFeatureFlags.SERVER_ONLY = "winterjs";
+	else if (serverMode === "cf-workers")
+		webpackFeatureFlags.SERVER_ONLY = "cf-workers";
+} else webpackFeatureFlags.REQ_INTERCEPTION_CATCH_ALL = "clients";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any = [
@@ -62,7 +72,7 @@ const config: rspack.Configuration = {
 	output: {
 		filename: "[name].aero.js",
 		path: debugMode
-			? path.resolve(__dirname, "dev-server/aero-demo-site/aero")
+			? path.resolve(__dirname, "dev-server/demo-site/aero")
 			: path.resolve(__dirname, "dist"),
 		iife: true,
 		clean: true

@@ -1,8 +1,7 @@
-import type BareClient from "@mercuryworkshop/bare-mux";
+import type BareMux from "@mercuryworkshop/bare-mux";
 
-import type { AeroLogger } from "$shared/Loggers.ts";
-
-import { FeatureFlagsRuntime } from "$aero/src/featureFlags";
+import type { FeatureFlagsRuntime } from "$aero/src/featureFlags";
+import type { SearchParamOptions } from "$types/catch-all";
 
 export type AeroPathFilter = (reqPath: string) => boolean;
 /** @returns the encoded url */
@@ -24,6 +23,10 @@ export interface Config {
 	};
 	/** The prefix for the URL. */
 	prefix: string;
+	searchParamOptions: {
+		referrerPolicy: SearchParamOptions;
+		isModule: SearchParamOptions;
+	};
 	/** The cache key to use. */
 	cacheKey: string;
 	/** The dynamic config configuration. */

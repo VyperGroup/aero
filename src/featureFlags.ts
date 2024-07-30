@@ -25,6 +25,13 @@ export interface FeatureFlags {
 	DEBUG: string;
 }
 
+export interface FeatureFlagsRspack extends FeatureFlags {
+	/* Defaults to what is in the build config if this is not set */
+	SERVER_ONLY: "winterjs" | "cf-workers";
+	/* Defaults to what is in the build config if this is not set */
+	REQ_INTERCEPTION_CATCH_ALL: "referrer" | "clients";
+}
+
 export interface FeatureFlagsRuntime extends FeatureFlags {}
 
 export { boolFlag, boolFlagType };

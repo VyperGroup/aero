@@ -1,9 +1,10 @@
 import { Sec } from "$types/index";
 
-import { BareClient } from "@mercuryworkshop/bare-mux";
+import BareMux from "@mercuryworkshop/bare-mux";
 
 // Utility
 import { afterPrefix } from "$sandbox/shared/getProxyUrl";
+import appendSearchParam from "./util/appendSearchParam";
 import getRequestUrl from "./util/getRequestUrl";
 import redir from "./util/redir";
 import clear from "$aero/src/this/isolation/execClearEmulationOnWindowClients";
@@ -30,7 +31,7 @@ import rewriteManifest from "$rewriters/webAppManifest";
 
 // TODO: Use JSRewriter class instead of rewriteScript
 import JSRewriter from "$sandbox/sandboxers/JS/JSRewriter";
-import { Config } from "$types/index";
+import type { Config } from "$types/config";
 
 // TODO: Import the aero JS parser config types from aerosandbox into aero's sw typesa
 //const jsRewriter = new JSRewriter(self.config.aeroSandbox.jsParserConfig);
@@ -39,7 +40,9 @@ import { Config } from "$types/index";
 
 // Webpack Feature Flags
 // biome-ignore lint/style/useSingleVarDeclarator: <explanation>
-let FEATURE_CORS_EMULATION: boolean,
+let SERVER_ONLY: string,
+	REQ_INTERCEPTION_CATCH_ALL: string,
+	FEATURE_CORS_EMULATION: boolean,
 	FEATURE_INTEGRITY_EMULATION: boolean,
 	FEATURE_ENC_BODY_EMULATION: boolean,
 	FEATURE_CACHES_EMULATION: boolean,
@@ -63,7 +66,7 @@ declare const self: WorkerGlobalScope &
 	};
 
 self.logger = new AeroLogger();
-self.bc = new BareClient();
+self.bc = new BareMux();
 
 /**
  * Handles the requests
@@ -94,43 +97,65 @@ async function handle(event: FetchEvent): Promise<Response> {
 		return await fetch(req.url);
 	}
 
-	let isMod;
+	let isModule;
 	const isScript = req.destination === "script";
 	if (isScript) {
 		const isModParam = getPassthroughParam(params, "isMod");
-		isMod = isModParam && isModParam === "true";
+		isModule = isModParam && isModParam === "true";
 	}
 
 	const frameSec = getPassthroughParam(params, "frameSec");
 
-	let clientUrl: URL;
+	let clientURL: URL;
 	// Get the origin from the user's window
-	if (event.clientId !== "") {
+	if (REQ_INTERCEPTION_CATCH_ALL === "clients" && event.clientId !== "") {
+		if (SERVER_ONLY) {
+			return $aero.logger.fatalErr(
+				'The Feature Flag "REQ_INTERCEPTION_CATCH_ALL" can\'t be set to "clients" when "SERVER_ONLY" is enabled.'
+			);
+		}
 		// Get the current window
 		const client = await clients.get(event.clientId);
-
 		if (client)
 			// Get the url after the prefix
-			clientUrl = new URL(afterPrefix(client.url));
+			clientURL = new URL(afterPrefix(client.url));
+	} else if (REQ_INTERCEPTION_CATCH_ALL === "referrer") {
+		const referrerPolicy = req.headers["referrer-policy"];
+		if (referrerPolicy)
+			appendSearchParam(
+				params,
+				self.config.searchParamOptions.referrerPolicy,
+				referrerPolicy
+			);
+	} else {
+		$aero.logger.fatalErr(
+			"No catch-all interception types found and rewrite-url is currently unsupported..."
+		);
 	}
 
-	if (!clientUrl) {
+	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
+	const isNavigate =
+		req.mode === "navigate" && req.destination === "document";
+
+	if (!isNavigate && !clientURL) {
 		// TODO: Make a custom fatalErr for SWs that doesn't modify the DOM but returns the error simply instead of overwriting the site with an error site
 		return self.logger.fatalErr(
-			"No clientUrl found! This means your windows are not accessible to us."
+			"No clientUrl found on a request to a resource! This means your windows are not accessible to us."
 		);
-	}
-
-	// Ignore content scripts from extensions
-	if (clientUrl.protocol === "chrome-extension:") {
-		self.logger.log("Ignoring content script");
-	}
-
-	if (!clientUrl.protocol.startsWith("http:")) {
-		// TODO: Support custom protocols
-		return self.logger.fatalErr(
-			`Unknown protocol used: ${clientUrl.protocol}. Full url ${clientUrl.href}`
-		);
+		// biome-ignore lint/style/noUselessElse: <explanation>
+	} else if (clientURL) {
+		// Ignore content scripts from extensions
+		if (clientURL.protocol === "chrome-extension:")
+			self.logger.log("Ignoring content script");
+		// Ignore view source
+		if (clientURL.protocol === "view-source:")
+			self.logger.log("Ignoring view source");
+		if (!clientURL.protocol.startsWith("http")) {
+			// TODO: Support custom protocols
+			return self.logger.fatalErr(
+				`Unknown protocol used: ${clientURL.protocol}. Full url ${clientURL.href}`
+			);
+		}
 	}
 
 	/*
@@ -139,9 +164,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 		// TODO: Start by checking the proxy origin is the same as the client's proxyOrigin comparing nestedSw.item(n).proxyOrigin to clientUrl.origin
 	}
 	*/
-	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
-	const isNavigate =
-		req.mode === "navigate" && req.destination === "document";
 
 	// This is used for determining the request url
 	const isiFrame = req.destination === "iframe";
@@ -151,7 +173,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		getRequestUrl(
 			reqUrl.origin,
 			location.origin,
-			clientUrl,
+			clientURL,
 			reqUrl.pathname + reqUrl.search,
 			isNavigate,
 			isiFrame
@@ -170,13 +192,13 @@ async function handle(event: FetchEvent): Promise<Response> {
 	);
 
 	// Rewrite the request headers
-	const reqHeaders = req.headers;
+	const rewrittenReqHeaders = req.headers;
 
 	let sec: Sec;
 	if (FEATURE_CACHES_EMULATION) {
 		if (proxyUrl.protocol === "http:") {
 			const hstsCacheEmulator = new HSTSCacheEmulation(
-				reqHeaders.get("strict-transport-security"),
+				rewrittenReqHeaders.get("strict-transport-security"),
 				proxyUrl.origin
 			);
 
@@ -189,14 +211,14 @@ async function handle(event: FetchEvent): Promise<Response> {
 	}
 
 	if (FEATURE_CORS_EMULATION) {
-		if (reqHeaders.has("timing-allow-origin"))
-			sec.timing = reqHeaders.get("timing-allow-origin");
-		if (reqHeaders.has("permissions-policy"))
-			sec.perms = reqHeaders.get("permissions-policy");
-		if (reqHeaders.has("x-frame-options"))
-			sec.frame = reqHeaders.get("x-frame-options");
-		if (reqHeaders.has("content-security-policy"))
-			sec.csp = reqHeaders.get("content-security-policy");
+		if (rewrittenReqHeaders.has("timing-allow-origin"))
+			sec.timing = rewrittenReqHeaders.get("timing-allow-origin");
+		if (rewrittenReqHeaders.has("permissions-policy"))
+			sec.perms = rewrittenReqHeaders.get("permissions-policy");
+		if (rewrittenReqHeaders.has("x-frame-options"))
+			sec.frame = rewrittenReqHeaders.get("x-frame-options");
+		if (rewrittenReqHeaders.has("content-security-policy"))
+			sec.csp = rewrittenReqHeaders.get("content-security-policy");
 	}
 
 	/*
@@ -209,7 +231,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	let cache: CacheManager;
 	if (FEATURE_CACHES_EMULATION) {
-		cache = new CacheManager(reqHeaders);
+		cache = new CacheManager(rewrittenReqHeaders);
 
 		if (cache.mode === "only-if-cached")
 			// TODO: Emulate network error for your given browser. I would ideally do this through a compile-time macro that fetches the src code of the browsers.
@@ -220,29 +242,24 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	//rewriteReqHeaders(reqHeaders, clientUrl);
 
-	const opts: RequestInit = {
+	const rewrittenReqOpts: RequestInit = {
 		method: req.method,
-		headers: reqHeaders
+		headers: rewrittenReqHeaders
 	};
 
 	// A request body should not be created under these conditions
-	if (!["GET", "HEAD"].includes(req.method)) opts.body = req.body;
+	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await self.bc.fetch(new URL(req.url).href, {
-		method: req.method,
-		headers: req.headers
-	});
+	const resp = await self.bc.fetch(new URL(proxyUrl).href, rewrittenReqOpts);
 
-	if (resp instanceof Error)
-		return new Response(resp.message, {
-			status: 500
-		});
+	if (!resp) $aero.logger.fatalErr("No response found!");
+	if (resp instanceof Error) $aero.logger.fatalErr(resp.message);
 
 	if (FEATURE_CACHES_EMULATION) {
 		const cacheAge = cache.getAge(
-			reqHeaders.get("cache-control"),
-			reqHeaders.get("expires")
+			rewrittenReqHeaders.get("cache-control"),
+			rewrittenReqHeaders.get("expires")
 		);
 
 		const cachedResp = await cache.get(reqUrl, cacheAge);
@@ -269,13 +286,16 @@ async function handle(event: FetchEvent): Promise<Response> {
 	const html =
 		// Not all sites respond with a type
 		typeof type === "undefined" || isHTML(type);
-	/** @type {string | ReadableStream} */
-	let body: string;
+
+	let rewrittenBody: string | ReadableStream;
 	// Rewrite the body
 	// TODO: Pack these injected scripts with Webpack
-	if (REWRITER_HTML && isNavigate && html) {
-		body = await resp.text();
-
+	if (
+		/*REWRITER_HTML*/ self.config.featureFlags.REWRITER_HTML &&
+		isNavigate &&
+		html
+	) {
+		const body = await resp.text();
 		// TODO: Eliminate _IMPORT_ recursion somehow
 		if (body !== "") {
 			const base = /* html */ `
@@ -299,31 +319,31 @@ async function handle(event: FetchEvent): Promise<Response> {
 			// The only things defined in here at this time are what is needed to be passed through the SW context to the client context. The rest is defined in the client when the aero bundle for the client is loaded.
 			window.$aero = {
 				// Security
-				sec:  { ...sec, ...${JSON.stringify(sec)} },
+				sec:  { ${sec ? `...${JSON.stringify(sec)}` : ""} },
 				// This is used to later copy into an iFrame's srcdoc; this is for an edge case
 				init: \`_IMPORT_\`,
 				prefix: ${self.config.prefix}
 			};
 		}
-		delete window.sec;
     </script>
-	<script src="${self.config.bundles.sandbox}">
+	<script src="${self.config.bundles.sandbox}"></script>
 </head>
 `;
 
 			// Recursion
-			body = base.replace(/_IMPORT_/, escapeJS(base)) + body;
+			rewrittenBody = base.replace(/_IMPORT_/, escapeJS(base)) + body;
 		}
 	} else if (
 		REWRITER_XSLT &&
 		isNavigate &&
 		(type.startsWith("text/xml") || type.startsWith("application/xml"))
 	) {
-		body = await resp.text();
+		const body = await resp.text();
+		rewrittenBody = body;
 
 		// TODO: Update this to support modern aero
 		/*
-		xml body = `
+		xml rewrittenBody = `
 <config>
 {
 	prefix: ${prefix}
@@ -354,19 +374,21 @@ ${body}
 			});
 
 	} */ else if (REWRITER_CACHE_MANIFEST && req.destination === "manifest") {
-		let body = await resp.text();
+		const body = await resp.text();
 
 		// Safari exclusive
 		if (SUPPORT_LEGACY && type.includes("text/cache-manifest")) {
-			const isFirefox = reqHeaders["user-agent"].includes("Firefox");
+			const isFirefox =
+				rewrittenReqHeaders["user-agent"].includes("Firefox");
 
-			body = rewriteCacheManifest(body, isFirefox);
-		} else body = rewriteManifest(body, proxyUrl);
+			rewrittenBody = rewriteCacheManifest(body, isFirefox);
+		} else rewrittenBody = rewriteManifest(body, proxyUrl);
 	} // TODO: Bring back worker support in aero
-	/*else if (SUPPORT_WORKER && req.destination === "worker")
-		body = isModWorker
+	/*else if (SUPPORT_WORKER && req.destination === "worker") {
+		rewrittenBody = isModWorker
 			? /* js *\/ `
 import { proxyLocation } from "${aeroPrefix}worker/worker";
+import { FeatureFlags } from '../featureFlags';
 self.location = proxyLocation;
 `
 			: `
@@ -388,7 +410,7 @@ ${body}
 		`;
 	*/
 	// No rewrites are needed; proceed as normal
-	else body = resp.body;
+	else rewrittenBody = resp.body;
 
 	if (FEATURE_ENC_BODY_EMULATION) {
 		// FIXME: Fix whatever this is. I forgot where I was going with this.
@@ -396,26 +418,26 @@ ${body}
 		resp.headers["x-aero-size-encbody"] = null;
 
 		// TODO: x-aero-size-transfer
-		if (typeof body === "string") {
+		if (typeof rewrittenBody === "string") {
 			resp.headers["x-aero-size-body"] = new TextEncoder().encode(
-				body
+				rewrittenBody
 			).length;
 			// TODO: Emulate x-aero-size-encbody
-		} else if (body instanceof ArrayBuffer) {
-			resp.headers["x-aero-size-body"] = body.byteLength;
+		} else if (rewrittenBody instanceof ArrayBuffer) {
+			resp.headers["x-aero-size-body"] = rewrittenBody.byteLength;
 			// TODO: Emulate x-aero-size-encbody
 		}
 	}
 
-	resp.body = resp.status === 204 ? null : body;
-
-	if (FEATURE_CACHES_EMULATION) {
+	if (FEATURE_CACHES_EMULATION)
 		// Cache the response
 		cache.set(reqUrl.href, resp, resp.headers.get("vary"));
-	}
 
 	// Return the response
-	return resp;
+	return new Response(resp.status === 204 ? null : rewrittenBody, {
+		headers: resp.headers,
+		status: resp.status
+	});
 }
 
 self.handle = handle;
