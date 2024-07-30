@@ -4,6 +4,8 @@
 
 Aero is a safe, developer-friendly, innovative interception web proxy with many features. Aero provides full site support without delay and has a clean, organized codebase.
 
+I'm only quitting proxy dev once aero supports everything. AeroSandbox can sandbox everything (remove all web restrictions, too), and my Proxy Dev Guide is so detailed with examples that it contains explanations and code examples to make your proxy that supports everything.
+
 ## What is a web proxy?
 
 Web proxies are website libraries that work to emulate the functionality of the site that you want. They do this by intercepting API calls and rewriting documents to emulate as if it was under the proxied origin.
