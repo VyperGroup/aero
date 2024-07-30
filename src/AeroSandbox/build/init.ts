@@ -118,6 +118,8 @@ if (!supportedHTMLRewriterModes.includes(preferredMode)) {
 	);
 }
 
+// TODO: Delete all privacy sandbox APIs until bare-extended is finished and do that under the feature flag `DELETE_UNUSED_APIS` and recommend it for security
+
 if (preferredMode === "mutation_observer")
 	import("../src/sandboxers/HTML/adaptors/useMutationObservers.ts");
 if (preferredMode === "custom_elements")

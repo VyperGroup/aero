@@ -17,13 +17,23 @@ If you want to find something to contribute to, search in your editor for TODO c
 - [ ] Finish the .val.ts building convention and write about in a doc
 - [ ] Fix import paths
   - Use TSConfig paths for every path. No mor ee relative paths. This will help for clarity and if I ever want to move around where the folders are located in a future refactor.
+- [ ] Use `import type` when importing types
+
+## Security
+
+- [ ] Escape fatalErr with the flag `EXTRA_SECURITY_ESCAPE_ERR` and [Mozilla's sanitizer-polyfill](https://github.com/mozilla/sanitizer-polyfill)
+
+## Unit Testing
+
+- [ ] Set up unit tests for the SW using [Miniflare](https://github.com/cloudflare/workers-sdk/tree/main/packages/miniflare#quick-start). It will work by using `dispatchFetch` and with a traditional unit testing library expect certain responses back which correspond with the site's elements and headers. I already have made individual unit tests for some modules and API interceptors, but your SW handler itself might be broken.
+- [ ] Setup testing for the location API interceptors with the goal being to detect the actual location instead of being `https://example.com` or changing the fragment url to `#fail-<the-failed-test-name-here>` and the `onhashchange` event detects that
 
 ## Build System
 
 - [ ] Revert back to using Biome and Rspack
-- [ ] Publish builds on NPM
-  - [ ] AeroSandbox
-  - [ ] Backend-only aero
+- [x] Publish builds on NPM
+  - [x] AeroSandbox
+  - [ ] Server-only aero `aero-proxy/<winterjs/cf-workers>`
 - [ ] Make server-only builds
   - [ ] winter.js
   - [ ] CF Workers
