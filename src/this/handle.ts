@@ -1,15 +1,13 @@
 import { Sec } from "$types/index";
 
-import BareMux from "@mercuryworkshop/bare-mux";
-
 // Utility
 import { afterPrefix } from "$sandbox/shared/getProxyUrl";
-import appendSearchParam from "./util/appendSearchParam";
+import appendSearchParam from "../AeroSandbox/src/shared/appendSearchParam"; // TODO: $shared
+import getPassthroughParam from "./util/getPassthroughParam";
 import getRequestUrl from "./util/getRequestUrl";
 import redir from "./util/redir";
-import clear from "$aero/src/this/isolation/execClearEmulationOnWindowClients";
+import clear from "./isolation/execClearEmulationOnWindowClients";
 import isHTML from "$sandbox/shared/isHTML";
-import getPassthroughParam from "./util/getPassthroughParam";
 import escapeJS from "./util/escapeJS";
 // Cosmetic
 import { AeroLogger } from "$sandbox/shared/Loggers";
@@ -61,12 +59,10 @@ declare const self: WorkerGlobalScope &
 		config: Config;
 		handle;
 		logger: AeroLogger;
-		bc: BareClient;
 		nestedSWs: Map<proxyOrigin, NestedSW[]>;
 	};
 
 self.logger = new AeroLogger();
-self.bc = new BareMux();
 
 /**
  * Handles the requests
@@ -75,7 +71,17 @@ self.bc = new BareMux();
  */
 // TODO: Move all the proxy middleware code to a bare mixin
 async function handle(event: FetchEvent): Promise<Response> {
-	let req = event.request;
+	// Ensure that everything has been initalized properly
+	if (!("logger" in self))
+		throw new Error("The logger hasn't been initalized!");
+	if (!("config" in self))
+		throw self.logger.fatalErr("The is no config provided");
+	if (!("bc" in self.config))
+		throw self.logger.fatalErr(
+			"The is no BareClient provided in the config."
+		);
+
+	const req = event.request;
 
 	// Dynamic config
 	// TODO: Dynamically switch backends
@@ -110,7 +116,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Get the origin from the user's window
 	if (REQ_INTERCEPTION_CATCH_ALL === "clients" && event.clientId !== "") {
 		if (SERVER_ONLY) {
-			return $aero.logger.fatalErr(
+			throw self.logger.fatalErr(
 				'The Feature Flag "REQ_INTERCEPTION_CATCH_ALL" can\'t be set to "clients" when "SERVER_ONLY" is enabled.'
 			);
 		}
@@ -128,8 +134,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 				referrerPolicy
 			);
 	} else {
-		$aero.logger.fatalErr(
-			"No catch-all interception types found and rewrite-url is currently unsupported..."
+		self.logger.fatalErr(
+			"No catch-all interception types found and rewrite-url is currently unsupported."
 		);
 	}
 
@@ -139,7 +145,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	if (!isNavigate && !clientURL) {
 		// TODO: Make a custom fatalErr for SWs that doesn't modify the DOM but returns the error simply instead of overwriting the site with an error site
-		return self.logger.fatalErr(
+		throw self.logger.fatalErr(
 			"No clientUrl found on a request to a resource! This means your windows are not accessible to us."
 		);
 		// biome-ignore lint/style/noUselessElse: <explanation>
@@ -152,7 +158,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 			self.logger.log("Ignoring view source");
 		if (!clientURL.protocol.startsWith("http")) {
 			// TODO: Support custom protocols
-			return self.logger.fatalErr(
+			throw self.logger.fatalErr(
 				`Unknown protocol used: ${clientURL.protocol}. Full url ${clientURL.href}`
 			);
 		}
@@ -251,10 +257,13 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await self.bc.fetch(new URL(proxyUrl).href, rewrittenReqOpts);
+	const resp = await self.config.bc.fetch(
+		new URL(proxyUrl).href,
+		rewrittenReqOpts
+	);
 
-	if (!resp) $aero.logger.fatalErr("No response found!");
-	if (resp instanceof Error) $aero.logger.fatalErr(resp.message);
+	if (!resp) self.logger.fatalErr("No response found!");
+	if (resp instanceof Error) throw Error;
 
 	if (FEATURE_CACHES_EMULATION) {
 		const cacheAge = cache.getAge(
@@ -322,7 +331,10 @@ async function handle(event: FetchEvent): Promise<Response> {
 				sec:  { ${sec ? `...${JSON.stringify(sec)}` : ""} },
 				// This is used to later copy into an iFrame's srcdoc; this is for an edge case
 				init: \`_IMPORT_\`,
-				prefix: ${self.config.prefix}
+				prefix: ${self.config.prefix},
+				searchParamOptions: ${JSON.stringify(
+					self.config.searchParamOptions
+				)},
 			};
 		}
     </script>

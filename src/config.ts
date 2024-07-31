@@ -1,7 +1,9 @@
-import type { SearchParamOptions } from "$types/catch-all";
 import { boolFlag } from "$src/featureFlags";
 
 import type { Config } from "$types/config";
+
+// @ts-ignore
+import BareMux from "@mercuryworkshop/bare-mux";
 
 declare const self: WorkerGlobalScope &
 	typeof globalThis & {
@@ -11,6 +13,7 @@ declare const self: WorkerGlobalScope &
 const escapeKeyword = "_";
 
 self.config = {
+	bc: new BareMux(),
 	prefix: "/go/",
 	pathToInitialSW: "/sw.js",
 	bundles: {
@@ -28,13 +31,15 @@ self.config = {
 	searchParamOptions: {
 		referrerPolicy: {
 			escapeKeyword,
-			/* This is the real (original) rewriter policy before it was forced to be unsafe-url */
 			searchParam: "passthroughReferrerPolicy"
 		},
 		isModule: {
 			escapeKeyword,
-			/* This is the real (original) rewriter policy before it was forced to be unsafe-url */
 			searchParam: "isModule"
+		},
+		integrity: {
+			escapeKeyword,
+			searchParam: "integrity"
 		}
 	},
 	cacheKey: "httpCache",

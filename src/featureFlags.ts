@@ -1,6 +1,6 @@
 import type { boolFlagType } from "./AeroSandbox/build/featureFlags";
-
 import { boolFlag } from "./AeroSandbox/build/featureFlags";
+import { htmlRewriterMode } from "./AeroSandbox/types/rewriters/html";
 
 export interface FeatureFlags {
 	/** @warning currently unsupported */
@@ -15,6 +15,13 @@ export interface FeatureFlags {
 	FEATURE_CACHES_EMULATION: boolFlagType;
 	FEATURE_CLEAR_EMULATION: boolFlagType;
 	REWRITER_HTML: boolFlagType;
+	HTML_REWRITER_TYPE: htmlRewriterMode;
+	/** Defaults to `custom_elements_sandbox` */
+	CUSTOM_ELEMENTS_USE:
+		| "custom_elements_sandbox"
+		| "mutation_observer"
+		| "domparser"
+		| "sw_parser";
 	/** @warning currently unsupported */
 	REWRITER_XSLT: boolFlagType;
 	REWRITER_JS: boolFlagType;

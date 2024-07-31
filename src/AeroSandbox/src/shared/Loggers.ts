@@ -1,4 +1,4 @@
-import { Config } from "$aero/types/config";
+import type { Config } from "$aero/types/config";
 
 // @ts-ignore
 declare const self: WorkerGlobalScope &
@@ -73,15 +73,17 @@ class AeroLogger extends GenericLogger {
 	error(msg: string): void {
 		super.error("aero SW", msg);
 	}
-	fatalErr(msg: string): Response {
+	fatalErr(msg: string): /* Response */ Error {
 		super.fatalErr("aero SW", msg);
+		return new Error(`Caught Fatal Error: ${msg}`);
+		/*
 		return new Response(
 			/*
 			// TODO: Fix
 			this.options && "htmlTemplatingCallback" in this.options
 				? `Fatal error:	 ${msg}`
 				: this.options.htmlTemplatingCallback(msg),
-				*/
+				*\/
 			msg,
 			{
 				status: 500,
@@ -90,6 +92,7 @@ class AeroLogger extends GenericLogger {
 				}
 			}
 		);
+		*/
 	}
 }
 

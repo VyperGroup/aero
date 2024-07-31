@@ -1,5 +1,6 @@
 import rewriteSrc from "$aero/src/shared/src";
-import type { attrRewriteHandler } from "$aero/types/htmlRules";
+import type { onAttrHandler } from "$aero/types/htmlRules";
+// TODO: Use $shared
 import htmlSrc from "../shared/htmlSrc";
 
 import proxifyCustomElementName from "../shared/proxifyCustomElementName";
@@ -16,21 +17,21 @@ import htmlRules from "../shared/htmlRules";
 				constructor() {
 					super();
 					observeAttributesArray = Object.keys(
-						htmlRule.attrRewriteHandlers
+						htmlRule.onAttrHandlers
 					);
 				}
 				attributeChangedCallback(attrName, _oldVal, newVal) {
-					const handler = htmlRule.attrRewriteHandlers[attrName];
+					const handler = htmlRule.onAttrHandlers[attrName];
 					if (handler) {
 						const rewriteHandler =
-							htmlRule.attrRewriteHandlers[attrName];
-						let actualRewriteHandler: attrRewriteHandler;
+							htmlRule.onAttrHandlers[attrName];
+						let actualRewriteHandler: onAttrHandler;
 						if (rewriteHandler === "rewrite-src")
 							actualRewriteHandler = (newVal: string) => {
 								return rewriteSrc(newVal);
 							};
 						else if (rewriteHandler === "rewrite-html-src")
-							actualRewriteHandler = (newVal: string | Blob) => {
+							actualRewriteHandler = (newVal: string) => {
 								return htmlSrc(newVal);
 							};
 						else actualRewriteHandler = rewriteHandler[attrName];
@@ -54,6 +55,7 @@ import htmlRules from "../shared/htmlRules";
 
 // "is" appending with Custom Elements
 // You can also use a Mutation Observer. TODO: I will make a flag so that you can choose which method you prefer.
+// TODO: On the SW wrap the site content with `$aero.config.htmlSandboxElementName`
 {
 	const alreadyRewrittenChildren = new WeakSet<Element>();
 	class HTMLSandbox extends HTMLDivElement {
@@ -83,5 +85,5 @@ import htmlRules from "../shared/htmlRules";
 			}
 		}
 	}
-	customElements.define(self.config.htmlSandboxElementName, HTMLSandbox);
+	customElements.define($aero.config.htmlSandboxElementName, HTMLSandbox);
 }

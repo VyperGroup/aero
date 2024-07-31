@@ -58,7 +58,7 @@ function handleAI(aI: APIInterceptor): void {
 		if (Object.values(aI.exposedContexts).includes("window")) {
 			// @ts-ignore
 			if (aI.proxifiedObj) {
-				let proxyObject = resolveProxifiedObj(
+				const proxyObject = resolveProxifiedObj(
 					// @ts-ignore
 					aI.proxifiedObj,
 					proxifiedObjGenCtx
@@ -77,7 +77,7 @@ function handleAI(aI: APIInterceptor): void {
 	} else {
 		// @ts-ignore
 		if (aI.proxifiedObj) {
-			let proxyObject = resolveProxifiedObj(
+			const proxyObject = resolveProxifiedObj(
 				// @ts-ignore
 				aI.proxifiedObj,
 				proxifiedObjGenCtx
@@ -118,13 +118,25 @@ if (!supportedHTMLRewriterModes.includes(preferredMode)) {
 	);
 }
 
-// TODO: Delete all privacy sandbox APIs until bare-extended is finished and do that under the feature flag `DELETE_UNUSED_APIS` and recommend it for security
+// TODO: Delete all privacy sandbox APIs until bare-extended is finished and do that under the feature flag `DELETE_UNUSED_APIS` and recommend it for security. It would also delete the fenced frame element.
 
-if (preferredMode === "mutation_observer")
+if (
+	preferredMode === "mutation_observer" ||
+	(preferredMode === "custom_elements" &&
+		config.FeatureFlags.CUSTOM_ELEMENTS_USE === "mutation_observers")
+)
 	import("../src/sandboxers/HTML/adaptors/useMutationObservers.ts");
-if (preferredMode === "custom_elements")
-	throw new Error("Unsupported rewriter mode!");
-if (preferredMode === "domparser")
+if (
+	preferredMode === "domparser" ||
+	(preferredMode === "custom_elements" &&
+		config.FeatureFlags.CUSTOM_ELEMENTS_USE === "domparser")
+)
 	import("../src/sandboxers/HTML/adaptors/useDOMParser.ts");
-if (preferredMode === "sw_parser")
+if (
+	preferredMode === "sw_parser" ||
+	(preferredMode === "custom_elements" &&
+		config.FeatureFlags.CUSTOM_ELEMENTS_USE === "sw_parser")
+)
 	import("../src/sandboxers/HTML/adaptors/useParser.ts");
+if (preferredMode === "custom_elements")
+	import("../src/sandboxers/HTML/adaptors/useCustomElements.ts");

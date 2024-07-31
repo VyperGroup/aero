@@ -3,8 +3,6 @@ import { htmlRewriterMode } from "../types/rewriters/html";
 export type boolFlagType = "true" | "false";
 
 export interface FeatureFlags {
-	// JS Rewriter
-	INCLUDE_ESNIFF: boolFlagType;
 	INCLUDE_AST_PARSER_SEAFOX: boolFlagType;
 	/** @warning currently unsupported */
 	INCLUDE_AST_PARSER_OXC: boolFlagType;
@@ -26,7 +24,6 @@ export interface FeatureFlags {
 
 export interface FeatureFlagsRuntime extends FeatureFlags {
 	// JS Rewriter
-	INCLUDE_ESNIFF: boolFlagType;
 	INCLUDE_AST_PARSER_SEAFOX: boolFlagType;
 	/** @warning currently unsupported */
 	INCLUDE_AST_PARSER_OXC: boolFlagType;

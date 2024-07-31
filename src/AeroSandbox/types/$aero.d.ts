@@ -1,7 +1,8 @@
-import type { AeroSandboxLogger } from "$shared/Loggers";
 import type BareClient from "@mercuryworkshop/bare-mux";
-
-import { Config } from "./config";
+import type { AeroSandboxLogger } from "$shared/Loggers";
+import type { Config } from "./config";
+import type { SearchParamOptionsConfig } from "../../../types/config";
+import JSRewriter from "$aero/src/sandboxers/JS/JSRewriter";
 
 export interface AeroGlobalType {
 	init: string;
@@ -11,6 +12,10 @@ export interface AeroGlobalType {
 	bc: BareClient;
 	logger: AeroSandboxLogger;
 	config: Config;
+	searchParamOptions: SearchParamOptionsConfig;
+	rewriters: {
+		js: JSRewriter;
+	};
 }
 
 declare global {
