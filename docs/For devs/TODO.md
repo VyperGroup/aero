@@ -43,6 +43,7 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 - [ ] Finish the import code for the API Interceptors (init.ts in AeroSandbox)
 - [ ] Set the default import level to be one and bump the existing import levels of one
+- [ ] In debug mode, use console.table to log the status of the API interceptors loaded
 
 ## Commit Renames
 
