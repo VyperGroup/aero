@@ -2,7 +2,7 @@
 
 ![aero logo](./aero.webp)
 
-Aero is a safe, developer-friendly, innovative interception web proxy with many features. Aero provides full site support without delay and has a clean, organized codebase.
+Aero is a safe, developer-friendly, innovative interception web proxy with many features. Aero provides full site support without delay and has a clean, organized codebase. Aero is made to bypass filter restrictions, web restrictions, and bypasses web browser restrictions.
 
 I'm only quitting proxy dev once aero supports everything. AeroSandbox can sandbox everything (remove all web restrictions, too), and my Proxy Dev Guide is so detailed with examples that it contains explanations and code examples to make your proxy that supports everything.
 
