@@ -18,7 +18,7 @@ Web Proxies can be used for:
 
 ## How to build aero
 
-```
+```bash
 npm i
 npm run build
 cd src/AeroSandbox
@@ -36,11 +36,12 @@ npm run build
   pm2 start ecosystem.config.js
   ```
 
+> Run `git pull` and then run these commands again to update the dev server
 > The port by default is :3000
 
 ### Notes
 
-* You must run `pm2 restart <aero-build-watch/aero-sandbox-build-watch>` when you modify a compile-time Feature Flag
+- You must run `pm2 restart <aero-build-watch/aero-sandbox-build-watch>` when you modify a compile-time Feature Flag
 
 ## How to run unit tests
 
