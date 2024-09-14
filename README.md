@@ -26,7 +26,7 @@ npm i
 npm run build
 ```
 
-## How to debug aero
+## How to debug aero (how to run the aero dev server)
 
 1. Install pm2
 2. Execute these commands
@@ -35,6 +35,8 @@ npm run build
   ./deps.sh
   pm2 start ecosystem.config.js
   ```
+
+> The port by default is :3000
 
 ### Notes
 
