@@ -31,7 +31,7 @@ npm run build
 1. Install pm2
 2. Execute these commands
 
-  ```
+  ```bash
   ./deps.sh
   pm2 start ecosystem.config.js
   ```
