@@ -23,13 +23,13 @@ self.aeroConfig = {
 		sandbox: "/aero/sandbox/sandbox.aero.js"
 	},
 	aeroPathFilter: path =>
-		Object.values(self.config.bundles).find(bundlePath =>
+		Object.values(self.aeroConfig.bundles).find(bundlePath =>
 			path.startsWith(bundlePath)
 		) === null ||
 		path.startsWith("/tests/") ||
 		path.startsWith("/baremux") ||
 		path.startsWith("/epoxy/") ||
-		!path.startsWith(self.config.prefix),
+		!path.startsWith(self.aeroConfig.prefix),
 	searchParamOptions: {
 		referrerPolicy: {
 			escapeKeyword,
