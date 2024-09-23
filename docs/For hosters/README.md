@@ -1,5 +1,5 @@
 # Index
 
-This directory contains Markdown documentation intended for those who manage proxy sites.
+This directory contains documentation intended for those who manage proxy sites
 
-- [Directory Fronting](./Domain%20Fronting.md)
+- [How to add aero to your proxy site](./Guide.md)

@@ -1,11 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
-  },
-  "include": ["./aeroConfig.ts"]
+	"compilerOptions": {
+		"target": "ESNext",
+		"moduleResolution": "NodeNext",
+		"module": "NodeNext",
+		"lib": ["ESNext", "WebWorker", "WebWorker.ImportScripts"],
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true
+	},
+	"include": ["./aeroConfig.ts"]
 }

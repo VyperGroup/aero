@@ -1,15 +1,18 @@
 {
 	"name": "aero-proxy",
-	"version": "0.0.2",
-	"description": "The innovative interception proxy (alpha)",
+	"version": "0.0.3",
+	"description": "The innovative interception proxy",
 	"main": "dist/sw.aero.js",
 	"files": [
 		"dist/sw.aero.js",
 		"dist/sw.aero.js.map",
-    "dist/configTypes.aero.js",
-    "dist/configTypes.aero.js.map",
-    "dist/featureFlags.aero.js",
-    "dist/featureFlags.aero.js.map"
+		"dist/configTypes.aero.js",
+		"dist/configTypes.aero.js.map",
+		"dist/featureFlags.aero.js",
+		"dist/featureFlags.aero.js.map",
+		"examples/aeroDefaultConfig.ts",
+		"examples/rspack.build.ts",
+		"tsconfig.json"
 	],
 	"scripts": {
 		"build": "rspack build -c rspack.config.ts",
@@ -21,12 +24,7 @@
 		"type": "git",
 		"url": "git+https://github.com/ProxyHaven/aero.git"
 	},
-	"keywords": [
-		"Proxy",
-		"Archiver",
-		"Unblock",
-		"Interception"
-	],
+	"keywords": ["Proxy", "Archiver", "Unblock", "Interception"],
 	"author": "Ryan Wilson",
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/ProxyHaven/aero#readme",
@@ -40,16 +38,9 @@
 		"@types/web-app-manifest": "^1.0.8",
 		"clean-webpack-plugin": "^4.0.0",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.0.4",
-		"webpack-bundle-analyzer": "^4.10.2"
+		"typescript": "^5.0.4"
 	},
 	"dependencies": {
-		"@mercuryworkshop/bare-as-module3": "^2.2.2",
-		"@mercuryworkshop/bare-mux": "^2.0.4",
-		"esbuild-loader": "^4.0.1",
-		"esbuild-wasm": "^0.23.0",
-		"esniff": "^2.0.1",
-		"seafox": "^1.7.1",
-		"traverse-the-universe": "^2.1.2"
+		"@mercuryworkshop/bare-mux": "^2.0.4"
 	}
 }
