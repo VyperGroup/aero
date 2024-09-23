@@ -25,6 +25,7 @@ export interface Config {
 	/* This is useless if the Feature Flag UPDATE_SW_WHEN_ERR is disabled */
 	pathToInitialSW: string;
 	bundles: {
+		handle: string;
 		sandbox: string;
 		config: string;
 	};

@@ -1,5 +1,6 @@
-import { boolFlag } from "$src/featureFlags";
+// TODO: Instead of having two configs, `in deps.ts`, simply copy aeroDefaultConfig.ts to this file and replace the top two imports with the `sed` command
 
+import { boolFlag } from "$src/featureFlags";
 import type { Config } from "$types/config";
 
 // @ts-ignore
@@ -17,6 +18,7 @@ self.config = {
 	prefix: "/go/",
 	pathToInitialSW: "/sw.js",
 	bundles: {
+		handle: "/aero/sw.aero.js",
 		config: "/aero/config.aero.js",
 		sandbox: "/aero/sandbox/sandbox.aero.js"
 	},

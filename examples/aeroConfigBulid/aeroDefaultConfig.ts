@@ -18,6 +18,7 @@ self.aeroConfig = {
 	prefix: "/go/",
 	pathToInitialSW: "/sw.js",
 	bundles: {
+		handle: "/aero/sw.aero.js",
 		config: "/aero/config.aero.js",
 		sandbox: "/aero/sandbox/sandbox.aero.js"
 	},
