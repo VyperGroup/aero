@@ -50,11 +50,11 @@ const output: any = {
 	path: testBuild
 		? path.resolve(__dirname, "../../tests/aero")
 		: debugMode
-		  ? path.resolve(
+			? path.resolve(
 					__dirname,
 					"../../dev-server/aero-demo-site/aero/sandbox"
-			  )
-		  : path.resolve(__dirname, "dist"),
+				)
+			: path.resolve(__dirname, "dist"),
 	clean: true
 };
 
@@ -73,12 +73,12 @@ const config: rspack.Configuration = {
 				replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
 				// The JS rewriter
 				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
-		  }
+			}
 		: {
 				sandbox: "./build/init.ts",
 				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts",
 				config: "./src/config.ts"
-		  },
+			},
 	plugins,
 	resolve: {
 		extensions: [".ts"],
