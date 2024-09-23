@@ -452,4 +452,4 @@ ${body}
 	});
 }
 
-self.handle = handle;
+self.aeroHandle = handle;
