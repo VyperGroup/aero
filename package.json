@@ -5,7 +5,11 @@
 	"main": "dist/sw.aero.js",
 	"files": [
 		"dist/sw.aero.js",
-		"dist/sw.aero.js.map"
+		"dist/sw.aero.js.map",
+    "dist/configTypes.aero.js",
+    "dist/configTypes.aero.js.map",
+    "dist/featureFlags.aero.js",
+    "dist/featureFlags.aero.js.map"
 	],
 	"scripts": {
 		"build": "rspack build -c rspack.config.ts",

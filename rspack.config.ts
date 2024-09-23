@@ -53,7 +53,10 @@ const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	entry: {
 		sw: path.resolve(__dirname, "./src/this/handle.ts"),
-		config: path.resolve(__dirname, "./src/config.ts")
+		config: path.resolve(__dirname, "./src/config.ts"),
+		// Building these bundles separately allows for the user to roll out their own config files without having to build aero as a whole
+		configTypes: path.resolve(__dirname, "./src/aero/types/config.d.ts"),
+		featureFlags: path.resolve(__dirname, "./src/aero/featureFlags.ts"),
 	},
 	plugins,
 	resolve: {
