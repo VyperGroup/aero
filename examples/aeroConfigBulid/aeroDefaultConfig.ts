@@ -8,12 +8,12 @@ import BareMux from "@mercuryworkshop/bare-mux";
 
 declare const self: WorkerGlobalScope &
 	typeof globalThis & {
-		config: Config;
+		aeroConfig: Config;
 	};
 
 const escapeKeyword = "_";
 
-self.config = {
+self.aeroConfig = {
 	bc: new BareMux(),
 	prefix: "/go/",
 	pathToInitialSW: "/sw.js",

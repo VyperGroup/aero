@@ -57,12 +57,14 @@ type proxyOrigin = string;
 declare const self: WorkerGlobalScope &
 	typeof globalThis & {
 		config: Config;
+		aeroConfig: Config;
 		handle;
 		logger: AeroLogger;
 		nestedSWs: Map<proxyOrigin, NestedSW[]>;
 	};
 
 self.logger = new AeroLogger();
+self.config = self.aeroConfig;
 
 /**
  * Handles the requests
@@ -74,7 +76,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Ensure that everything has been initalized properly
 	if (!("logger" in self))
 		throw new Error("The logger hasn't been initalized!");
-	if (!("config" in self))
+	if (!("aeroConfig" in self))
 		throw self.logger.fatalErr("The is no config provided");
 	if (!("bc" in self.config))
 		throw self.logger.fatalErr(
