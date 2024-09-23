@@ -1,9 +1,26 @@
 // Example: aero with other proxies in a SW switcher design
 
 // Constants
+/**
+ * @type {string}
+ */
 const pathToPatchedAerohandler = "./aeroHandleSimple.js";
+/**
+ * @type {string}
+ */
 const defaultProxy = "aero";
+// Either a string or null
+/**
+ * @type {string | false}
+ */
+const sharedProxyPath = false;
+/**
+ * @type {string}
+ */          
 const dirToAeroConfig = "/aero/";
+/**
+ * @type {string}
+ */
 const dirToUvConfigAndBundle = "/uv/";
 
 importScripts(`${dirToAeroConfig}config.aero.js`);
@@ -36,11 +53,7 @@ addEventListener("message", event => {
 });
 
 addEventListener("fetch", event => {
-	if (event.request.url.startsWith(__uv$config.prefix))
-		return event.respondWith(uv.fetch(event));
-	else if (event.request.url.startsWith(aeroConfig.aeroPrefix))
-		return event.respondWith(aeroHandler(event));
-	else {
+  if (sharedProxyPath) {
 		if (defaultProxy === "aero") {
 			return event.respondWith(aeroHandler(event));
 		} else if (defaultProxy === "uv") {
@@ -58,7 +71,12 @@ addEventListener("fetch", event => {
 					})
 			);
 		}
-	}
+  } else {
+    if (event.request.url.startsWith(__uv$config.prefix))
+      return event.respondWith(uv.fetch(event));
+    else if (event.request.url.startsWith(aeroConfig.aeroPrefix))
+      return event.respondWith(aeroHandler(event));
+  }
 });
 
 function isValidProxy(proxy) {
