@@ -1,4 +1,4 @@
-import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
+import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
 import { proxyGetString } from "$shared/stringProxy";
 
@@ -9,7 +9,7 @@ export default [
 	{
 		proxifiedObj: Proxy.revocable(PaymentRequest, {
 			construct(target, prop, args) {
-				let [methods] = args;
+				const [methods] = args;
 
 				args[0] = methods.map(method => rewriteSrc(method));
 

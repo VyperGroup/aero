@@ -1,4 +1,4 @@
-import { APIInterceptor } from "$types/apiInterceptors";
+import type { APIInterceptor } from "$types/apiInterceptors";
 
 import { proxyLocation, upToProxyOrigin } from "$shared/proxyLocation";
 

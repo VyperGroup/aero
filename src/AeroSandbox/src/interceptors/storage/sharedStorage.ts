@@ -1,5 +1,5 @@
 import config from "$src/config";
-import { APIInterceptor } from "$types/apiInterceptors";
+import type { APIInterceptor } from "$types/apiInterceptors";
 const { prefix } = config;
 
 import { storageNomenclature } from "./shared";

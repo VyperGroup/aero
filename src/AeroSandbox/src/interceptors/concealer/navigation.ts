@@ -4,7 +4,7 @@ import { afterPrefix } from "$shared/getProxyUrl";
 
 import { proxyLocation } from "$shared/proxyLocation";
 
-import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
+import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
 export default [
 	// Entries
@@ -19,7 +19,7 @@ export default [
 
 				const newEntries: any[] = [];
 
-				for (let entry of entries) {
+				for (const entry of entries) {
 					const newEntry = entry;
 
 					// The original property is a getter property, as the value will be changed dynamically

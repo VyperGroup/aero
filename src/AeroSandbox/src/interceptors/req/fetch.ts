@@ -1,4 +1,7 @@
-import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
+import {
+	type APIInterceptor,
+	ExposedContextsEnum
+} from "$types/apiInterceptors";
 import { handleFetchEvent } from "$aero_browser/util/swlessUtils";
 
 export default {
@@ -15,7 +18,7 @@ export default {
 						}
 					: opts;
 
-			let headers: Record<string, string> = {};
+			const headers: Record<string, string> = {};
 
 			if (
 				opts.cache &&

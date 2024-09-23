@@ -1,10 +1,10 @@
-import {
+import type {
 	APIInterceptor,
 	proxifiedObjType,
 	proxifiedObjGeneratorContext
 } from "../types";
 
-import { htmlRewriterMode } from "../types/rewriters/html";
+import type { htmlRewriterMode } from "../types/rewriters/html";
 
 import { buildConfig } from "./customBuilds/aero";
 import { buildConfig as buildConfigFrakenUV } from "./customBuilds/frankenUV.inject.ts";

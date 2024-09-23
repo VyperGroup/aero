@@ -1,4 +1,4 @@
-import { WebAppManifest } from "web-app-manifest";
+import type { WebAppManifest } from "web-app-manifest";
 
 import rewriteSrc from "$sandbox/shared/src";
 

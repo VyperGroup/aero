@@ -13,7 +13,7 @@ export default class {
 	 * @param - The element to be cloned
 	 */
 	constructor(el: HTMLElement) {
-		let copy = document.createElement(el.tagName);
+		const copy = document.createElement(el.tagName);
 
 		this.el = el;
 		this.copy = copy;

@@ -28,7 +28,7 @@ function handleFetchEvent(
 	}
 
 	// @ts-ignore
-	let fakeEvent: FetchEvent = {
+	const fakeEvent: FetchEvent = {
 		...partialFakeEvent,
 		handled: async () => true, // TODO: I don't know how to implement this
 		isReload,

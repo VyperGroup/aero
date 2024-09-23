@@ -60,17 +60,15 @@ const promiseWithTimeout = (promise, ms) =>
 tests.set("scoping - window event test", async () =>
 	promiseWithTimeout(
 		new Promise(resolve => {
-			{
-				EventTarget.prototype.addEventListener = new Proxy(
-					EventTarget.prototype.addEventListener,
-					{
-						apply(target, that, args) {
-							args[1] = ev => resolve(ev.source === realWin);
-							return Reflect.apply(target, that, args);
-						}
+			EventTarget.prototype.addEventListener = new Proxy(
+				EventTarget.prototype.addEventListener,
+				{
+					apply(target, that, args) {
+						args[1] = ev => resolve(ev.source === realWin);
+						return Reflect.apply(target, that, args);
 					}
-				);
-			}
+				}
+			);
 
 			addEventListener("message", null);
 			postMessage("");

@@ -1,4 +1,4 @@
-let swless: ServiceWorkerContainer = {};
+const swless: ServiceWorkerContainer = {};
 
 if (/*flags.workers*/ true) {
 	// This will not need to use the original function, because all functionality is emulated here. This means that a Proxy object shouldn't be used here.

@@ -1,4 +1,4 @@
-import { overwriteRecordsType } from "$types/generic";
+import type { overwriteRecordsType } from "$types/generic";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type revokableProxyRet = { proxy: any; revoke: () => void };

@@ -6,7 +6,10 @@
  */
 
 import { afterPrefix } from "$shared/getProxyUrl";
-import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
+import {
+	type APIInterceptor,
+	ExposedContextsEnum
+} from "$types/apiInterceptors";
 
 // Proxy the getters for shadow root stylesheets
 

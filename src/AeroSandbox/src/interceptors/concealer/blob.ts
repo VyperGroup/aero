@@ -1,4 +1,4 @@
-import { APIInterceptor } from "$types/apiInterceptors";
+import type { APIInterceptor } from "$types/apiInterceptors";
 import isHtml from "$shared/isHTML";
 
 export default {
@@ -9,7 +9,7 @@ export default {
 			if (isHtml(opts.type))
 				args[0] = arr.map((html: string) => $aero.init + html);
 
-			let ret = Reflect.apply(target, that, args);
+			const ret = Reflect.apply(target, that, args);
 
 			let size = 0;
 

@@ -57,7 +57,7 @@ function getRequestUrl(
 			}
 			*/
 
-			let protoSplit = noPrefix.split(/^(https?:\/\/)/g);
+			const protoSplit = noPrefix.split(/^(https?:\/\/)/g);
 			const noPrefixProto = protoSplit.slice(2).join();
 
 			// TODO: Do this without searching for labels (There could be a directory with them or it could be an unqualified domain)

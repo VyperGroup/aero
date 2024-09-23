@@ -1,4 +1,4 @@
-import { boolFlag, FeatureFlagsRspack } from "aero-proxy/featureFlags";
+import { boolFlag, type FeatureFlagsRspack } from "aero-proxy/featureFlags";
 
 import path from "path";
 import rspack from "@rspack/core";

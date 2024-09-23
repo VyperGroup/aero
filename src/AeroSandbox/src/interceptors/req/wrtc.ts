@@ -1,6 +1,6 @@
 import {
 	AltProtocolEnum,
-	APIInterceptor,
+	type APIInterceptor,
 	ExposedContextsEnum
 } from "$types/apiInterceptors";
 
@@ -10,7 +10,7 @@ import escape from "$shared/escape";
 export default {
 	proxifiedObj: Proxy.revocable(RTCPeerConnection, {
 		construct(target, args) {
-			let [config] = args;
+			const [config] = args;
 
 			// Backup
 			const iceServersBak = config.iceServers;

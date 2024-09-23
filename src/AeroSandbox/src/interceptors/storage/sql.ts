@@ -1,4 +1,4 @@
-import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
+import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
 import config from "$src/config";
 const { prefix } = config;

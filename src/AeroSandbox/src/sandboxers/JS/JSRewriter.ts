@@ -1,4 +1,4 @@
-import {
+import type {
 	AeroJSParserConfig,
 	RewriteOptions,
 	aerogelParser,

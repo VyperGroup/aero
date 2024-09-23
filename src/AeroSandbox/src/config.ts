@@ -1,5 +1,5 @@
 import { boolFlag } from "$aero/build/featureFlags";
-import { Config } from "$types/config";
+import type { Config } from "$types/config";
 
 import JSRewriter from "./sandboxers/JS/JSRewriter";
 

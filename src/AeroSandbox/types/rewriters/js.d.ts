@@ -1,4 +1,4 @@
-import { overwriteRecordsType } from "$types/generic";
+import type { overwriteRecordsType } from "$types/generic";
 
 /** @warning Basic Regexp is unsupported as of now and will never be recommended */
 export type rewriterMode = "aerogel" | "ast" | "basic_regexp";

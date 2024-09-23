@@ -1,4 +1,4 @@
-import { Sec } from "$types/index";
+import type { Sec } from "$types/index";
 
 // Utility
 import { afterPrefix } from "$sandbox/shared/getProxyUrl";

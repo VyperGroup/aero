@@ -9,7 +9,7 @@ export default {
 		);
 	},
 	set(scheme: string): string {
-		let split = scheme.split("web+");
+		const split = scheme.split("web+");
 
 		split.splice(1, 0, `${proxyLocation().origin}+`);
 

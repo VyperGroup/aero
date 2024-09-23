@@ -113,7 +113,7 @@ if (/*flags.nonstandard*/ true) {
 				window.requestFileSystem(
 					window.TEMPORARY,
 					1024 * 1024,
-					function (fs: FileSystem) {
+					(fs: FileSystem) => {
 						fs.root.createReader().readEntries(entries => {
 							entries.forEach(entry => {
 								if (entry.isDirectory) {

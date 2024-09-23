@@ -1,4 +1,4 @@
-import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
+import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
 import { afterPrefix } from "$shared/getProxyUrl";
 

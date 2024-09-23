@@ -1,4 +1,4 @@
-import { APIInterceptor } from "$types/apiInterceptors";
+import type { APIInterceptor } from "$types/apiInterceptors";
 import { proxyLocation } from "$shared/proxyLocation";
 
 /**
@@ -24,7 +24,7 @@ function isValidDirectoryName(segment: string): boolean {
  */
 function removeOneLevel(path: string): string {
 	// Split the path into segments
-	let segments = path.split("/");
+	const segments = path.split("/");
 
 	// Iterate over the segments in reverse order
 	for (let i = segments.length - 1; i >= 0; i--) {
@@ -41,7 +41,7 @@ function removeOneLevel(path: string): string {
 	}
 
 	// Join the segments back together into a path
-	let modifiedPath = segments.join("/");
+	const modifiedPath = segments.join("/");
 
 	return modifiedPath;
 }
@@ -50,7 +50,7 @@ export default {
 	// @ts-ignore
 	proxifiedObj: Proxy.revocable(import.meta.resolve, {
 		apply(target, that, args) {
-			let ret = Reflect.apply(target, that, args);
+			const ret = Reflect.apply(target, that, args);
 
 			// Prevent the paths from going behind the proxy origin
 			let curr = ret;

@@ -1,4 +1,4 @@
-import { boolFlag, FeatureFlagsRspack } from "./src/featureFlags";
+import { boolFlag, type FeatureFlagsRspack } from "./src/featureFlags";
 
 import path from "path";
 import rspack from "@rspack/core";

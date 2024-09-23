@@ -7,7 +7,10 @@ import escape from "$shared/escape";
  * This whole file encompasses the {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API WebAuthn}, {@link https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API FedCM}, {@link https://wicg.github.io/web-otp WebOTP} APIs
  */
 
-import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
+import {
+	type APIInterceptor,
+	ExposedContextsEnum
+} from "$types/apiInterceptors";
 
 import { proxyLocation } from "$shared/proxyLocation";
 import { afterPrefix } from "$shared/getProxyUrl";
@@ -50,7 +53,7 @@ interface CollectedClientData {
 }
 
 function proxifyCredentials(credentials: Credential): Credential {
-	let proxifiedCredentials: Credential = credentials;
+	const proxifiedCredentials: Credential = credentials;
 
 	/**
 	 * @see {@link https://w3c.github.io/webappsec-credential-management/#credential-type-registry-credential-type CredentialTypeRegistry}
@@ -72,7 +75,7 @@ function proxifyCredentials(credentials: Credential): Credential {
 		 */
 		case "otp":
 			//
-			let otpCredentials = proxifiedCredentials as OTPCredential;
+			const otpCredentials = proxifiedCredentials as OTPCredential;
 			// OTP doesn't need rewrites
 
 			break;
@@ -153,7 +156,7 @@ export default [
 					// Return to normal operations and let the browser throw its proper exception
 					return Reflect.apply(target, that, args);
 
-				let newOptions = options;
+				const newOptions = options;
 
 				// https://w3c.github.io/webappsec-credential-management/#dictdef-federatedcredentialrequestoptions
 				newOptions.federated = {
@@ -166,7 +169,7 @@ export default [
 					)
 				};
 
-				let newArgs = args;
+				const newArgs = args;
 				args[0] = options;
 
 				const keyCredential = Reflect.apply(target, that, newArgs);
@@ -185,7 +188,7 @@ export default [
 						)
 					) as CollectedClientData;
 
-					let proxifiedClientData = clientData;
+					const proxifiedClientData = clientData;
 
 					Object.defineProperties(proxifiedClientData, {
 						type: {

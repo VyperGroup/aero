@@ -21,7 +21,7 @@ function storageKey(key: string) {
 }
 
 function storageKeys(keys: string[]) {
-	let proxyKeys = [];
+	const proxyKeys = [];
 
 	/*escapeWithProxyOrigin
 	for (let key of keys) {

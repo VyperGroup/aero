@@ -1,4 +1,7 @@
-import { SupportEnum, InterceptionFeaturesEnum } from "$types/apiInterceptors";
+import type {
+	SupportEnum,
+	InterceptionFeaturesEnum
+} from "$types/apiInterceptors";
 
 export interface AeroSandboxConfig {
 	proxyConfig: ProxyConfig;

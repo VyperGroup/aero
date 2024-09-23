@@ -2,7 +2,7 @@ import type BareMux from "@mercuryworkshop/bare-mux";
 
 import type { FeatureFlagsRuntime } from "$aero/src/featureFlags";
 
-import { SearchParamOptions } from "./catch-all";
+import type { SearchParamOptions } from "./catch-all";
 
 export type AeroPathFilter = (reqPath: string) => boolean;
 /** @returns the encoded url */

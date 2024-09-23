@@ -1,5 +1,5 @@
 import {
-	APIInterceptor,
+	type APIInterceptor,
 	SpecialInterceptionFeaturesEnum
 } from "$types/apiInterceptors";
 

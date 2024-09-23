@@ -54,7 +54,7 @@ export default class XOR {
 	}
 
 	encodeUrl(urlStr: string, key: string) {
-		let urlLookupTable = this.#getLookupTable(key);
+		const urlLookupTable = this.#getLookupTable(key);
 
 		const textArr = new TextEncoder().encode(urlStr);
 		const resultArr = new Uint8Array(textArr.length);
@@ -74,7 +74,7 @@ export default class XOR {
 		return new TextDecoder().decode(resultArr);
 	}
 	decodeUrl(text: string, key: string) {
-		let urlLookupTable = this.#getLookupTable(key);
+		const urlLookupTable = this.#getLookupTable(key);
 
 		const textArr = new TextEncoder().encode(text);
 		const resultArr = new Uint8Array(textArr.length);

@@ -1,4 +1,4 @@
-import { AeroSandboxConfig } from "../types/aeroSandbox";
+import type { AeroSandboxConfig } from "../types/aeroSandbox";
 
 export default class AeroSandbox {
 	config: AeroSandboxConfig;

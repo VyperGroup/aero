@@ -1,4 +1,4 @@
-import { APIInterceptor, SupportEnum } from "$types/apiInterceptors";
+import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
 import { afterPrefix } from "$shared/getProxyUrl";
 
@@ -29,7 +29,7 @@ export default {
 					);
 
 					if (match !== null && match.length === 2) {
-						const ver = parseFloat(match[1]);
+						const ver = Number.parseFloat(match[1]);
 
 						res.stack = res.stack.replace(
 							new RegExp(

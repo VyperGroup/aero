@@ -1,11 +1,11 @@
-import { AltProtocolEnum, APIInterceptor } from "$types/apiInterceptors";
+import { AltProtocolEnum, type APIInterceptor } from "$types/apiInterceptors";
 
 import { BareClient } from "@mercuryworkshop/bare-mux";
 
 import rewriteSrc from "$shared/src";
 
 // TODO: (Percs) This file is incomplete
-let client = new BareClient();
+const client = new BareClient();
 
 export default [
 	{

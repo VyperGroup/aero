@@ -1,4 +1,4 @@
-import {
+import type {
 	astParser,
 	astWalker,
 	ASTRewriterConfig
@@ -13,7 +13,7 @@ import traverse from "traverse-the-universe";
 
 // AST -> JS
 // This is the only realistic option
-import { generate, Node } from "astring";
+import { generate, type Node } from "astring";
 
 // Webpack Feature Flags
 // biome-ignore lint/style/useSingleVarDeclarator: <explanation>
@@ -36,13 +36,13 @@ export default class ASTRewriter {
 	}
 	// These two methods are here because it is possible to compile out the AST parsers and walkers that the user chooses in the build flags
 	static supportedParsers(): astParser[] {
-		let supports: astParser[] = [];
+		const supports: astParser[] = [];
 		if (INCLUDE_AST_PARSER_OXC) supports.push("oxc");
 		if (INCLUDE_AST_PARSER_SEAFOX) supports.push("seafox");
 		return supports;
 	}
 	static supportedWalkers(): astWalker[] {
-		let supports: astWalker[] = [];
+		const supports: astWalker[] = [];
 		if (INCLUDE_AST_WALKER_TRAVERSE_THE_UNIVERSE)
 			supports.push("traverse_the_universe");
 		return supports;

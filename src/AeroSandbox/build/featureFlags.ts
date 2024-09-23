@@ -1,4 +1,4 @@
-import { htmlRewriterMode } from "../types/rewriters/html";
+import type { htmlRewriterMode } from "../types/rewriters/html";
 
 export type boolFlagType = "true" | "false";
 

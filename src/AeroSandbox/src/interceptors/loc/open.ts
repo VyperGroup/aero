@@ -1,4 +1,7 @@
-import { APIInterceptor, ExposedContextsEnum } from "$types/apiInterceptors";
+import {
+	type APIInterceptor,
+	ExposedContextsEnum
+} from "$types/apiInterceptors";
 
 import rewriteSrc from "$shared/src";
 

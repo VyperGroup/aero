@@ -1,4 +1,4 @@
-import {
+import type {
 	AeroGelConfig,
 	aerogelParser,
 	keywordReplacementType
@@ -19,7 +19,7 @@ export default class AeroGel {
 		this.config = config;
 	}
 	static supportedParsers(): aerogelParser[] {
-		let supports: aerogelParser[] = [];
+		const supports: aerogelParser[] = [];
 		if (INCLUDE_ESNIFF) supports.push("esniff");
 		return supports;
 	}
@@ -85,7 +85,7 @@ export default class AeroGel {
 			keywordReplacements
 		)) {
 			const { keywordLen, replacementStr } = replacementData;
-			const index = parseInt(indexStr);
+			const index = Number.parseInt(indexStr);
 			const replacementArr = Array.from(replacementStr);
 			totalAddedToIndex += replacementArr.length - keywordLen;
 			charArr.splice(

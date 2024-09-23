@@ -104,7 +104,7 @@ export default class extends Cache {
 		if (cacheControl) {
 			const dirs = cacheControl.split(";").map(dir => dir.trim());
 
-			const secs = parseInt(
+			const secs = Number.parseInt(
 				dirs
 					.find(dir => dir.startsWith("max-age"))
 					// FIXME: Breaks on https://dailymail.com

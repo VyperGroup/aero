@@ -5,7 +5,7 @@ import { EntryDescription } from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
-import { FeatureFlags, boolFlag } from "./build/featureFlags";
+import { type FeatureFlags, boolFlag } from "./build/featureFlags";
 
 let debugMode = "DEBUG" in process.env; // Live debugging
 const testBuild = "TEST_BUILD" in process.env; // Makes independent build files for each module that will be tested in the unit testing\
