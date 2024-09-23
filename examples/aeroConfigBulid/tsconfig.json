@@ -7,5 +7,5 @@
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true
 	},
-	"include": ["./aeroConfig.ts"]
+	"include": ["aeroDefaultConfig.ts"]
 }
