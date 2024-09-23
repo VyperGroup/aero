@@ -12,7 +12,8 @@
 		"dist/featureFlags.aero.js.map",
 		"examples/aeroDefaultConfig.ts",
 		"examples/rspack.build.ts",
-		"tsconfig.json"
+    "examples/swWithSwitcher.js",
+		"tsconfig.json",
 	],
 	"scripts": {
 		"build": "rspack build -c rspack.config.ts",
