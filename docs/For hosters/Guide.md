@@ -3,6 +3,9 @@
 This is everything you need to add aero to your proxy site!
 
 1. Use the [proxy SDK](https://github.com/vortexdeveloperlabs/sdk) for aero's handler and registering the SW [*example*](https://github.com/vortexdeveloperlabs/aero-demo-site/blob/main/sw.js#L4-L6)
+
+> See `examples/swWithSwitcher.js` to learn how to implement aero support with other proxies
+
 2. Add the required NPM packages: `npm i aero-proxy`
 3. Modify `examples/install-aero.sh` to your liking and include it inside of the root of your git repo. I recommend making a `deps.sh` in your repo like this:
 
