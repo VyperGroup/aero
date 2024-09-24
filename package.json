@@ -1,15 +1,15 @@
 {
 	"name": "aero-proxy",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "The innovative interception proxy",
-	"main": "dist/sw.aero.js",
+	"main": "extras/aeroPath.js",
 	"files": [
 		"LICENSE",
 		"dist/BareMux.aero.js",
 		"dist/BareMux.aero.js.map",
 		"dist/sw.aero.js",
 		"dist/sw.aero.js.map",
-		"extras/index.js",
+		"extras/aeroPath.js",
 		"extras/handleWithExtras.js",
 		"types/index.d.ts"
 	],
