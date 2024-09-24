@@ -11,7 +11,7 @@ This is everything you need to add aero to your proxy site!
 
 ```sh
 # Your bash variables here
-$AERO_PATH=... # The directory where aero's files should be
+AERO_PATH=... # The directory where aero's files should be
 ...
 
 ./node_modules/aero-proxy/examples/install-aero.sh
