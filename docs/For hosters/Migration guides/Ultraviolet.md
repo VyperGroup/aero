@@ -15,14 +15,14 @@ import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 add
 
 ```js
-import { default as aeroPath, aeroExtrasPath } from "aero-proxy/path"
+import { default as aeroPath, aeroExtrasPath } from "aero-proxy"
 ```
 
 or (if you are not following step 4)
 
 ```js
 import aeroPath from "aero-proxy/path";
-import aeroSandboxPath from "aero-sandbox/aero/path";
+import aeroSandboxPath from "aero-sandbox";
 ```
 
 3. Underneath
