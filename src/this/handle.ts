@@ -453,5 +453,5 @@ ${body}
 
 self.aeroHandle = handle;
 self.routeAero = (ev: FetchEvent): boolean => {
-	return ev.request.url.startsWith(aeroConfig.aeroPrefix);
+	return ev.request.url.startsWith(location.origin + aeroConfig.aeroPrefix);
 };
