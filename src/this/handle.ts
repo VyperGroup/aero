@@ -1,4 +1,4 @@
-import type { Sec } from "$types/index";
+import type { Sec } from "$aero/types/shared";
 
 // Utility
 import { afterPrefix } from "$sandbox/shared/getProxyUrl";
@@ -6,7 +6,7 @@ import appendSearchParam from "../AeroSandbox/src/shared/appendSearchParam"; // 
 import getPassthroughParam from "./util/getPassthroughParam";
 import getRequestUrl from "./util/getRequestUrl";
 import redir from "./util/redir";
-import clear from "./isolation/execClearEmulationOnWindowClients";
+// TODO: Fix import - import clear from "./isolation/execClearEmulationOnWindowClients";
 import isHTML from "$sandbox/shared/isHTML";
 import escapeJS from "./util/escapeJS";
 // Cosmetic
@@ -29,7 +29,7 @@ import rewriteManifest from "$rewriters/webAppManifest";
 
 // TODO: Use JSRewriter class instead of rewriteScript
 import JSRewriter from "$sandbox/sandboxers/JS/JSRewriter";
-import type { Config } from "$types/config";
+import type { Config } from "$aero/types";
 
 // TODO: Import the aero JS parser config types from aerosandbox into aero's sw typesa
 //const jsRewriter = new JSRewriter(self.config.aeroSandbox.jsParserConfig);
@@ -72,18 +72,18 @@ self.config = self.aeroConfig;
  * @returns  The proxified response
  */
 // TODO: Move all the proxy middleware code to a bare mixin
-async function handle(event: FetchEvent): Promise<Response> {
+async function handle(ev: FetchEvent): Promise<Response> {
 	// Ensure that everything has been initalized properly
 	if (!("logger" in self))
 		throw new Error("The logger hasn't been initalized!");
 	if (!("aeroConfig" in self))
 		throw self.logger.fatalErr("The is no config provided");
-	if (!("bc" in self.config))
+	if (!("bc" in config))
 		throw self.logger.fatalErr(
 			"The is no BareClient provided in the config."
 		);
 
-	const req = event.request;
+	const req = ev.request;
 
 	// Dynamic config
 	// TODO: Dynamically switch backends
@@ -105,25 +105,25 @@ async function handle(event: FetchEvent): Promise<Response> {
 		return await fetch(req.url);
 	}
 
-	let isModule;
+	let isMod;
 	const isScript = req.destination === "script";
 	if (isScript) {
 		const isModParam = getPassthroughParam(params, "isMod");
-		isModule = isModParam && isModParam === "true";
+		isMod = isModParam && isModParam === "true";
 	}
 
 	const frameSec = getPassthroughParam(params, "frameSec");
 
 	let clientURL: URL;
 	// Get the origin from the user's window
-	if (REQ_INTERCEPTION_CATCH_ALL === "clients" && event.clientId !== "") {
+	if (REQ_INTERCEPTION_CATCH_ALL === "clients" && ev.clientId !== "") {
 		if (SERVER_ONLY) {
 			throw self.logger.fatalErr(
 				'The Feature Flag "REQ_INTERCEPTION_CATCH_ALL" can\'t be set to "clients" when "SERVER_ONLY" is enabled.'
 			);
 		}
 		// Get the current window
-		const client = await clients.get(event.clientId);
+		const client = await clients.get(ev.clientId);
 		if (client)
 			// Get the url after the prefix
 			clientURL = new URL(afterPrefix(client.url));
@@ -259,10 +259,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await self.config.bc.fetch(
-		new URL(proxyUrl).href,
-		rewrittenReqOpts
-	);
+	const resp = await self.bc.fetch(new URL(proxyUrl).href, rewrittenReqOpts);
 
 	if (!resp) self.logger.fatalErr("No response found!");
 	if (resp instanceof Error) throw Error;
@@ -302,7 +299,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	// Rewrite the body
 	// TODO: Pack these injected scripts with Webpack
 	if (
-		/*REWRITER_HTML*/ self.config.featureFlags.REWRITER_HTML &&
+		/*REWRITER_HTML*/ self.featureFlags.REWRITER_HTML &&
 		isNavigate &&
 		html
 	) {
@@ -455,3 +452,6 @@ ${body}
 }
 
 self.aeroHandle = handle;
+self.routeAero = (ev: FetchEvent): boolean => {
+	return ev.request.url.startsWith(aeroConfig.aeroPrefix);
+};

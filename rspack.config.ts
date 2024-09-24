@@ -1,6 +1,6 @@
-import { boolFlag, type FeatureFlagsRspack } from "./src/featureFlags";
+import { boolFlag, type FeatureFlagsRspack } from "./types/featureFlags";
 
-import path from "path";
+import path from "node:path";
 import rspack from "@rspack/core";
 
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
@@ -52,11 +52,9 @@ if (debugMode)
 const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	entry: {
-		sw: path.resolve(__dirname, "./src/this/handle.ts"),
-		config: path.resolve(__dirname, "./src/config.ts"),
+		BareMux: path.resolve(__dirname, "./src/internal/BareMux.ts"),
+		sw: path.resolve(__dirname, "./src/this/handle.ts")
 		// Building these bundles separately allows for the user to roll out their own config files without having to build aero as a whole
-		configTypes: path.resolve(__dirname, "./src/aero/types/config.d.ts"),
-		featureFlags: path.resolve(__dirname, "./src/aero/featureFlags.ts")
 	},
 	plugins,
 	resolve: {

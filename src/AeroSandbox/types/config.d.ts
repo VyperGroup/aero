@@ -1,4 +1,4 @@
-import type { FeatureFlagsRuntime } from "../../../src/featureFlags";
+import type { FeatureFlagsRuntime } from "../../../types/featureFlags";
 import type JSRewriter from "$sandbox/JS/JSRewriter";
 
 export type Config = {

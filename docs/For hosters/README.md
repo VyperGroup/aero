@@ -2,4 +2,6 @@
 
 This directory contains documentation intended for those who manage proxy sites
 
-- [How to add aero to your proxy site](./Guide.md)
+## Advice
+
+- [Be careful with iframes](./Be%20careful%20with%20iframes.md    )

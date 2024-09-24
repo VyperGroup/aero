@@ -1,6 +1,6 @@
-import type { boolFlagType } from "./AeroSandbox/build/featureFlags";
-import { boolFlag } from "./AeroSandbox/build/featureFlags";
-import type { htmlRewriterMode } from "./AeroSandbox/types/rewriters/html";
+import type { boolFlagType } from "../src/AeroSandbox/build/featureFlags";
+import { boolFlag } from "../src/AeroSandbox/build/featureFlags";
+import type { htmlRewriterMode } from "../src/AeroSandbox/types/rewriters/html";
 
 export interface FeatureFlags {
 	/** @warning currently unsupported */
