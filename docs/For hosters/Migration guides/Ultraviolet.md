@@ -35,6 +35,7 @@ add
 
 ```js
 app.use("/aero/", express.static(aeroPath));
+app.use("/aero/extras/", express.static(aeroExtrasPath)); // You only need to import this if you are using handleWithExtras
 app.use("/aero/sandbox/", express.static(aeroSandboxPath));
 ```
 
