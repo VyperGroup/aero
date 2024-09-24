@@ -5,7 +5,7 @@ const escapeKeyword = "_";
 /**
  * @type {Config}
  */
-self.config = {
+self.aeroConfig = {
 	bc: new BareMux(),
 	prefix: "/go/",
 	pathToInitialSW: "/sw.js",
@@ -21,7 +21,7 @@ self.config = {
 		path.startsWith("/tests/") ||
 		path.startsWith("/baremux") ||
 		path.startsWith("/epoxy/") ||
-		!path.startsWith(self.config.prefix),
+		!path.startsWith(aeroConfig.prefix),
 	searchParamOptions: {
 		referrerPolicy: {
 			escapeKeyword,
@@ -41,6 +41,8 @@ self.config = {
 		dbName: "aero",
 		id: "update"
 	},
+	//urlEncoder: __uv$config.urlEncoder,
+	//urlDecoder: __uv$config.urlDecoder,
 	urlEncoder: url => url,
 	urlDecoder: url => url
 };
