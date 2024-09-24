@@ -1,15 +1,10 @@
-// Example: aero with other proxies in a SW switcher design
+// Example: aero with other proxies in a SW switcher design. Includes optional support for the same proxies on the same route.
 
 // Constants
 /**
  * @type {string}
  */
 const defaultProxy = "aero";
-/**
- * @description From the aero SDK
- * @type {string}
- */
-const pathToPatchedAerohandler = "./aeroHandleSimple.js";
 // Either a string or null
 /**
  * @type {string | false}
@@ -32,7 +27,7 @@ importScripts(`${dirToUvConfigAndBundle}uv.bundle.js`);
 importScripts(`${dirToUvConfigAndBundle}uv.config.js`);
 importScripts(__uv$config.sw);
 
-importScripts(pathToPatchedAerohandler);
+importScripts(`${dirToAeroConfig}/extras/handleWithExtras.js`);
 
 const aeroHandlerWithExtras = patchAeroHandler(handle);
 const uv = new UVServiceWorker();
