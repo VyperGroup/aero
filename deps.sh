@@ -11,8 +11,3 @@ cd dev-server
   git pull
   bash deps.sh
 cd ..
-
-if [ ! -d extras ]; then
-  mkdir extras
-  curl https://raw.githubusercontent.com/vortexdeveloperlabs/sdk/refs/heads/main/aeroHandleSimple.js -o extras/handleWithExtras.js
-fi

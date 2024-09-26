@@ -77,7 +77,7 @@ const config: rspack.Configuration = {
 		: {
 				sandbox: "./build/init.ts",
 				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts",
-				config: "./src/config.ts"
+				featureFlags: "./src/featureFlags.ts"
 			},
 	plugins,
 	resolve: {

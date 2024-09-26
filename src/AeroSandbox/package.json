@@ -1,13 +1,20 @@
 {
 	"name": "aero-sandbox",
-	"version": "0.0.1",
-	"description": "(alpha)",
+	"version": "0.0.3",
+	"description": "The sandboxing library for aero",
 	"main": "dist/sandbox.aero.js",
+	"exports": {
+		"./path": "./extras/aeroSandboxPath.js",
+		"./configTypes": "./types/config.d.ts"
+	},
 	"files": [
 		"dist/sandbox.aero.js",
 		"dist/sandbox.aero.js.map",
 		"dist/jsRewriter.aero.js",
-		"dist/jsRewriter.aero.js.map"
+		"dist/jsRewriter.aero.js.map",
+		"dist/featureFlags.aero.js",
+		"dist/featureFlags.aero.js.map",
+		"types/index.d.ts"
 	],
 	"scripts": {
 		"check": "biome check --write",

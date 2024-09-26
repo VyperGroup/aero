@@ -1,4 +1,4 @@
-import type { Sec } from "$aero/types/shared";
+import type { Sec } from "$aero/types";
 
 // Utility
 import { afterPrefix } from "$sandbox/shared/getProxyUrl";
@@ -29,7 +29,7 @@ import rewriteManifest from "$rewriters/webAppManifest";
 
 // TODO: Use JSRewriter class instead of rewriteScript
 import JSRewriter from "$sandbox/sandboxers/JS/JSRewriter";
-import type { Config } from "$aero/types";
+import type { Config } from "$aero/types/config";
 
 // TODO: Import the aero JS parser config types from aerosandbox into aero's sw typesa
 //const jsRewriter = new JSRewriter(self.config.aeroSandbox.jsParserConfig);
@@ -398,24 +398,24 @@ ${body}
 	/*else if (SUPPORT_WORKER && req.destination === "worker") {
 		rewrittenBody = isModWorker
 			? /* js *\/ `
-import { proxyLocation } from "${aeroPrefix}worker/worker";
+import { proxyLocation } from "${prefix}worker/worker";
 import { FeatureFlags } from '../featureFlags';
 self.location = proxyLocation;
 `
 			: `
-importScripts("${aeroPrefix}worker/worker.js");
+importScripts("${prefix}worker/worker.js");
 
 ${body}
 		`;
 	else if (SUPPORT_WORKER && req.destination === "sharedworker")
 		body = isModWorker
 			? /* js *\/ `
-import { proxyLocation } from "${aeroPrefix}worker/worker";
+import { proxyLocation } from "${prefix}worker/worker";
 self.location = proxyLocation;
 `
 			: /* js *\/ `
-importScripts("${aeroPrefix}worker/worker.js");
-importScripts("${aeroPrefix}worker/sharedworker.js");
+importScripts("${prefix}worker/worker.js");
+importScripts("${prefix}worker/sharedworker.js");
 
 ${body}
 		`;
@@ -453,5 +453,5 @@ ${body}
 
 self.aeroHandle = handle;
 self.routeAero = (ev: FetchEvent): boolean => {
-	return ev.request.url.startsWith(location.origin + aeroConfig.aeroPrefix);
+	return ev.request.url.startsWith(location.origin + aeroConfig.prefix);
 };

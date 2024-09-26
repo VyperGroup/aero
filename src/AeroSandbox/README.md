@@ -1,6 +1,6 @@
 # AeroSandbox library
 
-This is a soon-to-be proxy-independent library (the shared code from Aero needs to move into here) that lets you modify. It will work even without SW capabilities. This is where all the non-sw code of aero lays.
+This is a soon-to-be proxy-independent library (the shared code from Aero needs to move into here) that lets you modify... It will work even without SW capabilities. This is where all the non-sw code of aero lays.
 
 > This document is out of date planned to be removed, and some parts may be incorporated into other documents
 

@@ -1,8 +1,12 @@
 {
 	"name": "aero-proxy",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "The innovative interception proxy",
 	"main": "extras/aeroPath.js",
+	"type": "module",
+	"exports": {
+		"./configTypes": "./types/config.d.ts"
+	},
 	"files": [
 		"LICENSE",
 		"dist/BareMux.aero.js",
@@ -11,7 +15,7 @@
 		"dist/sw.aero.js.map",
 		"extras/aeroPath.js",
 		"extras/handleWithExtras.js",
-		"types/index.d.ts"
+		"types/config.d.ts"
 	],
 	"scripts": {
 		"build": "rspack build -c rspack.config.ts",

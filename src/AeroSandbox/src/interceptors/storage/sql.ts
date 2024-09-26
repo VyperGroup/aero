@@ -1,6 +1,6 @@
 import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 
-import config from "$src/config";
+import config from "$aero/examples/config";
 const { prefix } = config;
 
 const handler = {

@@ -43,9 +43,7 @@ export default {
 					res.stack = res.stack
 						.split("\n")
 						.map(line =>
-							line.includes(
-								location.origin /*+ config.aeroPrefix*/
-							)
+							line.includes(location.origin /*+ config.prefix*/)
 								? ""
 								: line
 						)

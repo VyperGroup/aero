@@ -1,4 +1,4 @@
-import type { Config } from "$aero/types";
+import type { Config } from "$aero/types/config";
 
 // @ts-ignore
 declare const self: WorkerGlobalScope &

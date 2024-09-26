@@ -1,18 +1,26 @@
 /** @import { Config } from "aero-proxy" */
 
+/**
+ * @type {string}
+ */
 const escapeKeyword = "_";
+/**
+ * @type {string}
+ */
+const dirToAero = "/aero/";
 
 /**
  * @type {Config}
  */
 self.aeroConfig = {
 	bc: new BareMux(),
+	serverBackendPrefix: "/bare/",
 	prefix: "/go/",
 	pathToInitialSW: "/sw.js",
 	bundles: {
-		"bare-mux": "/aero/BareMux.aero.js",
-		handle: "/aero/sw.aero.js",
-		sandbox: "/aero/sandbox/sandbox.aero.js"
+		"bare-mux": `${dirToAero}BareMux.aero.js`,
+		handle: `${dirToAero}sw.aero.js`,
+		sandboxConfig: `${dirToAero}sandbox/config.js`
 	},
 	aeroPathFilter: path =>
 		Object.values(self.config.bundles).find(bundlePath =>

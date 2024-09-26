@@ -4,8 +4,6 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-const aeroPath = resolve(__dirname, "..", "dist");
-const aeroExtrasPath = resolve(__dirname, "..", "extras");
+const aeroSandboxPath = resolve(__dirname, "..", "dist");
 
-export default aeroPath;
-export { aeroExtrasPath };
+export default aeroSandboxPath;

@@ -2,7 +2,7 @@ import upToProxyLocation from "sandbox/src/util/upToProxyLocation";
 
 // FIXME:
 /*
-import { aeroPrefix } from "$src/config";
+import { prefix } from "$src/config";
 
 import { afterPrefix } from "$shared/afterPrefix";
 
@@ -56,7 +56,7 @@ If you make a request to two different proxy origins on the site that are both c
 					// Hide aero's injections
 					.filter(
 						entry =>
-							!entry.name.startsWith(location.origin + aeroPrefix)
+							!entry.name.startsWith(location.origin + prefix)
 					)
 					.map(async entry => {
 						if (entry.name) {

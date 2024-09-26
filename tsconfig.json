@@ -34,7 +34,8 @@
 		"./src/AeroSandbox/src/shared/*.ts",
 		"types/**/*.ts",
 		"src/AeroSandbox/types/aeroSandbox.d.ts",
-		"examples/config.js"
+		"examples/config.js",
+		"src/AeroSandbox/examples/config.js"
 	],
 	"exclude": [
 		"rspack.config.ts",
