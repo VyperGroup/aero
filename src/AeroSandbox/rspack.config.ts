@@ -5,36 +5,20 @@ import { EntryDescription } from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
-import { type FeatureFlags, boolFlag } from "./build/featureFlags";
-
 let debugMode = "DEBUG" in process.env; // Live debugging
-const testBuild = "TEST_BUILD" in process.env; // Makes independent build files for each module that will be tested in the unit testing\
+const minimalBuild = "BUILD_MINIMAL" in process.env; // Build AeroSandbox without the extra APIs. This should be used when building just for the proxy only;
+const testBuild = "TEST_BUILD" in process.env; // Makes independent build files for each module that will be tested in the unit testing
 if (!debugMode && testBuild) debugMode = true;
 
-const webpackFeatureFlags: FeatureFlags = {
-	// JS Rewriter
-	INCLUDE_ESNIFF: boolFlag(true),
-	INCLUDE_AST_PARSER_SEAFOX: boolFlag(true),
-	INCLUDE_AST_PARSER_OXC: boolFlag(false),
-	INCLUDE_AST_WALKER_TRAVERSE_THE_UNIVERSE: boolFlag(true),
-	SUPPORTED_HTML_REWRITER_MODES: JSON.stringify([
-		"mutation_observer",
-		"custom_elements",
-		"domparser",
-		"sw_parser"
-	]),
-	HTML_USE_IS_ATTR: boolFlag(false),
-	HTML_USE_NAV_EVENTS: boolFlag(false),
-	FEATURE_EMU_SECURE_CONTEXT: boolFlag(false),
-	FEATURE_HASH_URL: boolFlag(false),
-	DEBUG: boolFlag(debugMode)
-};
+import createFeatureFlags from "./createFeatureFlags";
+
+const featureFlags = createFeatureFlags({ debugMode });
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any[] = [
 	new CleanWebpackPlugin(),
 	// @ts-ignore
-	new rspack.DefinePlugin(webpackFeatureFlags)
+	new rspack.DefinePlugin(featureFlags)
 ];
 
 if (debugMode)
@@ -60,6 +44,13 @@ const output: any = {
 
 if (testBuild) output.library = ["Mod", "[name]"];
 
+const defaultBuild = {
+	sandbox: "./build/init.ts",
+	jsRewriter: "./src/sandboxers/JS/JSRewriter.ts",
+	featureFlags: "./src/featureFlags.ts",
+	swAdditions: "./src/swAdditions.ts"
+};
+
 const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	entry: testBuild
@@ -74,11 +65,18 @@ const config: rspack.Configuration = {
 				// The JS rewriter
 				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
 			}
-		: {
-				sandbox: "./build/init.ts",
-				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts",
-				featureFlags: "./src/featureFlags.ts"
-			},
+		: minimalBuild
+			? {
+					...defaultBuild,
+					// Extra APIs
+					storageIsolation:
+						"./src/apis/StorageIsolator/storageIsolation.ts",
+					ControlView: "./src/apis/CustomViews/ControlView.ts",
+					ElectronControlView:
+						"./src/apis/CustomViews/ElectronControlView.ts",
+					ElectronWebView: "./src/apis/CustomViews/ElectronWebView.ts"
+				}
+			: defaultBuild,
 	plugins,
 	resolve: {
 		extensions: [".ts"],

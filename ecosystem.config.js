@@ -39,7 +39,8 @@ module.exports = {
 			cwd: "src/AeroSandbox",
 			args: "run build",
 			env: {
-				DEBUG: "true"
+				DEBUG: "true",
+				BUILD_MINIMAL: "true"
 			}
 		},
 		{
