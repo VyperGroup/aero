@@ -11,6 +11,9 @@ export type proxifiedObjType = revokableProxyRet | proxifiyObjGenerator;
 export type proxifiyObjGenerator = (
 	ctx: proxifiedObjGeneratorContext
 ) => proxifiedObjType;
+export type storageProxifiyObjGenerator = (
+	cookieStoreId: string
+) => proxifiedObjType;
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type proxifyGetter = (ctx: proxifiedObjGeneratorContext) => any;
 
@@ -41,6 +44,7 @@ export type APIInterceptorForProxyObjects = APIInterceptorGeneric & {
 	/** This is specifically for objects that use the ES6 Proxy Object or re-implement the API from scratch. proxifiedObjGenFunc is a handler which returns the proxified object depending on the context given, which is determined by how the AeroSandboxBundler class is configured with the config in the constructor.*/
 	// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	proxifiedObj?: Object | proxifiyObjGenerator;
+	storageProxifiedObj: storageProxifiyObjGenerator;
 	exposedContexts: anyWorkerEnumMember;
 };
 export type APIInterceptorForProxyObjectsInWorker = APIInterceptorGeneric & {
@@ -107,6 +111,7 @@ export enum InterceptionFeaturesEnum {
 	corsEmulation,
 	/** This member requires the correct context to be passed down in the proxy's global context */
 	cacheEmulation,
+	/** This feature is nowhere near being finished; **do not enable** */
 	privacySandbox,
 	/** Using this member adds code to the navigator.serviceWorker API interceptor to support nestedWorkers. If you enable it and don't have the supplementing SW code for it, it gives up on waiting for a message response back and throws an error. **/
 	nestedSWs,

@@ -2,11 +2,15 @@ import { escapeWithOrigin } from "$aero/src/shared/escape";
 
 const storagePrefix = escapeWithOrigin;
 
-const storageNomenclature = {
+const storageNomenclature = cookieStoreId => {
 	apply(target, that, args) {
 		const [key] = args;
 
-		args[0] = storagePrefix(key);
+		let newKey = storagePrefix(key);
+		if (cookieStoreId) {
+			newKey = `${cookieStoreId}_${newKey}`;
+		}
+		args[0] = newKey;
 
 		return Reflect.apply(target, that, args);
 	}

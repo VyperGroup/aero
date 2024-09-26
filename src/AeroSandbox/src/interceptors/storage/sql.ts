@@ -3,11 +3,14 @@ import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
 import config from "$aero/examples/config";
 const { prefix } = config;
 
-const handler = {
-	apply(target, that, args) {
+const createHandler = (cookieStoreId?) => {
+	return apply(target, that, args) {
 		const [key]: [string] = args;
 
-		const newKey = prefix + key;
+		let newKey = prefix + key;
+		if (cookieStoreId) {
+			newKey = `${cookieStoreId}_${newKey}`;
+		}
 
 		args[0] = newKey;
 
@@ -27,12 +30,14 @@ const handler = {
 
 export default [
 	{
-		proxifiedObj: Proxy.revocable(openDatabase, handler),
+		storageProxifiedObj: cookieStoreId =>
+			Proxy.revocable(openDatabase, createHandler(cookieStoreId)),
 		globalProp: "openDatabase",
 		supports: SupportEnum.deprecated | SupportEnum.shippingChromium
 	},
 	{
-		proxifiedObj: Proxy.revocable(openDatabaseSync, handler),
+		storageProxifiedObj: cookieStoreId =>
+			Proxy.revocable(openDatabaseSync, createHandler(cookieStoreId)),
 		globalProp: "openDatabaseSync",
 		supports: SupportEnum.deprecated | SupportEnum.shippingChromium
 	}

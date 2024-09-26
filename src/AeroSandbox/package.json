@@ -5,15 +5,26 @@
 	"main": "dist/sandbox.aero.js",
 	"exports": {
 		"./path": "./extras/aeroSandboxPath.js",
-		"./configTypes": "./types/config.d.ts"
+		"./configTypes": "./types/config.d.ts",
+		"./contextualIdentities": "./src/apis/contextualIdentities.ts",
+		"./ElectronControlView": "./src/apis/ControlView/ElectronControlView.ts",
+		"./ElectronWebView": "./src/apis/ControlView/ElectronWebView.ts"
 	},
 	"files": [
 		"dist/sandbox.aero.js",
 		"dist/sandbox.aero.js.map",
-		"dist/jsRewriter.aero.js",
-		"dist/jsRewriter.aero.js.map",
-		"dist/featureFlags.aero.js",
-		"dist/featureFlags.aero.js.map",
+		"dist/jsRewriter.js",
+		"dist/jsRewriter.js.map",
+		"dist/featureFlags.js",
+		"dist/featureFlags.js.map",
+		"dist/storageIsolation.js",
+		"dist/storageIsolation.js.map",
+		"dist/ControlView.js",
+		"dist/ControlView.js.map",
+		"dist/ElectronControlView.js",
+		"dist/ElectronControlView.js.map",
+		"dist/ElectronWebView.js",
+		"dist/ElectronWebView.js.map",
 		"types/index.d.ts"
 	],
 	"scripts": {

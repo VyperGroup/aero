@@ -1,10 +1,10 @@
-# ControlViews `controlview` from AeroSandbox
+# CustomViews from AeroSandbox
 
 > This document is highly incomplete and will change. Not everything is documented yet.
 
 I got the name, because the functionality is similar to the [webview tag in Electron]() (not to be confused with the ones in Chrome and Android), but without the unrealistic browser controls (such as dev tools) and a window proxy built with IPC. The window proxy is why it is called a *Control*View an not a WebView
 
-## Security features that are changed in the original Electron `webview` tags in Electron compared `controlview`
+## Security features that are changed in `<controlview>` compared to the original `<webview>` tags in Electron
 
 ### No longer default
 
@@ -16,13 +16,18 @@ These security features can still be enabled, but they aren't on by default
 
 - Limiting plugins: Yes, we can tell what plugins are being used through the deprecated property `navigator.plugins`, but there is no way to disable them. The only reason why Electron is able to do it is because it has full control over the Chromium binary.
 
+## The actual custom elements and their differences
+
+### ControlView `controlview`
+
 ### ElectronControlView `electron-controlview`
 
 Assuming you want to retain the defaults of the security features, you can still get this with this custom element.
 
 ### ElectronWebView `electron-webview`
 
-This custom element does the same thing as [ElectronControlView](#electroncontrolview-electron-controlview), but it doesn't have the window proxy. This is useful, for example, if you wanted to make an Electron port for a WebOS, this would help you get one step closer to it.
+This custom element will do the same thing as [ElectronControlView](#electroncontrolview-electron-controlview), but it doesn't have the window proxy. This is useful, for example, if you wanted to make an Electron port for a WebOS, this would help you get one step closer to it. This would be best for making accurate Electron `<webview>` ports, since they obviously wouldn't have anything like window proxies.
+
 
 ## Limitations compared to iframes
 
@@ -69,5 +74,5 @@ A lot of these are inspired by or reimplementations of the corresponding APIs in
 
 ## Events (parent)
 
-* `onurlchange`: This requires code inside of all the location hooks.
+* `onurlchange`: This requires code inside of all the location hooks to work
 * `onhashchange` (proxied to the parent)

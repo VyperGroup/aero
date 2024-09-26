@@ -1,6 +1,7 @@
 # AeroSandbox SW Additions
 
 SCRAP ALL OF THIS: LOOK IN CONTEXTUAL IDENTITIES.TS
+TODO: Make it so that all files that end with swAdditions.ts are under tsconfig for SW
 
 The bundle won't include the code for Nested SWs, but you should put this after the nested SW import.
 

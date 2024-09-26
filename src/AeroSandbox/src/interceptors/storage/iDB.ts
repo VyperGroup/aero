@@ -4,34 +4,39 @@ import { storageNomenclature } from "./shared";
 
 export default [
 	{
-		proxifiedObj: Proxy.revocable(indexedDB.open, storageNomenclature),
+		storageProxifiedObj: cookieStoreId =>
+			Proxy.revocable(indexedDB.open, storageNomenclature(cookieStoreId)),
 		globalProp: "indexedDB.open"
 	},
 	{
-		proxifiedObj: Proxy.revocable(
-			indexedDB.deleteDatabase,
-			storageNomenclature
-		),
+		storageProxifiedObj: cookieStoreId =>
+			Proxy.revocable(
+				indexedDB.deleteDatabase,
+				storageNomenclature(cookieStoreId)
+			),
 		globalProp: "indexedDB.deleteDatabase"
 	},
 	{
-		proxifiedObj: Proxy.revocable(indexedDB.databases, {
-			async apply(target, that, args) {
-				const dbs = (await Reflect.apply(
-					target,
-					that,
-					args
-				)) as IDBDatabaseInfo[];
+		storageProxifiedObj: cookieStoreId =>
+			Proxy.revocable(indexedDB.databases, {
+				async apply(target, that, args) {
+					const dbs = (await Reflect.apply(
+						target,
+						that,
+						args
+					)) as IDBDatabaseInfo[];
 
-				dbs.map(db => {
-					if (db instanceof Error) return db;
+					dbs.map(db => {
+						if (db instanceof Error) return db;
 
-					db.name = self.config.prefix + db.name;
+						let newName = aeroConfig.prefix + db.name;
+						if (newName) newName = `${cookieStoreId}_${newName}`;
+						db.name = newName;
 
-					return db;
-				});
-			}
-		}),
+						return db;
+					});
+				}
+			}),
 		globalProp: "indexedDB.databases"
 	}
 ] as APIInterceptor[];
