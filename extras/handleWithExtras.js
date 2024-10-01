@@ -23,8 +23,8 @@
 
 	/* This patches the original aero handler to add a custom error page */
 	self.patchAeroHandler = (originalHandle, proxyNameCapitalized = "Aero") => {
-		return async ev =>
-			originalHandle(ev).catch(err => {
+		return async event =>
+			originalHandle(event).catch(err => {
 				setTimeout(() => {
 					throw err;
 				}, 500);

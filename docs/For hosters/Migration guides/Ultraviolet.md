@@ -22,7 +22,7 @@ or (if you are not following step 4)
 
 ```js
 import aeroPath from "aero-proxy";
-import aeroSandboxPath from "aero-sandbox/path";
+import aeroSandboxPath from "aero-sandbox/path.js";
 ```
 
 3. Underneath

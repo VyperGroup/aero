@@ -1,14 +1,14 @@
 /**
  * @type {string}
  */
-const dirToAeroConfig = "/aero/";
+const dirToAero = "/aero/";
 /**
  * @description From the aero SDK
  * @type {string}
  */
 const pathToPatchedAerohandler = "./aeroHandleSimple.js";
 
-importScripts(`${dirToAeroConfig}config.aero.js`);
+importScripts(`${dirToAero}config.aero.js`);
 importScripts(aeroConfig.bundle["bare-mux"]);
 importScripts(aeroConfig.bundle.handle);
 

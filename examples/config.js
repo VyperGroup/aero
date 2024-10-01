@@ -13,8 +13,6 @@ const dirToAero = "/aero/";
  * @type {Config}
  */
 self.aeroConfig = {
-	bc: new BareMux(),
-	serverBackendPrefix: "/bare/",
 	prefix: "/go/",
 	pathToInitialSW: "/sw.js",
 	bundles: {

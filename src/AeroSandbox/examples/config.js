@@ -9,7 +9,8 @@ const config = {
 		swAdditions: "./swAdditions.aero.js",
 		// APIs
 		nestedSWs: "./nestedSWs.aero.js",
-		storageIsolator: "./storageIsolator.aero.js",
+		storageIsolator: "./storageIsolator.aero.js", // TODO: Use storageIsolator internally in AeroSandbox Runtime
+		// Extra APIs (do not include these if you are making a SW proxy)
 		ControlViews: "./ControlViews.aero.js"
 	},
 	webrtcTurnServers: ["stun:stun.l.google.com:19302"],
