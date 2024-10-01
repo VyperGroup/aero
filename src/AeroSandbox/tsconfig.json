@@ -15,15 +15,12 @@
 			"$shared/*": ["src/shared/*"],
 			"$types/*": ["types/*"]
 		},
-		"types": ["./types/index.d.ts", "@types/trusted", "@types/websql"]
+		"types": ["@types/websql"]
 	},
 	"include": [
+		"rspack.config.ts",
 		"src/**/*.ts",
-		"src/config.tsg.ts",
 		"types/**/*.d.ts",
-		"src/interceptors/concealer/element.ts.old",
-		"src/config.tsfig.ts",
-		"types/generic.ts",
 		"examples/config.js",
 		"internal/featureFlags.ts",
 		"types/contextualIdentities.ts"

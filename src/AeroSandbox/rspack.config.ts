@@ -35,9 +35,9 @@ const output: any = {
 		? path.resolve(__dirname, "../../tests/aero")
 		: debugMode
 			? path.resolve(
-					__dirname,
-					"../../dev-server/aero-demo-site/aero/sandbox"
-				)
+				__dirname,
+				"../../dev-server/aero-demo-site/aero/sandbox"
+			)
 			: path.resolve(__dirname, "dist"),
 	clean: true
 };
@@ -55,27 +55,27 @@ const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	entry: testBuild
 		? {
-				// API Interceptors for the Script Sandbox
-				location: "./src/interceptors/loc/location.ts",
-				scriptSandbox:
-					"./src/interceptors/concealer/misc/scriptSandboxing.ts",
-				// Libs for the API Interceptors
-				loggers: "./src/shared/Loggers.ts",
-				replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
-				// The JS rewriter
-				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
-			}
+			// API Interceptors for the Script Sandbox
+			location: "./src/interceptors/loc/location.ts",
+			scriptSandbox:
+				"./src/interceptors/concealer/misc/scriptSandboxing.ts",
+			// Libs for the API Interceptors
+			loggers: "./src/shared/Loggers.ts",
+			replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
+			// The JS rewriter
+			jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
+		}
 		: minimalBuild
 			? {
-					...defaultBuild,
-					// Extra APIs
-					storageIsolation:
-						"./src/apis/StorageIsolator/storageIsolation.ts",
-					ControlView: "./src/apis/CustomViews/ControlView.ts",
-					ElectronControlView:
-						"./src/apis/CustomViews/ElectronControlView.ts",
-					ElectronWebView: "./src/apis/CustomViews/ElectronWebView.ts"
-				}
+				...defaultBuild,
+				// Extra APIs
+				storageIsolation:
+					"./src/apis/StorageIsolator/storageIsolation.ts",
+				ControlView: "./src/apis/CustomViews/ControlView.ts",
+				ElectronControlView:
+					"./src/apis/CustomViews/ElectronControlView.ts",
+				ElectronWebView: "./src/apis/CustomViews/ElectronWebView.ts"
+			}
 			: defaultBuild,
 	plugins,
 	resolve: {

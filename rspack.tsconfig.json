@@ -6,8 +6,8 @@
 		"baseUrl": "./",
 		"lib": ["ESNext"],
 		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true
+		"isolatedModules": true
 	},
-	"include": ["./webpack.config.ts"],
+	"include": ["./rspack.config.ts"],
 	"exclude": ["node_modules"]
 }

@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "ESNext",
+		"isolatedModules": true,
 		"moduleResolution": "NodeNext",
 		"module": "NodeNext",
 		"baseUrl": "./",
@@ -8,5 +9,5 @@
 		"paths": {},
 		"types": ["@types/node", "./types/index.d.ts"]
 	},
-	"include": ["webpack.config.ts", "./build/**.ts", "./types/index.d.ts"]
+	"include": ["rspack.config.ts", "./build/**.ts", "./types/index.d.ts"]
 }

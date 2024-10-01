@@ -2,7 +2,6 @@ import path from "node:path";
 import rspack from "@rspack/core";
 
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
-import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
 import createFeatureFlags from "./createFeatureFlags";
 
@@ -20,8 +19,6 @@ if (serverMode) {
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any = [
-	// @ts-ignore
-	new CleanWebpackPlugin(),
 	// @ts-ignore
 	new rspack.DefinePlugin(featureFlags)
 ];

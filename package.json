@@ -2,13 +2,15 @@
 	"name": "aero-proxy",
 	"version": "0.0.5",
 	"description": "The innovative interception proxy",
-	"main": "extras/aeroPath.js",
-	"type": "module",
+	"main": "extras/node/aeroPath.js",
 	"exports": {
+		".": {
+			"import": "./extras/node/aeroPath.js",
+			"require": "./extras/node/aeroPath.cjs"
+		},
 		"./configTypes": "./types/config.d.ts"
 	},
 	"files": [
-		"LICENSE",
 		"dist/BareMux.aero.js",
 		"dist/BareMux.aero.js.map",
 		"dist/sw.aero.js",
@@ -39,6 +41,7 @@
 		"@types/chrome": "^0.0.237",
 		"@types/serviceworker": "^0.0.89",
 		"@types/web-app-manifest": "^1.0.8",
+		"@types/websql": "^0.0.30",
 		"clean-webpack-plugin": "^4.0.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.0.4"

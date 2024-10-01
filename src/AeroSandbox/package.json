@@ -1,10 +1,13 @@
 {
 	"name": "aero-sandbox",
-	"version": "0.0.3",
+	"version": "0.0.2",
 	"description": "The sandboxing library for aero",
 	"main": "dist/sandbox.aero.js",
 	"exports": {
-		"./path": "./extras/aeroSandboxPath.js",
+		"./path": {
+			"import": "./extras/node/aeroSandboxPath.js",
+			"require": "./extras/node/aeroSandboxPath.cjs"
+		},
 		"./configTypes": "./types/config.d.ts",
 		"./contextualIdentities": "./src/apis/contextualIdentities.ts",
 		"./ElectronControlView": "./src/apis/ControlView/ElectronControlView.ts",
@@ -25,6 +28,7 @@
 		"dist/ElectronControlView.js.map",
 		"dist/ElectronWebView.js",
 		"dist/ElectronWebView.js.map",
+		"exports/aeroSandboxPath.js",
 		"types/index.d.ts"
 	],
 	"scripts": {

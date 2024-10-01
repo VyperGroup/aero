@@ -72,7 +72,7 @@ self.config = self.aeroConfig;
  * @returns  The proxified response
  */
 // TODO: Move all the proxy middleware code to a bare mixin
-async function handle(ev: FetchEvent): Promise<Response> {
+async function handle(event: FetchEvent): Promise<Response> {
 	// Ensure that everything has been initalized properly
 	if (!("logger" in self))
 		throw new Error("The logger hasn't been initalized!");
@@ -83,7 +83,7 @@ async function handle(ev: FetchEvent): Promise<Response> {
 			"The is no BareClient provided in the config."
 		);
 
-	const req = ev.request;
+	const req = event.request;
 
 	// Dynamic config
 	// TODO: Dynamically switch backends
@@ -116,14 +116,14 @@ async function handle(ev: FetchEvent): Promise<Response> {
 
 	let clientURL: URL;
 	// Get the origin from the user's window
-	if (REQ_INTERCEPTION_CATCH_ALL === "clients" && ev.clientId !== "") {
+	if (REQ_INTERCEPTION_CATCH_ALL === "clients" && event.clientId !== "") {
 		if (SERVER_ONLY) {
 			throw self.logger.fatalErr(
 				'The Feature Flag "REQ_INTERCEPTION_CATCH_ALL" can\'t be set to "clients" when "SERVER_ONLY" is enabled.'
 			);
 		}
 		// Get the current window
-		const client = await clients.get(ev.clientId);
+		const client = await clients.get(event.clientId);
 		if (client)
 			// Get the url after the prefix
 			clientURL = new URL(afterPrefix(client.url));
@@ -332,8 +332,8 @@ async function handle(ev: FetchEvent): Promise<Response> {
 				init: \`_IMPORT_\`,
 				prefix: ${self.config.prefix},
 				searchParamOptions: ${JSON.stringify(
-					self.config.searchParamOptions
-				)},
+				self.config.searchParamOptions
+			)},
 			};
 		}
     </script>
@@ -452,6 +452,6 @@ ${body}
 }
 
 self.aeroHandle = handle;
-self.routeAero = (ev: FetchEvent): boolean => {
-	return ev.request.url.startsWith(location.origin + aeroConfig.prefix);
+self.routeAero = (event: FetchEvent): boolean => {
+	return event.request.url.startsWith(location.origin + aeroConfig.prefix);
 };
