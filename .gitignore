@@ -15,4 +15,7 @@ mutable_node_modules
 # aero dev server
 dev-server/
 
+# aero test pkgs
+/**/testPkgs/
+
 # Unreleased features (Not finished) 👀
