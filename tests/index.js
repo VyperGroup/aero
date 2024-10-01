@@ -1,1 +1,1 @@
-// TODO: Make this a node script, which runs EVERY test in this directory
+// TODO: Make this a node script `test`, which runs EVERY test in this directory

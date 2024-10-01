@@ -20,6 +20,9 @@
 		"types/config.d.ts"
 	],
 	"scripts": {
+		"test": "npm run tests/index.js",
+		"testsNode": "npm run tests/node/index.js",
+		"testsBrowser": "echo 'Unsupported at the moment'",
 		"build": "rspack build -c rspack.config.ts",
 		"buildDebug": "rspack --stats-error-detail --watch --info-verbosity",
 		"format": "biome format --write .",
@@ -29,7 +32,12 @@
 		"type": "git",
 		"url": "git+https://github.com/ProxyHaven/aero.git"
 	},
-	"keywords": ["Proxy", "Archiver", "Unblock", "Interception"],
+	"keywords": [
+		"Proxy",
+		"Archiver",
+		"Unblock",
+		"Interception"
+	],
 	"author": "Ryan Wilson",
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/ProxyHaven/aero#readme",
@@ -43,6 +51,7 @@
 		"@types/web-app-manifest": "^1.0.8",
 		"@types/websql": "^0.0.30",
 		"clean-webpack-plugin": "^4.0.0",
+		"playwright": "^1.47.2",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.0.4"
 	},
