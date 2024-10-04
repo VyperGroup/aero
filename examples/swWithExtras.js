@@ -3,19 +3,24 @@
  */
 const dirToAero = "/aero/";
 /**
- * @description From the aero SDK
  * @type {string}
  */
-const pathToPatchedAerohandler = "./aeroHandleSimple.js";
+const pathToPatchedAerohandler = `${dirToAero}extras/handleWithExtras.js`;
 
+// configs
+importScripts(`${dirToAero}defaultConfig.aero.js`);
 importScripts(`${dirToAero}config.aero.js`);
-importScripts(aeroConfig.bundle["bare-mux"]);
-importScripts(aeroConfig.bundle.handle);
+// Bare
+importScripts(aeroConfig.bundles["bare-mux"]);
+// aero handlers
+importScripts(aeroConfig.bundles.handle);
 
 importScripts(pathToPatchedAerohandler);
 
-const aeroHandlerWithExtras = patchAeroHandler(handle);
+const aeroHandlerWithExtras = patchAeroHandler(aeroHandle);
 
 addEventListener("install", skipWaiting);
 
-addEventListener("fetch", ev => ev.respondWith(aeroHandlerWithExtras(ev)));
+addEventListener("fetch", event =>
+	event.respondWith(aeroHandlerWithExtras(event))
+);

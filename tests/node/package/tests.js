@@ -3,8 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { readdir } from "node:fs/promises";
 
-import { default as aeroPath, aeroExtrasPath } from "@aero-proxy-local";
-import { aeroSandboxPath } from "@aero-sandbox-local";
+import { default as aeroPath, aeroExtrasPath } from "aero-proxy";
+import { aeroSandboxPath } from "aero-sandbox";
 
 import test from "node:test";
 
@@ -35,12 +35,7 @@ test("Node paths were what was expected", t => {
 });
 
 // Look into the dist folder and check if all the files are where they belong
-const expectedAeroImports = [
-	"BareMux.aero.js",
-	"BareMux.aero.js.map",
-	"sw.aero.js",
-	"sw.aero.js.map"
-];
+const expectedAeroImports = ["sw.aero.js", "sw.aero.js.map"];
 const expectedAeroExtraImports = ["aeroPath.cjs", "aeroPath.js"];
 const expectedAeroSandboxImports = [
 	"sandbox.aero.js",

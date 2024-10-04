@@ -43,7 +43,8 @@
   </style>
   <h1 id="title" style="color: red">${proxyNameCapitalized} Bug</h1>
   <p id="err">${fmtErr(err.stack)}<br>${err.cause}<p>
-  <script src="/scripts/sdk/ProxyManager.js">
+  <script type="module">
+    import ProxyManager from "/scripts/sdk/ProxyManager.js";
     const proxyManager = new ProxyManager();
     proxyManager.add("/sw.js", prefix);
   </script>

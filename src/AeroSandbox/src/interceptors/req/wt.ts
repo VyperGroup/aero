@@ -4,7 +4,7 @@ import type { APIInterceptor } from "$types/apiInterceptors";
 export default {
 	proxifiedObj: Proxy.revocable(WebTransport, {
 		construct(target, args) {
-			// I'm waiting for the bare/wisp spec to support WebTransport
+			// I'm waiting for the bare/wisp spec to support WebTransport before implementing this
 			return Reflect.construct(target, args);
 		}
 	}),

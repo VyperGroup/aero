@@ -1,6 +1,7 @@
 import path from "node:path";
-import rspack from "@rspack/core";
+import { access, rm, mkdir, copyFile } from "node:fs/promises";
 
+import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 
 import createFeatureFlags from "./createFeatureFlags";
@@ -17,6 +18,8 @@ if (serverMode) {
 		featureFlags.SERVER_ONLY = "cf-workers";
 } else featureFlags.REQ_INTERCEPTION_CATCH_ALL = "clients";
 
+console.log(featureFlags);
+
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any = [
 	// @ts-ignore
@@ -26,14 +29,15 @@ const plugins: any = [
 if (debugMode)
 	plugins.push(
 		new RsdoctorRspackPlugin({
-			port: 3300
+			port: 3300,
+			// Do not pop up every time (annoying)
+			disableClientServer: true
 		})
 	);
 
 const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	entry: {
-		BareMux: path.resolve(__dirname, "./src/internal/BareMux.ts"),
 		sw: path.resolve(__dirname, "./src/this/handle.ts")
 		// Building these bundles separately allows for the user to roll out their own config files without having to build aero as a whole
 	},
@@ -56,12 +60,31 @@ const config: rspack.Configuration = {
 		path: debugMode
 			? path.resolve(__dirname, "dev-server/demo-site/aero")
 			: path.resolve(__dirname, "dist"),
-		iife: true,
-		clean: true
+		iife: true
 	},
 	target: "webworker"
 };
 
 if (debugMode) config.watch = true;
+
+access(path.resolve(__dirname, "dist"))
+	.then(() => {
+		rm(path.resolve(__dirname, "dist"), {
+			recursive: true
+		}).then(() => {
+			createConfigBuild();
+		});
+	})
+	.catch(() => {
+		createConfigBuild();
+	});
+function createConfigBuild() {
+	mkdir(path.resolve(__dirname, "dist")).then(() => {
+		copyFile(
+			path.resolve(__dirname, "src/defaultConfig.js"),
+			path.resolve(__dirname, "dist/defaultConfig.aero.js")
+		);
+	});
+}
 
 export default config;

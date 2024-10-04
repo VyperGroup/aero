@@ -9,7 +9,7 @@ Add these static path imports to the top of your main JS server file or Vite/Ast
 ```js
 // static path imports
 // aero
-import aeroPath from "aero-proxy";
+import { default as aeroPath, aeroExtrasPath } from "aero-proxy" // You only need to import this if you are using handleWithExtras
 import aeroSandboxPath from "aero-sandbox/path.js";
 // bare-mux 2.0
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";

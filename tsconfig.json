@@ -35,7 +35,7 @@
 		"types/**/*.ts",
 		"src/AeroSandbox/types/aeroSandbox.d.ts",
 		"examples/config.js",
-		"src/AeroSandbox/examples/config.js"
+		"src/AeroSandbox/src/defaultConfig.js"
 	],
 	"exclude": [
 		"rspack.config.ts",

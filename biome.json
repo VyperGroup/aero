@@ -9,6 +9,6 @@
 		}
 	},
 	"files": {
-		"ignore": ["/**/dist", "/tests/aero"]
+		"ignore": ["dist", "src/AeroSandbox/dist", "/tests/aero"]
 	}
 }

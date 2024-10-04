@@ -9,16 +9,17 @@ const dirToAero = "/aero/";
  */
 const dirToUV = "/uv/";
 
+importScripts(`${dirToAero}defaultConfig.aero.js`);
 importScripts(`${dirToAero}config.aero.js`);
-importScripts(aeroConfig.bundle["bare-mux"]);
-importScripts(aeroConfig.bundle.handle);
+importScripts(aeroConfig.bundles["bare-mux"]);
+importScripts(aeroConfig.bundles.handle);
 importScripts(`${dirToUV}uv.bundle.js`);
 importScripts(`${dirToUV}uv.config.js`);
-importScripts(__uv$config.sw || `${dirToUV}uv.sw.js`);
+importScripts(__uv$config.sw || `${dimrToUV}uv.sw.js`);
 
 importScripts(`${dirToAero}/extras/handleWithExtras.js`);
 
-const aeroHandlerWithExtras = patchAeroHandler(handle);
+const aeroHandlerWithExtras = patchAeroHandler(aeroHandle);
 const uv = new UVServiceWorker();
 
 addEventListener("install", skipWaiting);

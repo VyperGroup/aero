@@ -1,12 +1,13 @@
 /**
  * @type {string}
  */
-const dirToAeroConfig = "/aero/";
+const dirToAero = "/aero/";
 
-importScripts(`${dirToAeroConfig}config.aero.js`);
-importScripts(aeroConfig.bundle["bare-mux"]);
-importScripts(aeroConfig.bundle.handle);
+importScripts(`${dirToAero}defaultConfig.aero.js`);
+importScripts(`${dirToAero}config.aero.js`);
+importScripts(aeroConfig.bundles["bare-mux"]);
+importScripts(aeroConfig.bundles.handle);
 
 addEventListener("install", skipWaiting);
 
-addEventListener("fetch", ev => ev.respondWith(handle(ev)));
+addEventListener("fetch", event => event.respondWith(aeroHandle(event)));

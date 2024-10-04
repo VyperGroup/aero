@@ -14,22 +14,11 @@
 		"./ElectronWebView": "./src/apis/ControlView/ElectronWebView.ts"
 	},
 	"files": [
-		"dist/sandbox.aero.js",
-		"dist/sandbox.aero.js.map",
-		"dist/jsRewriter.js",
-		"dist/jsRewriter.js.map",
-		"dist/featureFlags.js",
-		"dist/featureFlags.js.map",
-		"dist/storageIsolation.js",
-		"dist/storageIsolation.js.map",
-		"dist/ControlView.js",
-		"dist/ControlView.js.map",
-		"dist/ElectronControlView.js",
-		"dist/ElectronControlView.js.map",
-		"dist/ElectronWebView.js",
-		"dist/ElectronWebView.js.map",
-		"exports/aeroSandboxPath.js",
-		"types/index.d.ts"
+		"dist/*.js",
+		"dist/*.map",
+		"extras/**/*.js",
+		"extras/**/*.cjs",
+		"types/*.d.ts"
 	],
 	"scripts": {
 		"check": "biome check --write",

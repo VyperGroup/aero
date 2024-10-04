@@ -1,6 +1,6 @@
 {
 	"name": "aero-proxy",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "The innovative interception proxy",
 	"main": "extras/node/aeroPath.js",
 	"exports": {
@@ -11,13 +11,11 @@
 		"./configTypes": "./types/config.d.ts"
 	},
 	"files": [
-		"dist/BareMux.aero.js",
-		"dist/BareMux.aero.js.map",
-		"dist/sw.aero.js",
-		"dist/sw.aero.js.map",
-		"extras/aeroPath.js",
-		"extras/handleWithExtras.js",
-		"types/config.d.ts"
+		"dist/*.js",
+		"dist/*.map",
+		"extras/**/*.js",
+		"extras/**/*.cjs",
+		"types/*.d.ts"
 	],
 	"scripts": {
 		"test": "npm run tests/index.js",
@@ -32,12 +30,7 @@
 		"type": "git",
 		"url": "git+https://github.com/ProxyHaven/aero.git"
 	},
-	"keywords": [
-		"Proxy",
-		"Archiver",
-		"Unblock",
-		"Interception"
-	],
+	"keywords": ["Proxy", "Archiver", "Unblock", "Interception"],
 	"author": "Ryan Wilson",
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/ProxyHaven/aero#readme",

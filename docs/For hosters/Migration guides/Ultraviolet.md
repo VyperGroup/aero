@@ -15,7 +15,7 @@ import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 add
 
 ```js
-import { default as aeroPath, aeroExtrasPath } from "aero-proxy"
+import { default as aeroPath, aeroExtrasPath } from "aero-proxy";
 ```
 
 or (if you are not following step 4)

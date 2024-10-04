@@ -20,19 +20,19 @@ if ("cookieStore" in window) {
 					const [cookie] = args;
 
 					// TODO: Isolate contextual identity
-		
+
 					cookie.domain = proxyLocation().domain;
 					cookie.path = upToProxyOrigin() + cookie.path;
-		
+
 					args[0] = cookie;
-		
+
 					return Reflect.apply(target, that, args);
 				}
 			});
-		}
+		},
 		globalProp: "cookieStore.set"
 	});
-	//cookieStore.set = 
+	//cookieStore.set =
 	/*
 	cookieStore.get = new Proxy(cookieStore.set, {
 		apply(target, that, args) {

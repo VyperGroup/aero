@@ -7,13 +7,13 @@
 - [ ] Seperate the package.json for middleware. Then, cleanup the package.json.
 - [ ] Provide auto-builds
 - [ ] Implement url encoding
-- [ ] Support Safari (Read Faq for more info)
 - [ ] Fix HTTP and STS Emulation
 - [ ] Aero sandboxing library
 - [ ] Support nested SWs
 - [ ] Finish aero message proxying
 - [ ] Migrate the HTML Rewrites to the the rewriting rules
 - [ ] URL Encoding / Hash support
+- [ ] Use storageIsolator internally in AeroSandbox Runtime and call that instead of the API intercpetors directly
 
 ## Docs
 

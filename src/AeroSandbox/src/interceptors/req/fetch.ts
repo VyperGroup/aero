@@ -6,7 +6,7 @@ import { handleFetchEvent } from "$aero_browser/util/swlessUtils";
 
 export default {
 	proxifiedObj: Proxy.revocable(fetch, {
-		apply(target: Function, that: any, args: any[]) {
+		apply(target, that, arg) {
 			let [, opts]: [any?, RequestInit?] = args;
 			opts ??= {};
 

@@ -1,3 +1,4 @@
+import { type FeatureFlagsRspack } from "./types/featureFlags";
 import type { Sec } from "$aero/types";
 
 // Utility
@@ -31,7 +32,7 @@ import rewriteManifest from "$rewriters/webAppManifest";
 import JSRewriter from "$sandbox/sandboxers/JS/JSRewriter";
 import type { Config } from "$aero/types/config";
 
-// TODO: Import the aero JS parser config types from aerosandbox into aero's sw typesa
+// TODO: Import the aero JS parser config types from aerosandbox into aero's sw types
 //const jsRewriter = new JSRewriter(self.config.aeroSandbox.jsParserConfig);
 
 // TODO: import init from "./handlers/init";
@@ -58,13 +59,17 @@ declare const self: WorkerGlobalScope &
 	typeof globalThis & {
 		config: Config;
 		aeroConfig: Config;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		bareClient: any; // BareMux;
 		handle;
 		logger: AeroLogger;
 		nestedSWs: Map<proxyOrigin, NestedSW[]>;
 	};
 
 self.logger = new AeroLogger();
-self.config = self.aeroConfig;
+self.config = aeroConfig;
+
+self.bareClient = new BareMux.BareClient();
 
 /**
  * Handles the requests
@@ -78,11 +83,18 @@ async function handle(event: FetchEvent): Promise<Response> {
 		throw new Error("The logger hasn't been initalized!");
 	if (!("aeroConfig" in self))
 		throw self.logger.fatalErr("The is no config provided");
-	if (!("bc" in config))
-		throw self.logger.fatalErr(
-			"The is no BareClient provided in the config."
-		);
-
+	/** The feature flags that are expected to be used in this SW handler */
+	const expectedFeatureFlags /*: keyof FeatureFlagsRspack*/ = [
+		"REWRITER_HTML"
+	]; // TODO: Add them all
+	let missingFeatureFlags /*: keyof FeatureFlagsRspack*/ = [];
+	/*
+	for (const expectedFeatureFlag of expectedFeatureFlags)
+		if (!(expectedFeatureFlag in self))
+			missingFeatureFlags.push(expectedFeatureFlag);
+	if (missingFeatureFlags.length > 0)
+		throw self.logger.fatalErr(`The expected feature flags required in this sw were not found: ${JSON.stringify(missingFeatureFlags)}`);
+	*/
 	const req = event.request;
 
 	// Dynamic config
@@ -113,6 +125,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 	}
 
 	const frameSec = getPassthroughParam(params, "frameSec");
+
+	console.log(REQ_INTERCEPTION_CATCH_ALL);
 
 	let clientURL: URL;
 	// Get the origin from the user's window
@@ -259,7 +273,10 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await self.bc.fetch(new URL(proxyUrl).href, rewrittenReqOpts);
+	const resp = await bareClient.fetch(
+		new URL(proxyUrl).href,
+		rewrittenReqOpts
+	);
 
 	if (!resp) self.logger.fatalErr("No response found!");
 	if (resp instanceof Error) throw Error;
@@ -298,11 +315,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	let rewrittenBody: string | ReadableStream;
 	// Rewrite the body
 	// TODO: Pack these injected scripts with Webpack
-	if (
-		/*REWRITER_HTML*/ self.featureFlags.REWRITER_HTML &&
-		isNavigate &&
-		html
-	) {
+	if (REWRITER_HTML && isNavigate && html) {
 		const body = await resp.text();
 		// TODO: Eliminate _IMPORT_ recursion somehow
 		if (body !== "") {
@@ -332,8 +345,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 				init: \`_IMPORT_\`,
 				prefix: ${self.config.prefix},
 				searchParamOptions: ${JSON.stringify(
-				self.config.searchParamOptions
-			)},
+					self.config.searchParamOptions
+				)},
 			};
 		}
     </script>
