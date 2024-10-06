@@ -11,11 +11,12 @@ mutable_node_modules
 /tests/aero
 
 # aero
-
 # aero dev server
 dev-server/
-
 # aero test pkgs
 /**/testPkgs/
+
+# WPT test suite
+tests/browser/wpt-diff/wpt/
 
 # Unreleased features (Not finished) 👀
