@@ -31,12 +31,7 @@ const output: any = {
 	filename: "[name].js",
 	path: testBuild
 		? path.resolve(__dirname, "../../tests/aero")
-		: debugMode
-			? path.resolve(
-					__dirname,
-					"../../dev-server/aero-demo-site/aero/sandbox"
-				)
-			: path.resolve(__dirname, "dist"),
+		: path.resolve(__dirname, "dist"),
 	clean: false
 };
 

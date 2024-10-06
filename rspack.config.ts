@@ -57,9 +57,7 @@ const config: rspack.Configuration = {
 	},
 	output: {
 		filename: "[name].aero.js",
-		path: debugMode
-			? path.resolve(__dirname, "dev-server/demo-site/aero")
-			: path.resolve(__dirname, "dist"),
+		path: path.resolve(__dirname, "dist"),
 		iife: true
 	},
 	target: "webworker"
