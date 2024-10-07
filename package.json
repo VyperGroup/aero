@@ -6,7 +6,7 @@
 	"type": "module",
 	"exports": {
 		".": {
-		  "node": {
+			"node": {
 				"import": "./extras/node/aeroPath.js",
 				"require": "./extras/node/aeroPath.cjs"
 			}
