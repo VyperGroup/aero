@@ -26,22 +26,31 @@ npm i
 npm run build
 ```
 
-## How to debug aero (how to run the aero dev server)
+## How to live debug aero (how to run the aero dev server)
 
 1. Install pm2
 2. Execute these commands
 
   ```bash
   ./deps.sh
-  pm2 start ecosystem.config.cjs
+  npm run liveBuildSW
+  npm start
   ```
 
 > Run `git pull` and then run these commands again to update the dev server
-> The port by default is :3000
+> The port by default is :2525
+
+### With VSCode
+
+```bash
+./deps.sh
+```
+
+In your editor: Press `f5` or `Menu -> Run -> Start Debugging`
 
 ### Notes
 
-- You must run `pm2 restart <aero-build-watch/aero-sandbox-build-watch>` when you modify a compile-time Feature Flag
+- You must run `pm2 restart <aero-build-watch/aero-sandbox-build-watch>` whenever you modify a compile-time Feature Flag for it to apply regardless if you are in a live build
 
 ## How to run unit tests
 

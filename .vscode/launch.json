@@ -1,0 +1,22 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Start: aero dev session",
+			"url": "http://localhost:2525",
+			"urlFilter": "/go/*",
+			"webRoot": "${workspaceFolder}/dev-server/demo-site",
+			"resolveSourceMapLocations": [
+				"${workspaceFolder}/dist/sw",
+				"${workspaceFolder}/src/AeroSandbox/dist"
+			],
+			"preLaunchTask": "aero: start live build",
+			"server": {
+				"program": "pm2 start ecosystem.config.js"
+			},
+			"trace": true
+		}
+	]
+}

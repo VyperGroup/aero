@@ -50,6 +50,7 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Docs
 
+- [ ] Add a deploy to CF Workers button for server-only aero with CF Worker support
 - [ ] Setup the build scripts work with IDEs (Zed and VSCode by clicking the run button using a launch.json)
 - [ ] Properly capitalize the headings in the docs
 - [ ] Migrate all of the proposals to conform with my new standards
