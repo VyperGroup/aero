@@ -33,7 +33,7 @@ npm run build
 
   ```bash
   ./deps.sh
-  pm2 start ecosystem.config.js
+  pm2 start ecosystem.config.cjs
   ```
 
 > Run `git pull` and then run these commands again to update the dev server
