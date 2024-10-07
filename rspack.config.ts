@@ -38,7 +38,7 @@ if (debugMode)
 const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	entry: {
-		sw: path.resolve(__dirname, "./src/this/handle.ts")
+		sw: path.resolve(__dirname, "./src/this/handleSW.ts")
 		// Building these bundles separately allows for the user to roll out their own config files without having to build aero as a whole
 	},
 	plugins,
@@ -80,7 +80,7 @@ function createConfigBuild() {
 	mkdir(path.resolve(__dirname, "dist")).then(() => {
 		copyFile(
 			path.resolve(__dirname, "src/defaultConfig.js"),
-			path.resolve(__dirname, "dist/defaultConfig.aero.js")
+			path.resolve(__dirname, "dist/sw/defaultConfig.aero.js")
 		);
 	});
 }

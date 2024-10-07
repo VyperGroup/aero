@@ -1,6 +1,6 @@
-import type { htmlRewriterMode } from "../types/rewriters/html";
+import type { boolFlagType QuotedString } from "../types/featureFlags";
 
-export type boolFlagType = "true" | "false";
+import type { htmlRewriterMode } from "../types/rewriters/html";
 
 export interface FeatureFlags {
 	INCLUDE_AST_PARSER_SEAFOX: boolFlagType;

@@ -1,4 +1,7 @@
-import type { boolFlagType } from "../src/AeroSandbox/build/featureFlags";
+import type {
+	boolFlagType,
+	QuotedString
+} from "../src/AeroSandbox/build/featureFlags";
 import { boolFlag } from "../src/AeroSandbox/build/featureFlags";
 import type { htmlRewriterMode } from "../src/AeroSandbox/types/rewriters/html";
 
@@ -17,11 +20,12 @@ export interface FeatureFlags {
 	REWRITER_HTML: boolFlagType;
 	HTML_REWRITER_TYPE: htmlRewriterMode;
 	/** Defaults to `custom_elements_sandbox` */
-	CUSTOM_ELEMENTS_USE:
+	CUSTOM_ELEMENTS_USE: QuotedString<
 		| "custom_elements_sandbox"
 		| "mutation_observer"
 		| "domparser"
-		| "sw_parser";
+		| "sw_parser"
+	>;
 	/** @warning currently unsupported */
 	REWRITER_XSLT: boolFlagType;
 	REWRITER_JS: boolFlagType;
@@ -34,9 +38,11 @@ export interface FeatureFlags {
 
 export interface FeatureFlagsRspack extends FeatureFlags {
 	/* Defaults to what is in the build config if this is not set */
-	SERVER_ONLY: "winterjs" | "cf-workers";
-	/* Defaults to what is in the build config if this is not set */
-	REQ_INTERCEPTION_CATCH_ALL: "referrer" | "clients";
+	SERVER_ONLY: QuotedString<"winterjs"> | QuotedString<"cf-workers">;
+	/* Defaults to what is in the build config if this is not set. Referrer should be used in environments outside of a SW */
+	REQ_INTERCEPTION_CATCH_ALL:
+		| QuotedString<"referrer">
+		| QuotedString<"clients">;
 }
 
 export interface FeatureFlagsRuntime extends FeatureFlags {}

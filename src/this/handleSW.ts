@@ -350,7 +350,17 @@ async function handle(event: FetchEvent): Promise<Response> {
 			};
 		}
     </script>
+    <!-- TODO: Make a logger bundle just for the client -->
+    <script src="${self.config.bundles.loggerClient}"></script>
 	<script src="${self.config.bundles.sandbox}"></script>
+	<script type="module">
+		if (!(AeroSandbox in self)) {
+			aeroLogger.fatalErr("Missing the AeroSandbox declaration after importing the AeroSandbox bundle")
+		}
+		import aeroSandboxConfig from "${aeroConfig.bundles.aeroSandboxConfig}";
+		const aeroSandbox new AeroSandbox(aeroSandboxConfig);
+		aeroSandbox.registerStorageIsolators("$aero") // takes in the storage key prefix you want
+	</script>
 </head>
 `;
 
