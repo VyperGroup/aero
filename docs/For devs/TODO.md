@@ -6,17 +6,16 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 - [ ] Instead of using comments at the end of properties to document, properly document the interface properties with `/** * */` (JSDoc)
 - [ ] Finish AeroSandbox
+- [ ] Write a handler for Rust (handleRust.rs)
 - [ ] Make a Worker version of AeroSandbox (AeroSandbox but it only supports the [Web APIs that are present inside of Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Functions_and_classes_available_to_workers#:~:text=the%20following%20web%20apis%20are%20available%20to%20workers%3A))
 - [ ] Nested SW support
-- [ ] Completely move any remnants of middleware to the proxy-middleware repo and instead recommend the users to reference that repo for the middleware in the docs.
 - [ ] Move everything from [src/shared](../../src/shared/) to the AeroSandboxing library as general utilities.
 - [ ] Implement optional url encoding like UV (this will be recommended against)
 - [ ] URL hash encoding support (this will be default)
-- [x] Make a new global aero logging method at $aero.log
-- [ ] Make aero the first quad-threaded proxy: switch to bare-mux 2.0 and SharedWorker-based rewriting
+- [ ] Make aero the first quad-threaded proxy:
+  - [ ] switch to bare-mux 2.0
+  - [ ] SharedWorker-based rewriting
 - [ ] Finish the .val.ts building convention and write about in a doc
-- [ ] Fix import paths
-  - Use TSConfig paths for every path. No mor ee relative paths. This will help for clarity and if I ever want to move around where the folders are located in a future refactor.
 - [ ] Use `import type` when importing types
 
 ## Security
@@ -51,13 +50,10 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Docs
 
-- [ ] Setup the build scripts work with IDEs (Zed and VSCode)
-- [x] Convert all of the TODO.xit files to MD
+- [ ] Setup the build scripts work with IDEs (Zed and VSCode by clicking the run button using a launch.json)
 - [ ] Properly capitalize the headings in the docs
 - [ ] Migrate all of the proposals to conform with my new standards
-- [ ] Create docs for docs.vyper.group
 - [ ] Convert the aero logo into an SVG
-- [x] Get a new aero logo
 
 ### Comments
 
@@ -70,13 +66,10 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Config
 
-- [ ] Seperate the package.json for middleware. Then, cleanup the package.json.
 - [ ] Provide auto-builds
 - [ ] Provide environment config files for the Helix editor
 
 ## Aero Config
-
-- [ ] Implement url encoding like UV
 
 ## Bare Client
 
