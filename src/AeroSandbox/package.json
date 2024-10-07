@@ -2,11 +2,14 @@
 	"name": "aero-sandbox",
 	"version": "0.0.2",
 	"description": "The sandboxing library for aero",
-	"main": "dist/sandbox.aero.js",
+	"main": "dist/sandbox.js",
+	"type": "module",
 	"exports": {
-		"./path": {
-			"import": "./extras/node/aeroSandboxPath.js",
-			"require": "./extras/node/aeroSandboxPath.cjs"
+		".": {
+		  "node": {
+				"import": "./extras/node/aeroSandboxPath.js",
+				"require": "./extras/node/aeroSandboxPath.cjs"
+			}
 		},
 		"./configTypes": "./types/config.d.ts",
 		"./contextualIdentities": "./src/apis/contextualIdentities.ts",

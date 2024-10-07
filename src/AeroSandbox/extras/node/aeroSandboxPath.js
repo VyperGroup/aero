@@ -4,6 +4,6 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-const aeroSandboxPath = resolve(__dirname, "..", "dist");
+const aeroSandboxPath = resolve(__dirname, "../..", "dist");
 
 export default aeroSandboxPath;
