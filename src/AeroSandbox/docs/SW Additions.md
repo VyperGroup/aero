@@ -10,10 +10,10 @@ How to implement:
 Add
 
 ```js
-importScripts("/aero/sandbox/swAdditions.aero.js")
+importScripts("/aero/sandbox/swAdditions.js")
 ...
-addEventListener("fetch", ev => {
-  const possibleResp = fetchEventMiddleware(ev);
+addEventListener("fetch", event => {
+  const possibleResp = fetchEventMiddleware(event);
   if (possibleResp instanceof Response)
     return resp;
   ...

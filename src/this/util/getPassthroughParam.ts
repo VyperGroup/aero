@@ -6,5 +6,7 @@ export default (params: URLSearchParams, param: string): string | false => {
 		params.delete(`_${item}`);
 
 		return item;
-	} else return false;
+	}
+
+	return false;
 };

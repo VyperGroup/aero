@@ -16,10 +16,11 @@
 	self.defaultAeroConfig = {
 		globalNamespaceInject: "$aero",
 		prefix: "/go/",
+		// TODO: Change this accordingly on my fork of HU
 		pathToInitialSW: "/sw.js",
 		bundles: {
 			"bare-mux": "/baremux/index.js",
-			handle: `${dirToAero}sw.aero.js`,
+			handle: `${dirToAero}sw.js`,
 			sandboxConfig: `${dirToAero}sandbox/config.js`
 		},
 		aeroPathFilter: path =>

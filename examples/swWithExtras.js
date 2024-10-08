@@ -8,8 +8,8 @@ const dirToAero = "/aero/";
 const pathToPatchedAerohandler = `${dirToAero}extras/handleWithExtras.js`;
 
 // configs
-importScripts(`${dirToAero}defaultConfig.aero.js`);
-importScripts(`${dirToAero}config.aero.js`);
+importScripts(`${dirToAero}defaultConfig.js`);
+importScripts(`${dirToAero}config.js`);
 // bare
 importScripts(aeroConfig.bundles["bare-mux"]);
 // aero handlers

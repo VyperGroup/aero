@@ -1,8 +1,8 @@
 import {
 	type APIInterceptor,
-	ExposedContextsEnum
+	anyWorkerEnumMember
 } from "$types/apiInterceptors";
-import { handleFetchEvent } from "$aero_browser/util/swlessUtils";
+//import { handleFetchEvent } from "$aero_browser/util/swlessUtils";
 
 export default {
 	proxifiedObj: Proxy.revocable(fetch, {
@@ -54,7 +54,7 @@ export default {
 		}
 	}),
 	globalProp: "fetch",
-	exposedContexts: ExposedContextsEnum.window
+	exposedContexts: anyWorkerEnumMember
 } as APIInterceptor;
 
 function createRequest(opts: RequestInit, headers: Record<string, string>) {

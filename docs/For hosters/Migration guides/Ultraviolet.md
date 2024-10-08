@@ -56,5 +56,5 @@ before any of your `app.use` calls
 1. Go to your SW file (the main one in the root of your static folder that you initially registered, not the UV handler)
 2. Look at `examples/swWithSwitcher.js` for "inspiration" (copy it and modify the const variables on the top to your liking)
 3. Make a proxy switcher and when a change in the dropdown for the proxy is observed. See `examples/proxySwitcherFrontend.js` for "inspiration" (copy it and modify the const variables on the top to your liking)
-4. Add your config to `<YOUR STATIC DIR>/<YOUR AERO DIR>/config.aero.js`. See `examples/config.js` for "inspiration" (copy it and modify the config fields to your liking)
-5. Add your AeroSandbox config to `<YOUR STATIC DIR>/<YOUR AERO DIR>/<YOUR AERO SANDBOX DIR>/config.aero.js`
+4. Add your config to `<YOUR STATIC DIR>/<YOUR AERO DIR>/config.js`. See `examples/config.js` for "inspiration" (copy it and modify the config fields to your liking)
+5. Add your AeroSandbox config to `<YOUR STATIC DIR>/<YOUR AERO DIR>/<YOUR AERO SANDBOX DIR>/config.js`

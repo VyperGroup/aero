@@ -110,8 +110,8 @@ TODO: Write this...
 
 set :root, File.dirname(__FILE__)
 # aero
-set :aeroPath, File.join(settings.root, 'node_modules', 'aero-proxy', 'dist')
-set :aeroSandboxPath, File.join(settings.root, 'node_modules', 'aero-sandbox', 'dist', "aero")
+set :aeroPath, File.join(settings.root, 'node_modules', 'aero-proxy', 'dist', 'sw')
+set :aeroSandboxPath, File.join(settings.root, 'node_modules', 'aero-sandbox', 'dist')
 # bare-mux 2.0
 set :baremuxPath, File.join(settings.root, 'node_modules', '@mercuryworkshop', 'bare-mux', 'dist')
 set :epoxyPath, File.join(settings.root, 'node_modules', '@mercuryworkshop', 'epoxy-transport', 'dist')
@@ -149,5 +149,5 @@ end
 ## Instructions - site (static)
 
 1. Create `/sw.js` (in your static folder) with the contents of `/examples/swWithExtras.js` (in this git repo) and modify that file to your liking
-2. Copy the contents of `/examples/config.js` (in this Git repo) to `/aero/aero.config.js` (in your static folder) and modify that file to your liking
+2. Copy the contents of `/examples/config.js` (in this Git repo) to `/aero/config.js` (in your static folder) and modify that file to your liking
 3. Copy the contents of `/src/AeroSandbox/examples/config.js` (in this Git repo) to `/aero/sandbox/config.js` (in your static folder) and modify that file to your liking

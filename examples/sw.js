@@ -3,8 +3,8 @@
  */
 const dirToAero = "/aero/";
 
-importScripts(`${dirToAero}defaultConfig.aero.js`);
-importScripts(`${dirToAero}config.aero.js`);
+importScripts(`${dirToAero}defaultConfig.js`);
+importScripts(`${dirToAero}config.js`);
 importScripts(aeroConfig.bundles["bare-mux"]);
 importScripts(aeroConfig.bundles.handle);
 

@@ -12,15 +12,14 @@ const serverMode = process.env.SERVER_MODE;
 const featureFlags = createFeatureFlags({ debugMode });
 
 if (serverMode) {
-	featureFlags.REQ_INTERCEPTION_CATCH_ALL = "referrer";
-	if (serverMode === "winterjs") featureFlags.SERVER_ONLY = "winterjs";
-	else if (serverMode === "cf-workers")
-		featureFlags.SERVER_ONLY = "cf-workers";
-} else featureFlags.REQ_INTERCEPTION_CATCH_ALL = "clients";
+	featureFlags.REQ_INTERCEPTION_CATCH_ALL = JSON.stringify("referrer");
+	if (serverMode === "winterjs")
+		featureFlags.SERVER_ONLY = JSON.stringify("winterjs");
+	else if (serverMode === JSON.stringify("cf-workers"))
+		featureFlags.SERVER_ONLY = JSON.stringify("cf-workers");
+} else featureFlags.REQ_INTERCEPTION_CATCH_ALL = JSON.stringify("clients");
 
-console.log(featureFlags);
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: I don't know the exact type to use for this at the moment
 const plugins: any = [
 	// @ts-ignore
 	new rspack.DefinePlugin(featureFlags)
@@ -56,8 +55,8 @@ const config: rspack.Configuration = {
 		]
 	},
 	output: {
-		filename: "[name].aero.js",
-		path: path.resolve(__dirname, "dist"),
+		filename: "[name].js",
+		path: path.resolve(__dirname, "dist", "sw"),
 		iife: true
 	},
 	target: "webworker"
@@ -66,23 +65,28 @@ const config: rspack.Configuration = {
 if (debugMode) config.watch = true;
 
 access(path.resolve(__dirname, "dist"))
-	.then(() => {
-		rm(path.resolve(__dirname, "dist"), {
-			recursive: true
-		}).then(() => {
-			createConfigBuild();
-		});
-	})
+	.then(() => afterDist())
 	.catch(() => {
-		createConfigBuild();
+		mkdir(path.resolve(__dirname, "dist")).then(() => {
+			afterDist();
+		});
 	});
-function createConfigBuild() {
-	mkdir(path.resolve(__dirname, "dist")).then(() => {
-		copyFile(
-			path.resolve(__dirname, "src/defaultConfig.js"),
-			path.resolve(__dirname, "dist/sw/defaultConfig.aero.js")
-		);
-	});
+function afterDist() {
+	access(path.resolve(__dirname, "dist", "sw"))
+		.then(() => {
+			rm(path.resolve(__dirname, "dist", "sw"), {
+				recursive: true
+			}).then(() => afterSW);
+		})
+		.catch(() => {
+			mkdir(path.resolve(__dirname, "dist", "sw")).then(afterSW);
+		});
+}
+function afterSW() {
+	copyFile(
+		path.resolve(__dirname, "src/defaultConfig.js"),
+		path.resolve(__dirname, "dist/sw/defaultConfig.js")
+	);
 }
 
 export default config;

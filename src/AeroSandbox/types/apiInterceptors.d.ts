@@ -90,15 +90,17 @@ export enum ExposedContextsEnum {
 	serviceWorker,
 	window
 }
-export type anyWorkerEnumMember =
+export type anyWorkerExceptServiceWorkerEnumMember =
 	| ExposedContextsEnum.animationWorklet
 	| ExposedContextsEnum.audioWorklet
 	| ExposedContextsEnum.dedicatedWorker
 	| ExposedContextsEnum.layoutWorklet
 	| ExposedContextsEnum.paintWorklet
-	| ExposedContextsEnum.serviceWorker
 	| ExposedContextsEnum.sharedStorageWorklet
 	| ExposedContextsEnum.sharedWorker;
+export type anyWorkerEnumMember =
+	| anyWorkerExceptServiceWorkerEnumMember
+	| ExposedContextsEnum.serviceWorker;
 // biome-ignore lint/style/useEnumInitializers: <explanation>
 export enum AltProtocolEnum {
 	webRTC,

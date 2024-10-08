@@ -3,7 +3,7 @@
 This is the main TODO file for changes that encompass every part of aero.
 
 If you want to find something to contribute to, search in your editor for TODO comments and look in TODO.md files for milestones, or generalized ideas. This is how project management is done in aero.
-
+ 
 - [ ] Instead of using comments at the end of properties to document, properly document the interface properties with `/** * */` (JSDoc)
 - [ ] Finish AeroSandbox
 - [ ] Write a handler for Rust (handleRust.rs)
@@ -50,6 +50,8 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Docs
 
+- [ ] Provide better examples in the JSDoc and for internally used libraries say where it is used inside of aero's codebase.
+- [ ] Finish JSDoc for all exported methods
 - [ ] Add a deploy to CF Workers button for server-only aero with CF Worker support
 - [ ] Setup the build scripts work with IDEs (Zed and VSCode by clicking the run button using a launch.json)
 - [ ] Properly capitalize the headings in the docs
@@ -76,3 +78,11 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 - [x] Move all of the middleware code into a bare-mux transport
 - [ ] Support bare-mux
+
+## Improving experience on code editors
+
+### Task running
+
+- [ ] Make tasks for running aero/AeroSandbox's tests and output to the code editor
+
+> Make three tasks for: just aero, just AeroSandbox, and combined

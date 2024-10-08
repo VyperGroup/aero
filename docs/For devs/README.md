@@ -66,6 +66,7 @@ Whenever there are multiple subheadings in a `Methods`` heading, if there is a ð
 - **[src](./src)** - Aero's _actual_ code that is built
 - **[src/AeroSandbox](../../src/AeroSandbox/)** - The library that powers the interception techniques that aero uses.
 
+- [server/only]
 ## Optional
 
 I recommend not peeking at these if you are learning proxies for the first time. These are optional and are only needed for certain edge cases.
@@ -73,3 +74,6 @@ I recommend not peeking at these if you are learning proxies for the first time.
 - **[altBackends](../../src/altBackends)** - Alternative backends rather than using a SW made for unique environments
 - **[tests](../../tests/)** - Unit testing
 - **[dist](../../dist)** - Build files for aero. These files are what you need to use aero on your site. They won't be present until you run `npm run build.`
+  - [dist/sw](../../dist/sw) - The build files for aero's SW handler
+  - [dist/wasmer](../../dist/sw) - The build files for aero with *winter.js* support
+  - [dist/cf-workers](../../dist/cf-workers) - The build files for aero with *CF Workers* support

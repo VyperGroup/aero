@@ -35,11 +35,11 @@ test("Node paths were what was expected", t => {
 });
 
 // Look into the dist folder and check if all the files are where they belong
-const expectedAeroImports = ["sw.aero.js", "sw.aero.js.map"];
+const expectedAeroImports = ["sw.js", "sw.js.map"]; // TODO: Finish these
 const expectedAeroExtraImports = ["aeroPath.cjs", "aeroPath.js"];
 const expectedAeroSandboxImports = [
-	"sandbox.aero.js",
-	"sandbox.aero.js.map",
+	"sandbox.js",
+	"sandbox.js.map",
 	"jsRewriter.js",
 	"jsRewriter.js.map",
 	"featureFlags.js",

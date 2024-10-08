@@ -1,4 +1,5 @@
 import { type FeatureFlagsRspack } from "./types/featureFlags";
+import type { BareMux } from "@mercuryworkshop/bare-mux";
 import type { Sec } from "$aero/types";
 
 // Utility
@@ -60,7 +61,7 @@ declare const self: WorkerGlobalScope &
 		config: Config;
 		aeroConfig: Config;
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		bareClient: any; // BareMux;
+		BareMux: BareMux;
 		handle;
 		logger: AeroLogger;
 		nestedSWs: Map<proxyOrigin, NestedSW[]>;
@@ -68,8 +69,6 @@ declare const self: WorkerGlobalScope &
 
 self.logger = new AeroLogger();
 self.config = aeroConfig;
-
-self.bareClient = new BareMux.BareClient();
 
 /**
  * Handles the requests
@@ -117,7 +116,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		return await fetch(req.url);
 	}
 
-	let isMod;
+	let isMod: boolean;
 	const isScript = req.destination === "script";
 	if (isScript) {
 		const isModParam = getPassthroughParam(params, "isMod");
@@ -273,7 +272,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await bareClient.fetch(
+	const resp = await new BareMux.BareClient.fetch(
 		new URL(proxyUrl).href,
 		rewrittenReqOpts
 	);
@@ -350,12 +349,13 @@ async function handle(event: FetchEvent): Promise<Response> {
 			};
 		}
     </script>
-    <!-- TODO: Make a logger bundle just for the client -->
+    <!-- TODO: Make a logger bundle just for the client, which registers on whatever object is provided by \`$aero.sandbox.config.loggerNamespace\`, for example, with the default config it would register to \`$aero.logger\` -->
     <script src="${self.config.bundles.loggerClient}"></script>
 	<script src="${self.config.bundles.sandbox}"></script>
 	<script type="module">
 		if (!(AeroSandbox in self)) {
-			aeroLogger.fatalErr("Missing the AeroSandbox declaration after importing the AeroSandbox bundle")
+			//TODO: Make this method do a crash string
+			$aero.logger.fatalErr("Missing the AeroSandbox declaration after importing the AeroSandbox bundle")
 		}
 		import aeroSandboxConfig from "${aeroConfig.bundles.aeroSandboxConfig}";
 		const aeroSandbox new AeroSandbox(aeroSandboxConfig);

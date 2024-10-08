@@ -111,7 +111,7 @@ function createConfigBuild() {
 	mkdir(path.resolve(__dirname, "dist")).then(() => {
 		copyFile(
 			path.resolve(__dirname, "src/defaultConfig.js"),
-			path.resolve(__dirname, "dist/defaultConfig.aero.js")
+			path.resolve(__dirname, "dist/defaultConfig.js")
 		);
 	});
 }
