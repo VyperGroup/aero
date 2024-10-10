@@ -19,11 +19,9 @@ Web Proxies can be used for:
 ## How to build aero
 
 ```bash
-npm i
-npm run buildSW
 cd src/AeroSandbox
 npm i
-npm run build
+npm run buildSW
 ```
 
 ## How to live debug aero (how to run the aero dev server)
