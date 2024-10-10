@@ -3,7 +3,7 @@
 This is the main TODO file for changes that encompass every part of aero.
 
 If you want to find something to contribute to, search in your editor for TODO comments and look in TODO.md files for milestones, or generalized ideas. This is how project management is done in aero.
- 
+
 - [ ] Instead of using comments at the end of properties to document, properly document the interface properties with `/** * */` (JSDoc)
 - [ ] Finish AeroSandbox
 - [ ] Write a handler for Rust (handleRust.rs)
@@ -29,14 +29,14 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Build System
 
-- [ ] Revert back to using Biome and Rspack
 - [x] Publish builds on NPM
   - [x] AeroSandbox
   - [ ] Server-only aero `aero-proxy/<winterjs/cf-workers>`
 - [ ] Make server-only builds
   - [ ] winter.js
   - [ ] CF Workers
-- [ ] Make builds of aero that are made for older browsers
+- [ ] Make builds of AeroSandbox that are made for older browsers (to be paired with server-only aero)
+- [ ] Add pnpm support
 
 ## API Interceptor system
 
