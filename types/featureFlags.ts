@@ -1,7 +1,7 @@
 import type {
 	boolFlagType,
 	QuotedString
-} from "../src/AeroSandbox/build/featureFlags";
+} from "../src/AeroSandbox/types/featureFlags";
 import { boolFlag } from "../src/AeroSandbox/build/featureFlags";
 import type { htmlRewriterMode } from "../src/AeroSandbox/types/rewriters/html";
 

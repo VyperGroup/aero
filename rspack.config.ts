@@ -12,11 +12,15 @@ const serverMode = process.env.SERVER_MODE;
 const featureFlags = createFeatureFlags({ debugMode });
 
 if (serverMode) {
+	// @ts-ignore
 	featureFlags.REQ_INTERCEPTION_CATCH_ALL = JSON.stringify("referrer");
 	if (serverMode === "winterjs")
+		// @ts-ignore
 		featureFlags.SERVER_ONLY = JSON.stringify("winterjs");
 	else if (serverMode === JSON.stringify("cf-workers"))
+		// @ts-ignore
 		featureFlags.SERVER_ONLY = JSON.stringify("cf-workers");
+	// @ts-ignore
 } else featureFlags.REQ_INTERCEPTION_CATCH_ALL = JSON.stringify("clients");
 
 // biome-ignore lint/suspicious/noExplicitAny: I don't know the exact type to use for this at the moment

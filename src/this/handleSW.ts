@@ -53,6 +53,7 @@ let SERVER_ONLY: string,
 	REWRITER_CACHE_MANIFEST: boolean,
 	SUPPORT_LEGACY: boolean,
 	SUPPORT_WORKER: boolean,
+	AERO_BRANDING_IN_PROD: boolean,
 	DEBUG: boolean;
 
 type proxyOrigin = string;
@@ -351,7 +352,6 @@ async function handle(event: FetchEvent): Promise<Response> {
     </script>
     <!-- TODO: Make a logger bundle just for the client, which registers on whatever object is provided by \`$aero.sandbox.config.loggerNamespace\`, for example, with the default config it would register to \`$aero.logger\` -->
     <script src="${self.config.bundles.loggerClient}"></script>
-	<script src="${self.config.bundles.sandbox}"></script>
 	<script type="module">
 		if (!(AeroSandbox in self)) {
 			//TODO: Make this method do a crash string
@@ -360,6 +360,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 		import aeroSandboxConfig from "${aeroConfig.bundles.aeroSandboxConfig}";
 		const aeroSandbox new AeroSandbox(aeroSandboxConfig);
 		aeroSandbox.registerStorageIsolators("$aero") // takes in the storage key prefix you want
+		${DEBUG || AERO_BRANDING_IN_PROD ? `$aero.logger.image(${aeroConfig.bundles.logo})` : ""}
+		$aero.logger("AeroSandbox has been loaded and initialized: aero is ready to go!");
 	</script>
 </head>
 `;

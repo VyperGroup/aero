@@ -7,19 +7,19 @@
 			"type": "npm",
 			"group": "build",
 			"label": "aero: start live build",
-			"script": "start:build"
+			"script": "buildSW"
 		},
 		{
 			"type": "npm",
 			"group": "build",
 			"label": "aero: start build",
-			"script": "start:liveBuild"
+			"script": "liveBuildSW"
 		},
 		{
 			"type": "npm",
 			"group": "build",
 			"label": "aero: debug build",
-			"script": "start:debugBuild"
+			"script": "debugBuildSW"
 		}
 	]
 }

@@ -3,7 +3,6 @@
 	"version": "0.0.2",
 	"description": "The sandboxing library for aero",
 	"main": "dist/sandbox.js",
-	"type": "module",
 	"exports": {
 		".": {
 			"node": {

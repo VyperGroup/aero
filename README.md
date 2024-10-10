@@ -23,7 +23,7 @@ npm i
 npm run build
 cd src/AeroSandbox
 npm i
-npm run build
+npm run buildSW
 ```
 
 ## How to live debug aero (how to run the aero dev server)

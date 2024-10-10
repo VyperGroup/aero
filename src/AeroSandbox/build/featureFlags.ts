@@ -1,4 +1,4 @@
-import type { boolFlagType QuotedString } from "../types/featureFlags";
+import type { boolFlagType, QuotedString } from "../types/featureFlags";
 
 import type { htmlRewriterMode } from "../types/rewriters/html";
 
