@@ -20,10 +20,10 @@ Web Proxies can be used for:
 
 ```bash
 npm i
-npm run build
+npm run buildSW
 cd src/AeroSandbox
 npm i
-npm run buildSW
+npm run build
 ```
 
 ## How to live debug aero (how to run the aero dev server)
