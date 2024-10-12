@@ -273,7 +273,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await new BareMux.BareClient.fetch(
+	const resp = await (new BareMux.BareClient).fetch(
 		new URL(proxyUrl).href,
 		rewrittenReqOpts
 	);
