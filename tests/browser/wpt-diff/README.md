@@ -4,7 +4,11 @@ What is the point of making your own test cases for every Web API interceptor th
 
 I recommend sorting the APIs that don't work by APIs that don't work because of a flawed API interceptor and those that are broken probably because the proxy doesn't support that API. Specifically, when I make my implementation I will use all of the APIInterceptor exports to collect all of the property paths after the global object (the name of the object on which the API is defined), which would be a list of all APIs that are supported in aero. I will use this list to distinguish between both types.
 
-## How to run WPT
+## How to run WPT (in general not these tests)
 
 `git clone https://github.com/web-platform-tests/wpt.git`
 `./wpt run ...`
+
+## Note about CI integration
+
+I will not include a CI integration for the wpt-diff tests because they will likely take hours. I might consider having it done periodically, like every Month on the stable branch, but it takes too much time and resources to run a CI integration for wpt-diff tests.

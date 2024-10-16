@@ -9,3 +9,7 @@ The tests will be processed in this order
   2. Dev-server headless
 2. Browser (AeroSandbox) tests
   ...
+
+## CI
+
+All of these will have integrations with Github Actions except for the [wpt-diff](../tests/browser/wpt-diff/README.md) tests
