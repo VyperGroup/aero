@@ -4,7 +4,7 @@
 	"javascript": {
 		"formatter": {
 			"arrowParentheses": "asNeeded",
-			"trailingComma": "none",
+			"trailingCommas": "none",
 			"indentWidth": 4
 		}
 	},
