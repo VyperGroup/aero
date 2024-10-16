@@ -12,8 +12,8 @@ Web proxies are website libraries that work to emulate the functionality of the 
 
 Web Proxies can be used for:
 
-- Bypassing any browsing restrictions in a sandbox
-- Unblocking websites or browser features through emulation
+- Bypassing **any** browsing restrictions in a sandbox
+- Unblocking websites or **browser features** through emulation
 - Middleware
 
 ## How to build aero
@@ -25,6 +25,8 @@ npm run buildSW
 ```
 
 ## How to live debug aero (how to run the aero dev server)
+
+> This dev server isn't meant to be used as a demo, but it certainly can be if you run without the live build scripts. You can pre-build the production builds and run `npm start`. There will be an actual demo server like described [here](./docs/Plans/Aero%20Live%20Deployment%20Page.md).
 
 1. Install pm2
 2. Execute these commands
