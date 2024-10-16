@@ -10,19 +10,22 @@
 - If you make any changes to the API interceptors, ensure the tests still pass
 - Try your best to follow the style of aero
 
+### Commits
+
+### Making changes to GitHub Actions
+
+Read [this doc](./For%20devs/Testing%20GitHub%20Actions.md)
+
 ## Recommendations
 
 - Setup [biomejs](https://biomejs.dev/guides/integrate-in-editor/#third-party-plugins) (preferrable) or [prettier](https://prettier.io/docs/en/editors.html) integrations in your IDE
 - If none of tools used suite you, feel free to make a PR for however you like
 - If you are on VSCode, install the recommended extensions
 - If you want to learn aero's codebase faster, **read all of the docs**
-- If you want to speed up reptitive tasks, use Phind (free and my choice) or any GPT assistant that is well-integrated with your codebase. I also recommend [the open source models on HuggingFace](https://huggingface.co/chat). They seem to be accurate. **Do not use AI in situations where you don't know the language or libraries used.** While it is mostly fine, if you have accurate tests, you must also audit your code with someone who knows the concepts well to ensure that there is no security holes with the generated code.
--
 
 ### Documentation
 
 - Write in the present simple tense by default, unless you are writing a proposal document, where you would write in the future tense
-- Audit your additions using a [grammer checker](https://quillbot.com/grammar-check). If it advises you to rewrite in a passive voice I recommend that you ask a GPT to do that, rather than paying for premium.
 
 ## How to help without knowledge of programming
 
@@ -50,7 +53,7 @@ You could help write documentation, or find domain fronting exploits.
 - Put line-specific comments on the line you are referencing (not before the line)
 - If the sentence is multi-lined put a period at the end, if not then don't use periods at all
 - If there is only one comment necessary for a line, put the comment after the line itself
-- If a comment concerns multiple lines, try to estimate how many lines it covers (E.g. _~4, ..._)
+- If a comment concerns multiple lines, try to estimate how many lines it covers (E.g. _~<\LOC>, ..._)
 - Put the more specific comments to the issue closer to the actual LOC
 
 ### Miscellaneous
@@ -66,3 +69,4 @@ Don't be overwhelmed
 I recommend reading <https://developer.chrome.com/docs/workbox/service-worker-overview> and then <https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers>
 
 SW's simply make network requests easier to intercept
+
