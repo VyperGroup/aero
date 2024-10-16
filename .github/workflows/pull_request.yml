@@ -1,0 +1,51 @@
+name: reviewdog
+on: [pull_request]
+jobs:
+  biome:
+    name: runner / Biome
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      # For aero
+      - uses: mongolyy/reviewdog-action-biome@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review 
+      # For AeroSandbox
+      - uses: mongolyy/reviewdog-action-biome@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          workdir: "src/AeroSandbox" 
+  tsc:
+    name: runner / tsc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # For aero
+      - uses: EPMatt/reviewdog-action-tsc@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: warning
+      # For AeroSandbox
+      - uses: EPMatt/reviewdog-action-tsc@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: warning
+          workdir: src/AeroSandbox
+  # FIXME: This doesn't quite work
+  #linter_name:
+    #name: runner / LanguageTool
+    #runs-on: ubuntu-latest
+    #steps:
+      #- uses: actions/checkout@v4
+      #- uses: reviewdog/action-languagetool@v1
+        #with:
+          #github_token: ${{ secrets.github_token }}
+          #reporter: github-pr-review
+          #level: info
