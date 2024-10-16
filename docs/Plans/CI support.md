@@ -10,20 +10,14 @@ The workflows that will be executed will comment about code that broke because o
 
 ### When a PR is made to be merged from `unstable` -> `main`
 
-Unlike [when a PR is created or updated](#when-a-pr-is-created-or-updated), all checks must pass, even if it is not your fault. This is to ensure that the main branch remains bug-free. 
+Unlike [when a PR is created or updated](#when-a-pr-is-created-or-updated), all checks must pass, even if it is not your fault. This is to ensure that the main branch remains bug-free.
 
 ## [Workflows](https://docs.github.com/en/actions/about-github-actions/understanding-github-actions#workflows) that will be supported
-
-### aero's own API Interceptor checks
-
-This GitHub Workflow ensures you have adequately defined your API Interceptors. You will be able to override these checks per API Interceptor export by adding a comment `//API_INTERCEPTOR_CHECK_IGNORE` above the API interceptor export (can be in lines after other comments, but not blank indent lines). Only use those overrides when the API Interceptor check is broken. 
-
-> This will run `npm run validateInterceptors` (in AeroSandbox) in the background
 
 ### aero's own unit tests and systems tests
 
 This will run:
-- If the SW and AeroSandbox are modified: `npm run testsAll` in the background 
+- If the SW and AeroSandbox are modified: `npm run testsAll` in the background
 - If the SW is modified: `npm run testsSW` in the background
 - If the AeroSandbox is modified: `npm run testsSandbox` in the background
 
@@ -45,20 +39,20 @@ The workflows that will be executed will comment about code that broke because o
 
 ### When a PR is made to be merged from `unstable` -> `main`
 
-Unlike [when a PR is created or updated](#when-a-pr-is-created-or-updated), all checks must pass, even if it is not your fault. This is to ensure that the main branch remains bug-free. 
+Unlike [when a PR is created or updated](#when-a-pr-is-created-or-updated), all checks must pass, even if it is not your fault. This is to ensure that the main branch remains bug-free.
 
 ## [Workflows](https://docs.github.com/en/actions/about-github-actions/understanding-github-actions#workflows) that will be supported
 
 ### aero's own API Interceptor checks
 
-This GitHub Workflow ensures you have adequately defined your API Interceptors. You will be able to override these checks per API Interceptor export by adding a comment `//API_INTERCEPTOR_CHECK_IGNORE` above the API interceptor export (can be in lines after other comments, but not blank indent lines). Only use those overrides when the API Interceptor check is broken. 
+This GitHub Workflow ensures you have adequately defined your API Interceptors. You will be able to override these checks per API Interceptor export by adding a comment `//API_INTERCEPTOR_CHECK_IGNORE` above the API interceptor export (can be in lines after other comments, but not blank indent lines). Only use those overrides when the API Interceptor check is broken.
 
 > This will run `npm run validateInterceptors` (in AeroSandbox) in the background
 
 ### aero's own unit tests and systems tests
 
 This will run:
-- If the SW and AeroSandbox are modified: `npm run testsAll` in the background 
+- If the SW and AeroSandbox are modified: `npm run testsAll` in the background
 - If the SW is modified: `npm run testsSW` in the background
 - If the AeroSandbox is modified: `npm run testsSandbox` in the background
 
