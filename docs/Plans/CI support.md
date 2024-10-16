@@ -14,23 +14,9 @@ Unlike [when a PR is created or updated](#when-a-pr-is-created-or-updated), all 
 
 ## [Workflows](https://docs.github.com/en/actions/about-github-actions/understanding-github-actions#workflows) that will be supported
 
-### aero's own unit tests and systems tests
+### [ ] TODO: aero's own unit tests and systems tests
 
 This will run:
-- If the SW and AeroSandbox are modified: `npm run testsAll` in the background
-- If the SW is modified: `npm run testsSW` in the background
-- If the AeroSandbox is modified: `npm run testsSandbox` in the background
-
-### Biome lint
-
-- <https://biomejs.dev/recipes/continuous-integration/#third-party-actions>
-
-### `tsc` checks
-
-- <https://github.com/EPMatt/reviewdog-action-tsc>
-
-> See <https://github.com/marketplace/actions/run-tsc-with-reviewdog#how-do-i-run-the-action-on-multiple-ts-modules>
-
-### `misspell` checks
-
-- <https://github.com/reviewdog/action-misspell>
+- [ ] TODO: If the SW and AeroSandbox are modified: `npm run testsAll` in the background
+- [ ] TODO: If the SW is modified: `npm run testsSW` in the background
+- [ ] TODO: If the AeroSandbox is modified: `npm run testsSandbox` in the background
