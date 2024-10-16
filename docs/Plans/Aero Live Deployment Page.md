@@ -1,3 +1,0 @@
-# Aero Live Deployment Page
-
-I want something like the GitHub site ScramJet has, but for aero. I want it to be on the main branch by default and to be able to switch to commits on the unstable branch to get reference builds from. I also want it to say what checks have passed through a button that says `# of checks passed/# of checks` and drops down to show what is broken and what is not. I also want it configurable in the settings to automatically choose the commit with the least breaking changes in that branch; it would choose the latest one if it needs a tie-breaker.
