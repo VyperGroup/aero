@@ -41,10 +41,11 @@ class GenericLogger {
 	}
 	fatalErr(branding: string, msg: string): void {
 		console.error(
-			`%c${branding}%c ${msg}`,
-			`%cfatal%c ${msg}`,
+			`%c${branding}%c %cfatal%c ${msg}`, 
 			`${aeroBubbleStyle}`,
-			`${fatalErrBubbleStyle}`
+			"",
+			`${fatalErrBubbleStyle}`,
+			""
 		);
 	}
 }
@@ -77,6 +78,7 @@ class AeroLogger extends GenericLogger {
 		super.fatalErr("aero SW", msg);
 		return new Error(`Caught Fatal Error: ${msg}`);
 		/*
+		TODO: Unify the crash screen on the SW handler with extras and this one
 		return new Response(
 			/*
 			// TODO: Fix
@@ -115,6 +117,7 @@ class AeroSandboxLogger extends GenericLogger {
 		super.error("aero sandbox", msg);
 	}
 	fatalErr(msg: string): void {
+		// TODO: INSTEAD MAKE THIS A CRASH SCREEN IF THE DEBUG FLAG IS ENABLED
 		super.fatalErr("aero sandbox", msg);
 
 		if (this.options.htmlTemplatingCallback !== undefined)
