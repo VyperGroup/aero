@@ -46,8 +46,8 @@
 		"typescript": "^5.5.2"
 	},
 	"dependencies": {
-		"@mercuryworkshop/bare-as-module3": "^2.2.2",
-		"@mercuryworkshop/bare-mux": "^2.0.1",
+		"@mercuryworkshop/bare-as-module3": "^2.2.4",
+		"@mercuryworkshop/bare-mux": "^2.1.4",
 		"@oxc-parser/wasm": "^0.21.0",
 		"@rsbuild/core": "^1.0.1-beta.4",
 		"@types/estraverse": "^5.1.7",

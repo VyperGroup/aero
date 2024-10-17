@@ -57,6 +57,6 @@
 		"typescript": "^5.0.4"
 	},
 	"dependencies": {
-		"@mercuryworkshop/bare-mux": "^2.1.2"
+		"@mercuryworkshop/bare-mux": "^2.1.4"
 	}
 }
