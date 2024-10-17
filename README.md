@@ -27,6 +27,7 @@ npm run buildSW
 ## How to live debug aero (how to run the aero dev server)
 
 > This dev server isn't meant to be used as a demo, but it certainly can be if you run without the live build scripts. You can pre-build the production builds and run `npm run buildSW`. There will be an actual demo server like described [here](./docs/Plans/Aero%20Live%20Deployment%20Page.md).
+> Be sure to [enable Source Maps](https://developer.chrome.com/docs/devtools/javascript/source-maps#enable_source_maps_in_settings) when debugging
 
 1. Install pm2
 2. Execute these commands
