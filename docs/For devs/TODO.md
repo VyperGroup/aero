@@ -29,6 +29,8 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Build System
 
+- [ ] Make a minimal build option (env flag of `MINIMAL_SHARED_BUILD`) for aero/aero-sandbox, which exports the shared modules as standalone bundles and then the SW imports those AeroSandbox bundles instead of bundling the code in the main sw.js bundle. It wouldn't be enabled by default
+  - [ ] Move all of the `$shared` modules that aren't used in the SW into `$util`. Make a custom config
 - Fix the sourcemaps (they don't load in Chrome)
 - [x] Publish builds on NPM
   - [x] AeroSandbox

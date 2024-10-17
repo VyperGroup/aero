@@ -41,7 +41,7 @@ class GenericLogger {
 	}
 	fatalErr(branding: string, msg: string): void {
 		console.error(
-			`%c${branding}%c %cfatal%c ${msg}`, 
+			`%c${branding}%c %cfatal%c ${msg}`,
 			`${aeroBubbleStyle}`,
 			"",
 			`${fatalErrBubbleStyle}`,

@@ -16,6 +16,10 @@ export default ctx =>
 		REWRITER_CACHE_MANIFEST: boolFlag(false),
 		SUPPORT_LEGACY: boolFlag(false),
 		SUPPORT_WORKER: boolFlag(false),
+		// Branding
 		AERO_BRANDING_IN_PROD: boolFlag(true),
+		// Feel free to change this default if you are making a fork of aero
+		GITHUB_REPO: "https://github.com/vortexdeveloperlabs/aero",
+		// Debug
 		DEBUG: JSON.stringify(ctx.debugMode)
 	}) as FeatureFlagsRspack;

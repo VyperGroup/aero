@@ -1,5 +1,6 @@
 import path from "node:path";
 import { access, rm, mkdir, copyFile } from "node:fs/promises";
+import execSync from "node:child_process";
 
 import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
@@ -29,26 +30,39 @@ if (serverMode) {
 	featureFlags.SERVER_ONLY = JSON.stringify(false);
 }
 
+console.log("The chosen feature flags are:");
 console.log(featureFlags);
 
 // biome-ignore lint/suspicious/noExplicitAny: I don't know the exact type to use for this at the moment
 const plugins: any = [
 	// @ts-ignore
 	new rspack.DefinePlugin(featureFlags)
-	//new rspack.SourceMapDevToolPlugin({})
 ];
 
 if (debugMode)
 	plugins.push(
+		// There are currently a bug with Rsdoctor where the option `disableClientServer` doesn't work. You must launch the bundle analyzer through the cli instead.
 		new RsdoctorRspackPlugin({
-			port: 3300,
+			//port: 3300,
 			// Do not pop up every time (annoying)
-			//disableClientServer: liveBuildMode
+			disableClientServer: liveBuildMode,
+			linter: {
+				rules: {
+					// Don't warn about using non ES5 features
+					"ecma-version-check": "off"
+				}
+			},
+			supports: {
+				generateTileGraph: true
+			}
 		})
 	);
 
 const properDirType = debugMode ? "debug" : "prod";
 const properDir = path.resolve(__dirname, "dist", properDirType, "sw");
+
+console.log(`Building in ${properDirType} mode`);
+if (liveBuildMode) console.log("Building in live build mode");
 
 const sourceMapType = debugMode ? "eval-source-map" : "source-map";
 
@@ -79,7 +93,7 @@ const config: rspack.Configuration = {
 		iife: true,
 		libraryTarget: "es2022"
 	},
-	target: "webworker"
+	target: ["webworker", "es2022"]
 };
 
 if (debugMode) config.watch = true;
@@ -88,15 +102,18 @@ const distDir = path.resolve(__dirname, "dist");
 const swDir = path.resolve(__dirname, "dist", properDirType, "sw");
 initDist();
 function initDist() {
+	console.info("Initializing the dist folder");
 	access(distDir)
 		.then(initProperDir)
 		// If dir doesn't exist
 		.catch(createDistDir);
 }
 function createDistDir() {
+	console.info("Creating the dist folder");
 	mkdir(distDir).then(initProperDir);
 }
 function initProperDir() {
+	console.info("Initializing the proper folder (...dist/<debug/prod>)");
 	access(properDir)
 		.then(() => {
 			rm(properDir, {
@@ -107,9 +124,11 @@ function initProperDir() {
 		.catch(createProperDir);
 }
 function createProperDir() {
+	console.info("Creating the proper folder");
 	mkdir(properDir).then(initSW);
 }
 function initSW() {
+	console.info("Initializing the SW folder (...dist/<debug/prod>/sw");
 	access(swDir)
 		.then(() => {
 			rm(swDir, {
@@ -120,17 +139,19 @@ function initSW() {
 		.catch(createSW);
 }
 function createSW() {
+	console.info("Creating the SW folder");
 	mkdir(path.resolve(swDir)).then(initFiles);
 }
 function initFiles() {
-	copySWFiles()
+	console.log("Copying over the default files to the dist folder");
+	copySWFiles();
 	initLogo();
 }
 function copySWFiles() {
 	copyFile(
 		path.resolve(__dirname, "src/defaultConfig.js"),
 		path.resolve(`${swDir}/defaultConfig.js`)
-	).catch((err) => {
+	).catch(err => {
 		console.error("Error copying defaultConfig.js:", err);
 	});
 }
@@ -138,7 +159,7 @@ function initLogo() {
 	copyFile(
 		path.resolve(__dirname, "aero.webp"),
 		path.resolve(`${swDir}/logo.webp`)
-	).catch((err) => {
+	).catch(err => {
 		console.error("Error copying logo.webp:", err);
 	});
 }

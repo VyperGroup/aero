@@ -1,13 +1,13 @@
 # Setup the dev server
 org="https://github.com/vortexdeveloperlabs/"
 
-npm install
+npm i
 
 if [ ! -d dev-server ]; then
   git clone "${org}aero-dev-server.git" dev-server
 fi
 
 cd dev-server
-  git pull
+  npm i
   bash deps.sh
 cd ..

@@ -21,6 +21,9 @@
 		"types/*.d.ts"
 	],
 	"scripts": {
+		"rsdoctor": "npm run rsdoctorSW & npm run rsdoctorSandbox &",
+		"rsdoctorSW": "kill $(lsof -t -i:3300) & rsdoctor analyze --profile dist/debug/sw/.rsdoctor/manifest.json --port 3300",
+		"rsdoctorSandbox": "kill $(lsof -t -i:3301) & rsdoctor analyze --profile src/AeroSandbox/dist/debug/.rsdoctor/manifest.json --port 3301",
 		"test": "npm run tests/index.js",
 		"testsNode": "npm run tests/node/index.js",
 		"testsBrowser": "echo 'Unsupported at the moment'",
@@ -44,6 +47,7 @@
 	"homepage": "https://github.com/ProxyHaven/aero#readme",
 	"devDependencies": {
 		"@biomejs/biome": "^1.3.3",
+		"@rsdoctor/cli": "^0.4.7",
 		"@rsdoctor/rspack-plugin": "^0.3.9",
 		"@rspack/cli": "^0.7.5",
 		"@rspack/core": "^0.7.5",

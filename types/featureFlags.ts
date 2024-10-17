@@ -39,13 +39,16 @@ export interface FeatureFlags {
 
 export interface FeatureFlagsRspack extends FeatureFlags {
 	/* Defaults to what is in the build config if this is not set */
-	SERVER_ONLY: QuotedString<"winterjs"> | QuotedString<"cf-workers"> | "false";
+	SERVER_ONLY:
+		| QuotedString<"winterjs">
+		| QuotedString<"cf-workers">
+		| "false";
 	/* Defaults to what is in the build config if this is not set. Referrer should be used in environments outside of a SW */
 	REQ_INTERCEPTION_CATCH_ALL:
-	| QuotedString<"referrer">
-	| QuotedString<"clients">;
+		| QuotedString<"referrer">
+		| QuotedString<"clients">;
 }
 
-export interface FeatureFlagsRuntime extends FeatureFlags { }
+export interface FeatureFlagsRuntime extends FeatureFlags {}
 
 export { boolFlag, type boolFlagType };

@@ -80,6 +80,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		SUPPORT_LEGACY,
 		SUPPORT_WORKER,
 		AERO_BRANDING_IN_PROD,
+		GITHUB_REPO,
 		SERVER_ONLY,
 		DEBUG
 	]; // TODO: Add them all
@@ -89,7 +90,9 @@ async function handle(event: FetchEvent): Promise<Response> {
 			missingFeatureFlags.push(expectedFeatureFlag);
 	Object.freeze(missingFeatureFlags);
 	if (missingFeatureFlags.length > 0)
-		throw self.logger.fatalErr(`The expected feature flags required in this SW were not found: ${missingFeatureFlags.join(", ")}`);
+		throw self.logger.fatalErr(
+			`The expected feature flags required in this SW were not found: ${missingFeatureFlags.join(", ")}`
+		);
 	const req = event.request;
 
 	// Dynamic config
@@ -266,7 +269,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await (new BareMux.BareClient()).fetch(
+	const resp = await new BareMux.BareClient().fetch(
 		new URL(proxyUrl).href,
 		rewrittenReqOpts
 	);
@@ -338,8 +341,8 @@ async function handle(event: FetchEvent): Promise<Response> {
 				init: \`_IMPORT_\`,
 				prefix: ${self.config.prefix},
 				searchParamOptions: ${JSON.stringify(
-				self.config.searchParamOptions
-			)},
+					self.config.searchParamOptions
+				)},
 			};
 		}
     </script>
@@ -355,6 +358,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 		const aeroSandbox new AeroSandbox(aeroSandboxConfig);
 		aeroSandbox.registerStorageIsolators("$aero") // takes in the storage key prefix you want
 		${DEBUG || AERO_BRANDING_IN_PROD ? `$aero.logger.image(${aeroConfig.bundles.logo})` : ""}
+		$aero.logger.log("Welcome to aero! Our GitHub repo is at ${GITHUB_REPO}.")
 		$aero.logger.log("\\nAeroSandbox has been loaded and initialized: aero is ready to go!");
 	</script>
 </head>

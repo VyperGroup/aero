@@ -18,15 +18,20 @@ Web Proxies can be used for:
 
 ## How to build aero
 
+
 ```bash
-cd src/AeroSandbox
 npm i
 npm run buildSW
+npm --profile=src/AeroSandbox i
+npm --profile=src/AeroSandbox run build
 ```
+
+> Since these are production builds the bundles will be in `...dist/prod/...`
+> ⚠️ There are currently issues building aero with `pnpm`, so please refrain from using it at the moment
 
 ## How to live debug aero (how to run the aero dev server)
 
-> This dev server isn't meant to be used as a demo, but it certainly can be if you run without the live build scripts. You can pre-build the production builds and run `npm run buildSW`. There will be an actual demo server like described [here](./docs/Plans/Aero%20Live%20Deployment%20Page.md).
+> ⚠️ This dev server isn't meant to be used as a demo, but it certainly can be if you run without the live build scripts. You can pre-build the production builds and run `npm run buildSW`. There will be an actual demo server like described [here](./docs/Plans/Aero%20Live%20Deployment%20Page.md).
 > Be sure to [enable Source Maps](https://developer.chrome.com/docs/devtools/javascript/source-maps#enable_source_maps_in_settings) when debugging
 
 1. Install pm2
@@ -38,9 +43,24 @@ npm run buildSW
   ```
 
 > Run `git pull` and then run these commands again to update the dev server
-> The port by default is :2525
-> This will also auto-launch instances of Rspack for aero (port 3300) and AeroSandbox (port 3301)
-> If you are on a VSCode live share you should share those ports
+> The port by default is **:2525**
+
+### To debug the bundles
+
+Run
+
+```bash
+npm run rsdoctor
+```
+
+> You should share those Rsdoctor ports if you are on a VSCode live share with collaborators
+
+## How to build with your own feature flags
+
+TODO: Rename createFeatureFlags.ts to createDefaultFeatureFlags.ts
+TODO: Encourage creating `createFeatureFlags.ts`, which can override what is in `createDefaultFeatureFlag.ts`
+TODO: Normally import `createDefaultFeatureFlags.ts` and dynamically import `createFeatureFlags.ts` THEN run the rest of the build code
+TODO: Do the same for AeroSandbox 
 
 ### With VSCode
 
@@ -58,7 +78,7 @@ In your editor: Press `f5` or `Menu -> Run -> Start Debugging`
 
 ## Related
 
-It is highly recommended that you install [aero middleware](https://github.com/VyperGroup/proxy-middleware) for enhanced functionality.
+It is highly recommended that you install [aero middleware](https://github.com/vortexdeveloperlabs/proxy-middleware) for enhanced functionality.
 
 ## Notable Contributions
 
