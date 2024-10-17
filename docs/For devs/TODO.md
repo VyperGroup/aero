@@ -72,6 +72,7 @@ If you want to find something to contribute to, search in your editor for TODO c
 ## Issues
 
 - [ ] Fix HTTP and STS Emulation
+- [ ] Fix aero not working inside of iframes
 
 ## Config
 
