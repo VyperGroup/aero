@@ -11,9 +11,9 @@ module.exports = {
 		{
 			name: "aero-build-watch",
 			script: "npm",
-			args: "run build",
+			args: "run buildSW",
 			env: {
-				DEBUG: "true"
+				LIVE_BUILD: "true"
 			}
 		},
 		{
@@ -21,7 +21,7 @@ module.exports = {
 			script: "npm",
 			args: "run build",
 			env: {
-				DEBUG: "true",
+				LIVE_BUILD: "true",
 				SERVER_ONLY: "winterjs"
 			}
 		},
@@ -39,7 +39,7 @@ module.exports = {
 			cwd: "src/AeroSandbox",
 			args: "run build",
 			env: {
-				DEBUG: "true",
+				LIVE_BUILD: "true",
 				BUILD_MINIMAL: "true"
 			}
 		},

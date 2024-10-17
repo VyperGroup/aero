@@ -21,7 +21,8 @@
 		bundles: {
 			"bare-mux": "/baremux/index.js",
 			handle: `${dirToAero}sw.js`,
-			sandboxConfig: `${dirToAero}sandbox/config.js`,
+			aeroSandboxConfig: `${dirToAero}sandbox/config.js`,
+			aeroSandbox: `${dirToAero}sandbox/sandbox.js`,
 			logo: "/logo.svg"
 		},
 		aeroPathFilter: path =>

@@ -1,6 +1,7 @@
 import { boolFlag, type FeatureFlagsRspack } from "./types/featureFlags";
 
 export default ctx =>
+	// @ts-ignore
 	({
 		FEATURE_URL_ENC: boolFlag(false),
 		FEATURE_CORS_TESTING: boolFlag(false),
@@ -15,5 +16,6 @@ export default ctx =>
 		REWRITER_CACHE_MANIFEST: boolFlag(false),
 		SUPPORT_LEGACY: boolFlag(false),
 		SUPPORT_WORKER: boolFlag(false),
+		AERO_BRANDING_IN_PROD: boolFlag(true),
 		DEBUG: JSON.stringify(ctx.debugMode)
 	}) as FeatureFlagsRspack;

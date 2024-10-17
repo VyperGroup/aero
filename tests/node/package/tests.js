@@ -35,7 +35,12 @@ test("Node paths were what was expected", t => {
 });
 
 // Look into the dist folder and check if all the files are where they belong
-const expectedAeroImports = ["sw.js", "sw.js.map"]; // TODO: Finish these
+const expectedAeroSWImports = [
+	"sw.js",
+	"sw.js.map",
+	"defaultConfig.js",
+	"logo.webp"
+]; // TODO: Finish these
 const expectedAeroExtraImports = ["aeroPath.cjs", "aeroPath.js"];
 const expectedAeroSandboxImports = [
 	"sandbox.js",
@@ -54,9 +59,9 @@ const expectedAeroSandboxImports = [
 	"ElectronWebView.js.map"
 ];
 test("The expected file names were found in node_modules", async t => {
-	t.test("aero", async t => {
-		const aeroFilenames = await readdir(aeroPath);
-		for (const expectedAeroImport of expectedAeroImports)
+	t.test("aeroSW", async t => {
+		const aeroFilenames = await readdir(`${aeroPath}/sw`);
+		for (const expectedAeroImport of expectedAeroSWImports)
 			t.test(expectedAeroImport, t =>
 				t.ok(aeroFilenames.includes(expectedAeroImport))
 			);

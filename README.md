@@ -26,19 +26,20 @@ npm run buildSW
 
 ## How to live debug aero (how to run the aero dev server)
 
-> This dev server isn't meant to be used as a demo, but it certainly can be if you run without the live build scripts. You can pre-build the production builds and run `npm start`. There will be an actual demo server like described [here](./docs/Plans/Aero%20Live%20Deployment%20Page.md).
+> This dev server isn't meant to be used as a demo, but it certainly can be if you run without the live build scripts. You can pre-build the production builds and run `npm run buildSW`. There will be an actual demo server like described [here](./docs/Plans/Aero%20Live%20Deployment%20Page.md).
 
 1. Install pm2
 2. Execute these commands
 
   ```bash
   ./deps.sh
-  npm run liveBuildSW
   npm start
   ```
 
 > Run `git pull` and then run these commands again to update the dev server
 > The port by default is :2525
+> This will also auto-launch instances of Rspack for aero (port 3300) and AeroSandbox (port 3301)
+> If you are on a VSCode live share you should share those ports
 
 ### With VSCode
 

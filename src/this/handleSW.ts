@@ -38,24 +38,6 @@ import type { Config } from "$aero/types/config";
 
 // TODO: import init from "./handlers/init";
 
-// Webpack Feature Flags
-// biome-ignore lint/style/useSingleVarDeclarator: <explanation>
-let SERVER_ONLY: string,
-	REQ_INTERCEPTION_CATCH_ALL: string,
-	FEATURE_CORS_EMULATION: boolean,
-	FEATURE_INTEGRITY_EMULATION: boolean,
-	FEATURE_ENC_BODY_EMULATION: boolean,
-	FEATURE_CACHES_EMULATION: boolean,
-	FEATURE_CLEAR_EMULATION: boolean,
-	REWRITER_HTML: boolean,
-	REWRITER_XSLT: boolean,
-	REWRITER_JS: boolean,
-	REWRITER_CACHE_MANIFEST: boolean,
-	SUPPORT_LEGACY: boolean,
-	SUPPORT_WORKER: boolean,
-	AERO_BRANDING_IN_PROD: boolean,
-	DEBUG: boolean;
-
 type proxyOrigin = string;
 declare const self: WorkerGlobalScope &
 	typeof globalThis & {
@@ -85,16 +67,29 @@ async function handle(event: FetchEvent): Promise<Response> {
 		throw self.logger.fatalErr("The is no config provided");
 	/** The feature flags that are expected to be used in this SW handler */
 	const expectedFeatureFlags /*: keyof FeatureFlagsRspack*/ = [
-		"REWRITER_HTML"
+		REQ_INTERCEPTION_CATCH_ALL,
+		FEATURE_CORS_EMULATION,
+		FEATURE_INTEGRITY_EMULATION,
+		FEATURE_ENC_BODY_EMULATION,
+		FEATURE_CACHES_EMULATION,
+		FEATURE_CLEAR_EMULATION,
+		REWRITER_HTML,
+		REWRITER_XSLT,
+		REWRITER_JS,
+		REWRITER_CACHE_MANIFEST,
+		SUPPORT_LEGACY,
+		SUPPORT_WORKER,
+		AERO_BRANDING_IN_PROD,
+		SERVER_ONLY,
+		DEBUG
 	]; // TODO: Add them all
-	let missingFeatureFlags /*: keyof FeatureFlagsRspack*/ = [];
-	/*
+	const missingFeatureFlags /*: keyof FeatureFlagsRspack*/ = [];
 	for (const expectedFeatureFlag of expectedFeatureFlags)
-		if (!(expectedFeatureFlag in self))
+		if (typeof expectedFeatureFlag === "undefined")
 			missingFeatureFlags.push(expectedFeatureFlag);
+	Object.freeze(missingFeatureFlags);
 	if (missingFeatureFlags.length > 0)
-		throw self.logger.fatalErr(`The expected feature flags required in this sw were not found: ${JSON.stringify(missingFeatureFlags)}`);
-	*/
+		throw self.logger.fatalErr(`The expected feature flags required in this SW were not found: ${missingFeatureFlags.join(", ")}`);
 	const req = event.request;
 
 	// Dynamic config
@@ -125,8 +120,6 @@ async function handle(event: FetchEvent): Promise<Response> {
 	}
 
 	const frameSec = getPassthroughParam(params, "frameSec");
-
-	console.log(REQ_INTERCEPTION_CATCH_ALL);
 
 	let clientURL: URL;
 	// Get the origin from the user's window
@@ -273,7 +266,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	if (!["GET", "HEAD"].includes(req.method)) rewrittenReqOpts.body = req.body;
 
 	// Make the request to the proxy
-	const resp = await (new BareMux.BareClient).fetch(
+	const resp = await (new BareMux.BareClient()).fetch(
 		new URL(proxyUrl).href,
 		rewrittenReqOpts
 	);
@@ -345,23 +338,24 @@ async function handle(event: FetchEvent): Promise<Response> {
 				init: \`_IMPORT_\`,
 				prefix: ${self.config.prefix},
 				searchParamOptions: ${JSON.stringify(
-					self.config.searchParamOptions
-				)},
+				self.config.searchParamOptions
+			)},
 			};
 		}
     </script>
     <!-- TODO: Make a logger bundle just for the client, which registers on whatever object is provided by \`$aero.sandbox.config.loggerNamespace\`, for example, with the default config it would register to \`$aero.logger\` -->
-    <script src="${self.config.bundles.loggerClient}"></script>
+	<script src="${self.config.bundles.aeroSandbox}"></script>
+	<script src="${self.config.bundles.loggerClient}"></script>
 	<script type="module">
+		import sandboxConfig from "${self.config.bundles.aeroSandboxConfig}";
 		if (!(AeroSandbox in self)) {
 			//TODO: Make this method do a crash string
 			$aero.logger.fatalErr("Missing the AeroSandbox declaration after importing the AeroSandbox bundle")
 		}
-		import aeroSandboxConfig from "${aeroConfig.bundles.aeroSandboxConfig}";
 		const aeroSandbox new AeroSandbox(aeroSandboxConfig);
 		aeroSandbox.registerStorageIsolators("$aero") // takes in the storage key prefix you want
 		${DEBUG || AERO_BRANDING_IN_PROD ? `$aero.logger.image(${aeroConfig.bundles.logo})` : ""}
-		$aero.logger("AeroSandbox has been loaded and initialized: aero is ready to go!");
+		$aero.logger.log("\\nAeroSandbox has been loaded and initialized: aero is ready to go!");
 	</script>
 </head>
 `;

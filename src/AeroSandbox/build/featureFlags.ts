@@ -38,5 +38,6 @@ export interface FeatureFlagsRuntime extends FeatureFlags {
 }
 
 export function boolFlag(bool: boolean): boolFlagType {
-	return bool ? "true" : "false";
+	// @ts-ignore
+	return bool ? JSON.stringify(true) : JSON.stringify(false);
 }
