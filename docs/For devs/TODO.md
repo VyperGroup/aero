@@ -29,6 +29,7 @@ If you want to find something to contribute to, search in your editor for TODO c
 
 ## Build System
 
+- Fix the sourcemaps (they don't load in Chrome)
 - [x] Publish builds on NPM
   - [x] AeroSandbox
   - [ ] Server-only aero `aero-proxy/<winterjs/cf-workers>`
@@ -36,7 +37,12 @@ If you want to find something to contribute to, search in your editor for TODO c
   - [ ] winter.js
   - [ ] CF Workers
 - [ ] Make builds of AeroSandbox that are made for older browsers (to be paired with server-only aero)
-- [ ] Add pnpm support
+- [ ] Add pnpm support (doesn't currently work)
+
+### Feature Flags
+
+- [ ] Make feature flag surrouned by two `__` from left to right like `__DEBUG__` instead of `DEBUG`
+- [ ] Don't declare a global in TS. Instead, declare the globals in Biome like [here](https://kittygiraudel.com/2024/07/22/feature-toggles-with-webpack/#:~:text=Biome). From my experience, declaring a global for an Rspack Feature Flag makes the Feature Flag not work.
 
 ## API Interceptor system
 
