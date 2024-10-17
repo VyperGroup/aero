@@ -347,7 +347,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 	<script src="${self.config.bundles.aeroSandbox}"></script>
 	<script src="${self.config.bundles.loggerClient}"></script>
 	<script type="module">
-		import sandboxConfig from "${self.config.bundles.aeroSandboxConfig}";
+		import aeroSandboxConfig from "${self.config.bundles.aeroSandboxConfig}";
 		if (!(AeroSandbox in self)) {
 			//TODO: Make this method do a crash string
 			$aero.logger.fatalErr("Missing the AeroSandbox declaration after importing the AeroSandbox bundle")
