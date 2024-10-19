@@ -46,19 +46,17 @@
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/ProxyHaven/aero#readme",
 	"devDependencies": {
-		"@biomejs/biome": "^1.3.3",
+		"@biomejs/biome": "^1.9.4",
 		"@rsdoctor/cli": "^0.4.7",
-		"@rsdoctor/rspack-plugin": "^0.3.9",
-		"@rspack/cli": "^0.7.5",
-		"@rspack/core": "^0.7.5",
-		"@types/chrome": "^0.0.237",
-		"@types/serviceworker": "^0.0.89",
+		"@rsdoctor/rspack-plugin": "^0.4.7",
+		"@rspack/cli": "^1.0.13",
+		"@rspack/core": "^1.0.13",
+		"@types/serviceworker": "^0.0.100",
 		"@types/web-app-manifest": "^1.0.8",
-		"@types/websql": "^0.0.30",
 		"clean-webpack-plugin": "^4.0.0",
-		"playwright": "^1.47.2",
+		"playwright": "^1.48.1",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.0.4"
+		"typescript": "^5.6.3"
 	},
 	"dependencies": {
 		"@mercuryworkshop/bare-mux": "^2.1.4"
