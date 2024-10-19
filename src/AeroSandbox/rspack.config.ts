@@ -1,7 +1,7 @@
 import path from "node:path";
 import { access, rm, mkdir, copyFile } from "node:fs/promises";
 
-import glob from "glob";
+import { globSync } from "glob";
 
 import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
@@ -99,7 +99,7 @@ const config: rspack.Configuration = {
 	plugins,
 	resolve: {
 		extensions: [".ts"],
-		tsConfigPath: path.resolve(__dirname, "./tsconfig.json")
+		tsConfig: path.resolve(__dirname, "./tsconfig.json")
 	},
 	module: {
 		rules: [
@@ -121,9 +121,11 @@ const config: rspack.Configuration = {
  * The purpose of this function is to add on to the entry files provided in the argument but also to define separate bundles for all of the code shared with the SW. This function does nothing in debug mode.
  */
 function genEntryFiles(entryFiles) {
-	if (minimalSharedBuild)
-		const modulesSharedWithSW = glob.sync(__dirname, "/src/shared/*.ts")
+	entryFiles = Object.values(entryFiles);
+	if (minimalSharedBuild) {
+		const modulesSharedWithSW = globSync(`${__dirname}/src/shared/*.ts`)
 		return [...entryFiles, ...modulesSharedWithSW];
+	}
 	return entryFiles;
 }
 

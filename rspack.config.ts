@@ -76,7 +76,7 @@ const config: rspack.Configuration = {
 	plugins,
 	resolve: {
 		extensions: [".ts"],
-		tsConfigPath: path.resolve(__dirname, "./tsconfig.json")
+		tsConfig: path.resolve(__dirname, "./tsconfig.json")
 	},
 	module: {
 		rules: [
