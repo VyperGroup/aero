@@ -1,7 +1,7 @@
 import {
 	type APIInterceptor,
 	anyWorkerEnumMember
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 //import { handleFetchEvent } from "$aero_browser/util/swlessUtils";
 
 export default {

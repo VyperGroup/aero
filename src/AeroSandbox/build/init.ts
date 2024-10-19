@@ -7,21 +7,23 @@ import type {
 import type { htmlRewriterMode } from "../types/rewriters/html";
 
 import { buildConfig } from "./customBuilds/aero";
-import { buildConfig as buildConfigFrakenUV } from "./customBuilds/frankenUV.inject.ts";
+//import { buildConfig as buildConfigFrakenUV } from "./customBuilds/frankenUV.inject.ts";
 
 import { config } from "../src/config.ts";
 import { FeatureFlags } from "./featureFlags";
 
 declare const HTML_REWRITER_MODE: htmlRewriterMode;
 
-let proxifiedObjGenCtx: proxifiedObjGeneratorContext = {
+const proxifiedObjGenCtx: proxifiedObjGeneratorContext = {
 	...buildConfig.specialInterceptionFeatures
 };
 
+/*
 if (process.env.BUILD_UV_FRAKEN)
 	proxifiedObjGenCtx = {
 		...buildConfigFrakenUV.specialInterceptionFeatures
 	};
+	*/
 
 if (process.env.BUILD_WOMBAT_SHIM) {
 	// TODO: Build
@@ -32,7 +34,7 @@ const insertLater = new Map<level, proxifiedObjType>();
 
 // @ts-ignore TODO: Move this code to AeroSandbox
 const ctx = import.meta.webpackContext("../src/interceptors", {
-	include: /\.ts$/
+	regExp: /\.ts$/
 });
 for (const fileName of ctx.keys()) {
 	console.log(fileName);
@@ -49,9 +51,8 @@ const sortedInsertObj = Object.entries(
 	[key: string]: APIInterceptor;
 };
 
-for (const aI of Object.values(sortedInsertObj)) {
+for (const aI of Object.values(sortedInsertObj))
 	handleAI(aI);
-}
 
 function handleAI(aI: APIInterceptor): void {
 	if (aI.exposedContexts) {

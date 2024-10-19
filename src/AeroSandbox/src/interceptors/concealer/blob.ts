@@ -1,4 +1,4 @@
-import type { APIInterceptor } from "$types/apiInterceptors";
+import type { APIInterceptor } from "$types/apiInterceptors.d.ts";
 import isHtml from "$shared/isHTML";
 
 export default {

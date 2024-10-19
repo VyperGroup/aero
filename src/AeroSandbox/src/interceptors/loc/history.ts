@@ -1,11 +1,11 @@
 import {
 	type APIInterceptor,
 	ExposedContextsEnum
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
 import rewriteSrc from "$shared/src";
 
-import { proxyLocation } from "$src/interceptors/loc/location";
+import { proxyLocation, upToProxyOrigin } from "$shared/proxyLocation";
 
 const historyState = {
 	apply(target: any, that: ProxyHandler<object>, args: any[]) {

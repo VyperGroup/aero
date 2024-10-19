@@ -1,9 +1,9 @@
-import { escapeWithOrigin } from "$aero/src/shared/escape";
+import { escapeWithOrigin } from "$util/escape";
 
 const storagePrefix = escapeWithOrigin;
 
 const storageNomenclature = cookieStoreId => {
-	apply(target, that, args) {
+	apply: (target, that, args) => {
 		const [key] = args;
 
 		let newKey = storagePrefix(key);

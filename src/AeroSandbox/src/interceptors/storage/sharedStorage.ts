@@ -1,5 +1,5 @@
 import config from "$aero/examples/config";
-import type { APIInterceptor } from "$types/apiInterceptors";
+import type { APIInterceptor } from "$types/apiInterceptors.d.ts";
 const { prefix } = config;
 
 import { storageNomenclature } from "./shared";
@@ -10,7 +10,7 @@ import { storageNomenclature } from "./shared";
 if (flags.nonstandard && "sharedStorage" in window) {
 	// @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Shared_Storage_API}
 	// @see {@link https://developers.google.com/privacy-sandbox/relevance/shared-storage}
-	window.sharedStorage = 
+	window.sharedStorage =
   }
   */
 

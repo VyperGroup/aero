@@ -9,7 +9,7 @@ import { afterPrefix } from "$shared/getProxyUrl";
 import {
 	type APIInterceptor,
 	ExposedContextsEnum
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
 // Proxy the getters for shadow root stylesheets
 

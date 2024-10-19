@@ -1,7 +1,7 @@
 import {
 	type APIInterceptor,
 	ExposedContextsEnum
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
 import { proxyLocation } from "$shared/proxyLocation";
 

@@ -1,7 +1,7 @@
 import {
 	type APIInterceptor,
 	SpecialInterceptionFeaturesEnum
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
 import { proxyConstructString } from "$shared/stringProxy";
 

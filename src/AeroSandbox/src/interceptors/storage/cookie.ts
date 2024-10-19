@@ -1,8 +1,8 @@
 import type { APIInterceptor } from "$aero/types/apiInterceptors";
 
-import { proxyLocation, upToProxyOrigin } from "$src/interceptors/loc/location";
+import { proxyLocation, upToProxyOrigin } from "$shared/proxyLocation";
 
-import { rewriteGetCookie, rewriteSetCookie } from "$shared/hared/cookie";
+import { rewriteGetCookie, rewriteSetCookie } from "$shared/cookie";
 
 function getOriginalCookie(cookie) {
 	// Not done

@@ -4,7 +4,7 @@ import { afterPrefix } from "$shared/getProxyUrl";
 
 import { proxyLocation } from "$shared/proxyLocation";
 
-import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
+import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors.d.ts";
 
 export default [
 	// Entries

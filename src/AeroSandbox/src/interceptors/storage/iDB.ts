@@ -1,6 +1,6 @@
-import type { APIInterceptor } from "$types/apiInterceptors";
+import type { APIInterceptor } from "$types/apiInterceptors.d.ts";
 
-import { storageNomenclature } from "./shared";
+import { storageNomenclature } from "$util/shared";
 
 export default [
 	{

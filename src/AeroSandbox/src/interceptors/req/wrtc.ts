@@ -2,7 +2,7 @@ import {
 	AltProtocolEnum,
 	type APIInterceptor,
 	ExposedContextsEnum
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
 // biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
 import escape from "$shared/escape";

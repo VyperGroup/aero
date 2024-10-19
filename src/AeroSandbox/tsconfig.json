@@ -13,6 +13,7 @@
 			"$sandbox/*": ["src/sandboxers/*"],
 			"$apis/*": ["src/apis/*"],
 			"$cors/*": ["src/cors/*"],
+			"$util/*": ["src/util/*"],
 			"$shared/*": ["src/shared/*"],
 			"$types/*": ["types/*"]
 		},

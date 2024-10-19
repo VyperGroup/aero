@@ -1,7 +1,7 @@
 import type {
 	SupportEnum,
 	InterceptionFeaturesEnum as InterceptionFeatures
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
 /* These ExtraAPIs may require other APIs to be enabled, and it will warn that AeroSandbox wasn't able to build with them if you don't have the correct APIs; pay attention to the descriptions on the fields of this interface */
 enum ExtraAPIs {

@@ -1,10 +1,10 @@
-import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors";
+import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors.d.ts";
 
 import config from "$aero/examples/config";
 const { prefix } = config;
 
 const createHandler = (cookieStoreId?) => {
-	return apply(target, that, args) {
+	return (target, that, args) => {
 		const [key]: [string] = args;
 
 		let newKey = prefix + key;

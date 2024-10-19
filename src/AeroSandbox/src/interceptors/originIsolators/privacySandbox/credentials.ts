@@ -10,7 +10,7 @@ import escape from "$shared/escape";
 import {
 	type APIInterceptor,
 	ExposedContextsEnum
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
 import { proxyLocation } from "$shared/proxyLocation";
 import { afterPrefix } from "$shared/getProxyUrl";

@@ -1,4 +1,4 @@
-import { AltProtocolEnum, type APIInterceptor } from "$types/apiInterceptors";
+import { AltProtocolEnum, type APIInterceptor } from "$types/apiInterceptors.d.ts";
 
 import { BareClient } from "@mercuryworkshop/bare-mux";
 

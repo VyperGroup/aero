@@ -1,9 +1,9 @@
 import {
 	type APIInterceptor,
 	anyWorkerExceptServiceWorkerEnumMember
-} from "$types/apiInterceptors";
+} from "$types/apiInterceptors.d.ts";
 
-import { createEscapePropGetHandler } from "$utils/escape.ts";
+import { createEscapePropGetHandler } from "$shared/escape.ts";
 
 //import { handleFetchEvent } from "$aero_browser/util/swlessUtils";
 

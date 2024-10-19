@@ -1,5 +1,5 @@
 import { upToProxyOrigin } from "util/upToProxyLocation";
-import { storageNomenclature, storagePrefix } from "$aero_browser/misc/storage";
+import { storageNomenclature, storagePrefix } from "$util/storage";
 
 // @ts-ignore
 declare var openDatabase;
