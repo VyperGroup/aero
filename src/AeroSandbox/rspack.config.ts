@@ -121,11 +121,12 @@ const config: rspack.Configuration = {
  * The purpose of this function is to add on to the entry files provided in the argument but also to define separate bundles for all of the code shared with the SW. This function does nothing in debug mode.
  */
 function genEntryFiles(entryFiles) {
-	entryFiles = Object.values(entryFiles);
+	/*
 	if (minimalSharedBuild) {
 		const modulesSharedWithSW = globSync(`${__dirname}/src/shared/*.ts`)
 		return [...entryFiles, ...modulesSharedWithSW];
 	}
+	*/
 	return entryFiles;
 }
 

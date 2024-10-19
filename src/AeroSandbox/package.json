@@ -44,7 +44,8 @@
 		"babel-loader": "^9.2.1",
 		"navigation-api-types": "^0.5.1",
 		"seafox": "^1.7.1",
-		"typescript": "^5.6.3"
+		"typescript": "^5.6.3",
+		"glob": "^11.0.0"
 	},
 	"dependencies": {
 		"@mercuryworkshop/bare-as-module3": "^2.2.4",
