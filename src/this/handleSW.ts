@@ -153,7 +153,7 @@ async function handle(event: FetchEvent): Promise<Response> {
 
 	// Determine if the request was made to load the homepage; this is needed so that the proxy will know when to rewrite the html files (for example, you wouldn't want it to rewrite a fetch request)
 	const isNavigate =
-		req.mode === "navigate" && req.destination === "document";
+		req.mode === "navigate" && ["document", "iframe"].includes(req.destination);
 
 	if (!isNavigate && !clientURL) {
 		// TODO: Make a custom fatalErr for SWs that doesn't modify the DOM but returns the error simply instead of overwriting the site with an error site

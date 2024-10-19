@@ -29,6 +29,8 @@ if (serverMode) {
 	// @ts-ignore
 	featureFlags.SERVER_ONLY = JSON.stringify(false);
 }
+//@ts-ignore
+featureFlags.GITHUB_REPO = JSON.stringify(featureFlags.GITHUB_REPO);
 
 console.log("The chosen feature flags are:");
 console.log(featureFlags);
