@@ -1,6 +1,5 @@
 import type JSRewriter from "$sandbox/JS/JSRewriter";
-
-import { htmlRewriterMode } from "./rewriters/html";
+import type { FeatureFlags } from "$types/featureFlags";
 
 export type Config = {
 	bundle: string;
@@ -12,9 +11,8 @@ export type Config = {
 	rewriters: {
 		js: JSRewriter;
 		html: {
-			htmlRewriterMode: htmlRewriterMode;
 			ignoreClasses: string[];
 		};
 	};
-	featureConfig: 
+	featureFlags: FeatureFlags;
 };

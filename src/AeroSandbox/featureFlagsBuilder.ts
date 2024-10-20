@@ -1,13 +1,15 @@
-import type { AeroSandboxFeaturesConfig } from "./types/aeroSandbox";
+// TODO: Create one of these for aero
+
+import type { FeatureFlags } from "./build/featureFlags";
 
 import rspack from "@rspack/core";
 
 const snakeCaseMatch = /([a-z])([A-Z])/g;
 const replacementSnakeCaseToUnderscoreCase = "$1_$2";
 
-export default (config: AeroSandboxFeaturesConfig) => {
+export default (featureFlagsRaw: FeatureFlags) => {
 	const featureFlags: { [key: string]: string } = {};
-	for (const [key, val] of Object.entries(config)) {
+	for (const [key, val] of Object.entries(featureFlagsRaw)) {
 		const camelCaseToFeatureFlagFmtKey = key
 			.replaceAll(snakeCaseMatch, replacementSnakeCaseToUnderscoreCase)
 			.toUpperCase();

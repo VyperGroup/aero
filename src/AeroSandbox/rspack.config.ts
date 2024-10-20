@@ -66,11 +66,9 @@ import { writeFileSync } from "node:fs";
 import createDefaultFeatureFlags from "./createDefaultFeatureFlags";
 import importSync from "import-sync";
 
-import aeroSandboxBuilder from "./aeroSandboxBuilder";
+import featureFlagsBuilder from "./featureFlagsBuilder";
 
-import aeroBuildConfig from "./build/customBuildConfigs/aero";
-
-const { default: featureFlagOverrides } = importSync("./createFeatureFlags");
+const { default: featureFlagOverrides } = importSync("./createFeatureFlags.ts");
 
 const featureFlags = createDefaultFeatureFlags({
 	...featureFlagOverrides,
@@ -79,14 +77,7 @@ const featureFlags = createDefaultFeatureFlags({
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any[] = [
-	// @ts-ignore
-	new rspack.DefinePlugin(featureFlags),
-	aeroSandboxBuilder({
-		proxyNamespace: "$aero",
-		ourNamespace: "sandbox",
-		configKey: "config",
-		featureConfig: aeroBuildConfig
-	})
+	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags)),
 ];
 
 log("The chosen feature flags are:");
@@ -266,8 +257,8 @@ function genWebIDL(webIDL: webIDLDesc) {
 				// Parity check: if the string is blank
 				if (tsString === "") {
 					const errMsg = "The ts string is invalid";
-					if (debugMode) throw new Error(errMsg);
-					else console.warn(`⚠️ ${errMsg}`);
+					if (!debugMode) console.warn(`⚠️ ${errMsg}`);
+					else throw new Error(errMsg);
 				}
 
 				log(`Writing the WebIDL for ${apiName}`);
