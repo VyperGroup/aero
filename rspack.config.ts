@@ -15,7 +15,7 @@ const verboseMode =
 const debugMode = liveBuildMode || "DEBUG" in process.env;
 const serverMode = process.env.SERVER_MODE;
 
-import { log } from "./src/AeroSandbox/rspack.config.ts";
+import { Logger } from "./src/AeroSandbox/rspack.config.ts";
 
 import importSync from "import-sync";
 
@@ -51,8 +51,10 @@ if (serverMode) {
 //@ts-ignore
 featureFlags.GITHUB_REPO = JSON.stringify(featureFlags.GITHUB_REPO);
 
-log("The chosen feature flags are:");
-log(featureFlags);
+const logger = new Logger(verboseMode);
+
+logger.log("The chosen feature flags are:");
+logger.log(featureFlags);
 
 // biome-ignore lint/suspicious/noExplicitAny: I don't know the exact type to use for this at the moment
 const plugins: any = [
@@ -82,8 +84,8 @@ if (debugMode)
 const properDirType = debugMode ? "debug" : "prod";
 const properDir = path.resolve(__dirname, "dist", properDirType, "sw");
 
-log(`Building in ${properDirType} mode`);
-if (liveBuildMode) log("Building in live build mode");
+logger.log(`Building in ${properDirType} mode`);
+if (liveBuildMode) logger.log("Building in live build mode");
 
 const sourceMapType = debugMode ? "eval-source-map" : "source-map";
 
@@ -123,18 +125,18 @@ const distDir = path.resolve(__dirname, "dist");
 const swDir = path.resolve(__dirname, "dist", properDirType, "sw");
 initDist();
 function initDist() {
-	log("Initializing the dist folder");
+	logger.log("Initializing the dist folder");
 	access(distDir)
 		.then(initProperDir)
 		// If dir doesn't exist
 		.catch(createDistDir);
 }
 function createDistDir() {
-	log("Creating the dist folder");
+	logger.log("Creating the dist folder");
 	mkdir(distDir).then(initProperDir);
 }
 function initProperDir() {
-	log("Initializing the proper folder (...dist/<debug/prod>)");
+	logger.log("Initializing the proper folder (...dist/<debug/prod>)");
 	access(properDir)
 		.then(() => {
 			rm(properDir, {
@@ -145,11 +147,11 @@ function initProperDir() {
 		.catch(createProperDir);
 }
 function createProperDir() {
-	log("Creating the proper folder");
+	logger.log("Creating the proper folder");
 	mkdir(properDir).then(initSW);
 }
 function initSW() {
-	log("Initializing the SW folder (...dist/<debug/prod>/sw");
+	logger.log("Initializing the SW folder (...dist/<debug/prod>/sw");
 	access(swDir)
 		.then(() => {
 			rm(swDir, {
@@ -160,11 +162,11 @@ function initSW() {
 		.catch(createSW);
 }
 function createSW() {
-	log("Creating the SW folder");
+	logger.log("Creating the SW folder");
 	mkdir(path.resolve(swDir)).then(initFiles);
 }
 function initFiles() {
-	log("Copying over the default files to the dist folder");
+	logger.log("Copying over the default files to the dist folder");
 	copySWFiles();
 	initLogo();
 }
