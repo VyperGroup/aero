@@ -68,7 +68,11 @@ import importSync from "import-sync";
 
 import featureFlagsBuilder from "./featureFlagsBuilder";
 
-const { default: featureFlagOverrides } = importSync("./createFeatureFlags.ts");
+let featureFlagOverrides = {};
+try {
+	featureFlagOverrides = importSync("./createFeatureFlags.ts").default
+} catch (_err) {
+}
 
 const featureFlags = createDefaultFeatureFlags({
 	...featureFlagOverrides,
@@ -118,7 +122,7 @@ const output: any = {
 if (testBuild) output.library = ["Mod", "[name]"];
 
 const defaultBuild = {
-	sandbox: "./build/init.ts",
+	sandbox: "./build/initApis.ts",
 	jsRewriter: "./src/sandboxers/JS/JSRewriter.ts",
 	featureFlags: "./src/featureFlags.ts",
 	swAdditions: "./src/swAdditions.ts"
@@ -195,18 +199,18 @@ if (debugMode) config.watch = true;
 const distDir = path.resolve(__dirname, "dist");
 initDist();
 function initDist() {
-	console.info("Initializing the dist folder");
+	log("Initializing the dist folder");
 	access(distDir)
 		.then(initProperDir)
 		// If dir doesn't exist
 		.catch(createDistDir);
 }
 function createDistDir() {
-	console.info("Creating the dist folder");
+	log("Creating the dist folder");
 	mkdir(distDir).then(initProperDir);
 }
 function initProperDir() {
-	console.info("Initializing the proper folder (...dist/<debug/prod>)");
+	log("Initializing the proper folder (...dist/<debug/prod>)");
 	access(properDir)
 		.then(() => {
 			rm(properDir, {
@@ -217,7 +221,7 @@ function initProperDir() {
 		.catch(createProperDir);
 }
 function createProperDir() {
-	console.info("Creating the proper folder");
+	log("Creating the proper folder");
 	mkdir(properDir).then(createDistBuild);
 }
 function createDistBuild() {
@@ -239,7 +243,7 @@ const webIDLUsedInAero: webIDLDesc = {
 const webIDLOutputDir = path.resolve(__dirname, "types/webidlDist");
 // Gens to types/webidlDist
 function genWebIDL(webIDL: webIDLDesc) {
-	console.info("\nGenerating the WebIDL -> TS conversions required in aero");
+	log("\nGenerating the WebIDL -> TS conversions required in aero");
 	access(webIDLOutputDir).catch(() => mkdir(webIDLOutputDir));
 	for (const [apiName, apiDocURL] of Object.entries(webIDL)) {
 		log(`Fetching the WebIDL for ${apiName} with URL ${apiDocURL}`);
@@ -274,7 +278,7 @@ genWebIDL(webIDLUsedInAero);
 
 /** A rudimentary log function that only logs if verbose mode is enabled */
 export function log(msg: any) {
-	if (verboseMode) console.info(...arguments);
+	if (verboseMode) log(...arguments);
 }
 
 export default config;

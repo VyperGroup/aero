@@ -9,10 +9,10 @@ import type {
 // TODO: Use ToBeDefined
 import type {
 	default as ToBeDefined, toBeDefinedErrsType
-} from "../types/global.d.ts";
+} from "../types/global";
 
-import aeroFeatureConfig from "./customFeatureConfigs/aero.ts";
-import isAPIIncluded from "./isAPIIncluded";
+import aeroFeatureConfig from "./customFeatureConfigs/aero";
+import isAPIIncluded from "./isApiIncluded";
 
 type level = number;
 
@@ -20,13 +20,13 @@ export default (requiredObjs: {
 	// TODO: Define types
 	proxyNamespaceObj: any,
 	aeroSandboxNamespaceObj: any,
-	featureConfig: any
-}, includeRegExp = /\.ts$/, logger?): {
+}, logger?, includeRegExp = /\.ts$/): {
 	toBeDefinedErrs: toBeDefinedErrsType[],
 	toBeDefined: ToBeDefined
 } => {
 	// Unpack
-	const { proxyNamespaceObj, aeroSandboxNamespaceObj, featureConfig } = requiredObjs;
+	// We are assuming the user imports the logger bundle before AeroSandbox
+	const { proxyNamespaceObj, aeroSandboxNamespaceObj } = requiredObjs;
 	if (!logger) {
 		logger = proxyNamespaceObj.logger;
 	}
@@ -49,6 +49,7 @@ export default (requiredObjs: {
 		try {
 			const aI: APIInterceptor = ctx(fileName);
 			const apiInterceptorName = aI.globalProp;
+			if (isAPIIncluded(apiInterceptorName, aeroFeatureConfig)) continue; // Should skip?
 			if (DEBUG)
 				logger.log(`Processing API interceptors from the file ${fileName} (${apiInterceptorName})`);
 			if (aI.insertLevel && aI.insertLevel !== 0)
@@ -76,8 +77,8 @@ export default (requiredObjs: {
 	}
 }
 
-function handleAI(aI: APIInterceptor, toBeDefined: ToBeDefined, proxifiedObjGenCtx: proxifiedObjGeneratorCtxType): toBeDefinedError | "successful" {
-	// @ts-ignore
+// @ts-ignore
+function handleAI(aI: APIInterceptor, toBeDefined: ToBeDefined, proxifiedObjGenCtx: proxifiedObjGeneratorCtxType): toBeDefinedError | "successful" {	// @ts-ignore
 	if (aI.proxifiedObj) {
 		const proxyObject = resolveProxifiedObj(
 			// @ts-ignore
@@ -85,16 +86,24 @@ function handleAI(aI: APIInterceptor, toBeDefined: ToBeDefined, proxifiedObjGenC
 			proxifiedObjGenCtx
 		);
 
-		toBeDefined.window[aI.globalProp] = proxyObject;
-	} // @ts-ignore
-	else if (aI.proxifiedObjWorkerVersion)
-		toBeDefined.proxifiedObjWorkerVersion[aI.globalProp] = aI.proxifiedObjWorkerVersion;
-	return "successful";
+		// TODO: Include more logging in debug mode
+		// FIXME: I forgot what this was before
+		if (aI.proxifiedObj)
+			toBeDefined.self[aI.globalProp] = proxyObject;
+		// @ts-ignore
+		else if (aI.proxifiedObjWorkerVersion)
+			// @ts-ignore
+			toBeDefined.proxifiedObjWorkerVersion[aI.globalProp] = aI.proxifiedObjWorkerVersion;
+		return "successful";
+	}
 }
 
 function resolveProxifiedObj(
+	// @ts-ignore
 	proxifiedObj: proxifiedObjType,
+	// @ts-ignore
 	ctx: proxifiedObjGeneratorCtxType
+	// @ts-ignore
 ): proxifiedObjType {
 	let proxyObject = {};
 	if (typeof proxifiedObj === "function") proxyObject = proxifiedObj(ctx);

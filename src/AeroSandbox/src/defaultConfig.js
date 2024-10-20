@@ -18,16 +18,14 @@ const defaultConfig = {
 	},
 	webrtcTurnServers: ["stun:stun.l.google.com:19302"],
 	htmlSandboxElementName: "aero-html-sandbox",
-  rewriters: {
+	rewriters: {
 		jsLib: self.JSRewriter,
 		html: {
-			lib: self.HTML,
-			// htmlRewriterMode: "custom_elements" TODO: Move to runtime feature flags
+			lib: self.HTML
 		}
-	}
-  runtimeFeatureFlags: {
-
-  }
+	},
+	featureFlags: "all",
+	featureConfig: "all"
 };
 
 export default defaultConfig;

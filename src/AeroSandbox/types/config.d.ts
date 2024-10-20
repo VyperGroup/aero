@@ -1,5 +1,6 @@
 import type JSRewriter from "$sandbox/JS/JSRewriter";
-import type { FeatureFlags } from "$types/featureFlags";
+import type { FeatureFlags } from "./featureFlags";
+import type { AeroSandboxFeaturesConfig } from "./aeroSandbox";
 
 export type Config = {
 	bundle: string;
@@ -14,5 +15,8 @@ export type Config = {
 			ignoreClasses: string[];
 		};
 	};
-	featureFlags: FeatureFlags;
+	/** Remember the runtime version of the feature flags is limited to what aero is built with itself */
+	featureFlags: FeatureFlags | "all";
+	/** Remember the runtime version of the feature config is limited to what aero is built with itself */
+	featuresConfig: AeroSandboxFeaturesConfig | "all";
 };

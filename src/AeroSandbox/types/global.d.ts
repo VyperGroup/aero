@@ -2,6 +2,7 @@ export default interface ToBeDefined {
 	defineProperty: any;
 	window: {
 		globalProp: string;
+		self: any;
 		proxyObject: proxifiedObjType;
 	};
 }

@@ -8,6 +8,7 @@ import getPropFromTree from "../src/util/getPropFromTree";
 import type { Config } from "../types/config.d.ts";
 
 import initApis from "./initApis";
+import isApiIncluded from "./isApiIncluded"
 
 export default class AeroSandboxRuntime {
 	// TODO: Import the types for these from aero
@@ -42,15 +43,15 @@ export default class AeroSandboxRuntime {
 		});
 
 		for (const [globalProp, proxyObject] of Object.entries(
-			toBeDefined.window
+			toBeDefined.self
 		))
-			if (isAPIIncluded(globalProp)) window[globalProp] = proxyObject;
+			if (isApiIncluded(globalProp, this.configObj.featuresConfig)) self[globalProp] = proxyObject;
 		for (const [globalProp, proxifiedObjWorkerVersion] of Object.entries(
 			toBeDefined.proxifiedObjWorkerVersion
 		))
-			if (isAPIIncluded(globalProp))
+			if (isApiIncluded(globalProp, this.configObj.featuresConfig))
 				Object.defineProperty(
-					window,
+					self,
 					globalProp,
 					proxifiedObjWorkerVersion
 				);
@@ -69,9 +70,4 @@ export default class AeroSandboxRuntime {
 	faker: {};
 	// TODO: Import the Rewriters from aero
 	rewriters;
-	// Internal methods
-	isAPIIncluded(apiName: string): boolean {
-		// TODO: Look at configObj.featureConfig and see if it matches
-		return true;
-	}
 }

@@ -1,10 +1,8 @@
-import type { ExtraAPIs, AeroSandboxFeaturesConfig } from "../../types/aeroSandbox.js";
+import type { AeroSandboxFeaturesConfig } from "../../types/aeroSandbox.js";
 
 import { defaultSWProxyFeatures } from "../../types/featureMembers.js";
 
 export default {
 	/** These enum members enable code inside of the Proxy handler that provide other things you may want to use AeroSandbox for */
-	featuresConfig: {
-		specialInterceptionFeatures: defaultSWProxyFeatures
-	}
+	specialInterceptionFeatures: defaultSWProxyFeatures
 } as AeroSandboxFeaturesConfig;
