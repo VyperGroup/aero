@@ -14,9 +14,10 @@ export enum ExtraAPIs {
 }
 
 // TODO: INCLUDE EVERY API INTERCEPTOR THAT IS IN AERO SANDBOX
-export enum APIBitwiseEnum {}
+export enum APIBitwiseEnum { }
 
 export type AeroSandboxFeaturesConfig = {
+	extraAPIs?: ExtraAPIs[] | "all";
 	supports?: SupportEnum;
 	apiIncludeBitwiseEnum?: APIBitwiseEnum | "all";
 	apiExcludeBitwiseEnum?: APIBitwiseEnum | "none";
@@ -25,9 +26,6 @@ export type AeroSandboxFeaturesConfig = {
 
 // TODO: Deprecate this
 export type AeroSandboxBuildConfig = {
-	/** These enum members enable code inside of the Proxy handler that provide other things you may want to use AeroSandbox for */
-	extraAPIs: ExtraAPIs;
-	proxyGlobalContext: "$aero";
 	featureConfig: AeroSandboxFeaturesConfig;
 };
 

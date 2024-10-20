@@ -4,7 +4,9 @@
  * @type {Config}
  */
 const defaultConfig = {
-	globalNamespace: "$aero",
+	proxyNamespace: "$aero",
+	ourNamespace: "sandbox",
+	configKey: "config",
 	bundles: {
 		main: "./sandbox.js",
 		swAdditions: "./swAdditions.js",
