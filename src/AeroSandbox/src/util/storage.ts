@@ -13,7 +13,7 @@ const storageNomenclature = cookieStoreId => {
 		args[0] = newKey;
 
 		return Reflect.apply(target, that, args);
-	}
+	};
 };
 
 function storageKey(key: string) {

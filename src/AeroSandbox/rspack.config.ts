@@ -6,25 +6,93 @@ import { globSync } from "glob";
 import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 
-const liveBuildMode = "LIVE_BUILD" in process.env; // Live debugging
+const liveBuildMode = "LIVE_BUILD" in process.env;
 let debugMode = liveBuildMode || "DEBUG" in process.env;
-const minimalBuild = true || "BUILD_MINIMAL" in process.env; // Build AeroSandbox without the extra APIs. This should be used when building just for the proxy only;
-const minimalSharedBuild = true || "BUILD_SHARED_MINIMAL" in process.env;
-const testBuild = "TEST_BUILD" in process.env; // Makes independent build files for each module that will be tested in the unit testing
+/** This var is enabled by default */
+const verboseMode =
+	!("VERBOSE" in process.env) || process.env.VERBOSE !== "false";
+/** Build AeroSandbox without the extra APIs. This should be used when building just for the proxy only; **/
+const minimalBuild = true || "BUILD_MINIMAL" in process.env;
+const minimalSharedBuild = "BUILD_SHARED_MINIMAL" in process.env;
+/** Makes independent build files for each module that will be tested in the unit testing **/
+const testBuild = "TEST_BUILD" in process.env;
 if (!debugMode && testBuild) debugMode = true;
 
-import createFeatureFlags from "./createFeatureFlags";
+// For WebIDL -> TS conversion
+// I shouldn't have to do this, but they forgot to include the "exports" definition inside their package.json, and I don't want to maintain a fork. They also defined exports for these modules in their index.js, which should be enough by itself, but they invoked the CLI, making this useless since that action throws an error.
+const fetchIDLModPath = path.resolve(
+	__dirname,
+	"node_modules",
+	"@milkshakeio",
+	"webidl2ts",
+	"dist",
+	"fetch-idl.js"
+);
+const fetchIDLMod = require(fetchIDLModPath);
+const fetchIDL = fetchIDLMod.fetchIDL;
+const parseIDLModPath = path.resolve(
+	__dirname,
+	"node_modules",
+	"@milkshakeio",
+	"webidl2ts",
+	"dist",
+	"parse-idl.js"
+);
+const parseIDLMod = require(parseIDLModPath);
+const parseIDL = parseIDLMod.parseIDL;
+const convertIDLModPath = path.resolve(
+	__dirname,
+	"node_modules",
+	"@milkshakeio",
+	"webidl2ts",
+	"dist",
+	"convert-idl.js"
+);
+const convertIDLMod = require(convertIDLModPath);
+const convertIDL = convertIDLMod.convertIDL;
+const printTsModPath = path.resolve(
+	__dirname,
+	"node_modules",
+	"@milkshakeio",
+	"webidl2ts",
+	"dist",
+	"print-ts.js"
+);
+const printTsMod = require(printTsModPath);
+const printTs = printTsMod.printTs;
 
-const featureFlags = createFeatureFlags({ debugMode });
+import { writeFileSync } from "node:fs";
+
+import createDefaultFeatureFlags from "./createDefaultFeatureFlags";
+import importSync from "import-sync";
+
+import aeroSandboxBuilder from "./aeroSandboxBuilder";
+
+import type { aeroBuildConfig } from "./build/customBuildConfigs/aero";
+
+const { default: featureFlagOverrides } = importSync("./createFeatureFlags", {
+	cjs: false
+});
+
+const featureFlags = createDefaultFeatureFlags({
+	...featureFlagOverrides,
+	debugMode
+});
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any[] = [
 	// @ts-ignore
-	new rspack.DefinePlugin(featureFlags)
+	new rspack.DefinePlugin(featureFlags),
+	aeroSandboxBuilder({
+		proxyNamespace: "$aero",
+		ourNamespace: "sandbox",
+		configKey: "config",
+		buildConfig: aeroBuildConfig
+	})
 ];
 
-console.log("The chosen feature flags are:")
-console.log(featureFlags);
+log("The chosen feature flags are:");
+log(featureFlags);
 
 if (debugMode)
 	plugins.push(
@@ -48,8 +116,8 @@ if (debugMode)
 const properDirType = debugMode ? "debug" : "prod";
 const properDir = path.resolve(__dirname, "dist", properDirType);
 
-console.log(`\nBuilding in ${properDirType} mode`);
-if (liveBuildMode) console.log("Building in live build mode");
+log(`\nBuilding in ${properDirType === "prod" ? "production" : "debug"} mode`);
+if (liveBuildMode) log("Building in live build mode");
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const output: any = {
@@ -70,32 +138,35 @@ const defaultBuild = {
 const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
 	optimization: {
-		chunkIds: "named",
+		chunkIds: "named"
 	},
-	entry: genEntryFiles(testBuild
-		? {
-				// API Interceptors for the Script Sandbox
-				location: "./src/interceptors/loc/location.ts",
-				scriptSandbox:
-					"./src/interceptors/concealer/misc/scriptSandboxing.ts",
-				// Libs for the API Interceptors
-				loggers: "./src/shared/Loggers.ts",
-				replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
-				// The JS rewriter
-				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
-			}
-		: minimalBuild
+	entry: genEntryFiles(
+		testBuild
 			? {
-					...defaultBuild,
-					// Extra APIs
-					storageIsolation:
-						"./src/apis/StorageIsolator/storageIsolation.ts",
-					ControlView: "./src/apis/CustomViews/ControlView.ts",
-					ElectronControlView:
-						"./src/apis/CustomViews/ElectronControlView.ts",
-					ElectronWebView: "./src/apis/CustomViews/ElectronWebView.ts"
+					// API Interceptors for the Script Sandbox
+					location: "./src/interceptors/loc/location.ts",
+					scriptSandbox:
+						"./src/interceptors/concealer/misc/scriptSandboxing.ts",
+					// Libs for the API Interceptors
+					loggers: "./src/shared/Loggers.ts",
+					replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
+					// The JS rewriter
+					jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
 				}
-			: defaultBuild),
+			: minimalBuild
+				? {
+						...defaultBuild,
+						// Extra APIs
+						storageIsolation:
+							"./src/apis/StorageIsolator/storageIsolation.ts",
+						ControlView: "./src/apis/CustomViews/ControlView.ts",
+						ElectronControlView:
+							"./src/apis/CustomViews/ElectronControlView.ts",
+						ElectronWebView:
+							"./src/apis/CustomViews/ElectronWebView.ts"
+					}
+				: defaultBuild
+	),
 	plugins,
 	resolve: {
 		extensions: [".ts"],
@@ -135,18 +206,18 @@ if (debugMode) config.watch = true;
 const distDir = path.resolve(__dirname, "dist");
 initDist();
 function initDist() {
-	console.info("Initializing the dist folder")
+	console.info("Initializing the dist folder");
 	access(distDir)
 		.then(initProperDir)
 		// If dir doesn't exist
 		.catch(createDistDir);
 }
 function createDistDir() {
-	console.info("Creating the dist folder")
+	console.info("Creating the dist folder");
 	mkdir(distDir).then(initProperDir);
 }
 function initProperDir() {
-	console.info("Initializing the proper folder (...dist/<debug/prod>)")
+	console.info("Initializing the proper folder (...dist/<debug/prod>)");
 	access(properDir)
 		.then(() => {
 			rm(properDir, {
@@ -157,15 +228,64 @@ function initProperDir() {
 		.catch(createProperDir);
 }
 function createProperDir() {
-	console.info("Creating the proper folder")
+	console.info("Creating the proper folder");
 	mkdir(properDir).then(createDistBuild);
 }
 function createDistBuild() {
-	console.log("Copying over the default config to the dist folder")
+	log("Copying over the default config to the dist folder");
 	copyFile(
 		path.resolve(__dirname, "src/defaultConfig.js"),
 		path.resolve(__dirname, `dist/${properDirType}/defaultConfig.js`)
 	);
+}
+
+type webIDLDesc = { [key: string]: string };
+const webIDLUsedInAero: webIDLDesc = {
+	"cookie-store": "https://wicg.github.io/cookie-store/",
+	// fedcm: "https://fedidcg.github.io/FedCM/", FIXME: Broken
+	"shared-storage": "https://wicg.github.io/shared-storage/",
+	"web-app-launch": "https://wicg.github.io/web-app-launch/",
+	"web-otp": "https://wicg.github.io/web-otp/"
+};
+const webIDLOutputDir = path.resolve(__dirname, "types/webidlDist");
+// Gens to types/webidlDist
+function genWebIDL(webIDL: webIDLDesc) {
+	console.info("\nGenerating the WebIDL -> TS conversions required in aero");
+	access(webIDLOutputDir).catch(() => mkdir(webIDLOutputDir));
+	for (const [apiName, apiDocURL] of Object.entries(webIDL)) {
+		log(`Fetching the WebIDL for ${apiName} with URL ${apiDocURL}`);
+		fetchIDL(apiDocURL).then(rawIdl => {
+			log(`Parsing the WebIDL for ${apiName}`);
+			parseIDL(rawIdl).then(idl => {
+				log(`Converting the WebIDL -> TS for ${apiName}`);
+				const ts = convertIDL(idl, {
+					emscripten: false
+				});
+
+				log(`Applying the final touches to ${apiName}`);
+				const tsString = printTs(ts);
+
+				// Parity check: if the string is blank
+				if (tsString === "") {
+					const errMsg = "The ts string is invalid";
+					if (debugMode) throw new Error(errMsg);
+					else console.warn(`⚠️ ${errMsg}`);
+				}
+
+				log(`Writing the WebIDL for ${apiName}`);
+				writeFileSync(
+					path.resolve(webIDLOutputDir, `${apiName}.d.ts`),
+					`// Auto-generated by webidl2ts - ${apiDocURL}\n${tsString}`
+				);
+			});
+		});
+	}
+}
+genWebIDL(webIDLUsedInAero);
+
+/** A rudimentary log function that only logs if verbose mode is enabled */
+export function log(msg: any) {
+	if (verboseMode) console.info(...arguments);
 }
 
 export default config;

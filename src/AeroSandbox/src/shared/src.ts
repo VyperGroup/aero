@@ -1,4 +1,4 @@
-import sharedConfig from "./sharedConfig";
+import { getProxyConfig } from "$util/getConfig";
 
 import { proxyLocation } from "./proxyLocation";
 
@@ -9,7 +9,7 @@ import { proxyLocation } from "./proxyLocation";
 function rewriteSrc(url: string, proxyHref = proxyLocation().href): string {
 	// Protocol
 	const rewroteUrl = /^(https?:\/\/)/g.test(url)
-		? sharedConfig("prefix") + url
+		? getProxyConfig().prefix + url
 		: new URL(url, proxyHref).href;
 
 	return rewroteUrl;

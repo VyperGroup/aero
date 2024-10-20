@@ -1,7 +1,7 @@
 import contextualIdentities from "./contextualIdentities";
 
 export default {
-	contextualIdentities
+	contextualIdentities,
 	proxifiedAPIs: {
 		localStorage: () => (),
 		sessionStorage

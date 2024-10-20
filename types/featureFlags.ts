@@ -37,6 +37,8 @@ export interface FeatureFlags {
 	DEBUG: string;
 }
 
+/** Used exclusively for the overrides */
+
 export interface FeatureFlagsRspack extends FeatureFlags {
 	/* Defaults to what is in the build config if this is not set */
 	SERVER_ONLY:
@@ -48,6 +50,9 @@ export interface FeatureFlagsRspack extends FeatureFlags {
 		| QuotedString<"referrer">
 		| QuotedString<"clients">;
 }
+
+/** Used exclusively for the overrides. Makes a copy of FeatureFlagsRspack, but all fields are optional. */
+export type FeatureFlagsRspackOptional = Partial<FeatureFlagsRspack>;
 
 export interface FeatureFlagsRuntime extends FeatureFlags {}
 

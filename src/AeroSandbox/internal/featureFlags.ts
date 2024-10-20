@@ -1,6 +1,4 @@
-import type {
-	FeatureFlagsRuntime
-} from "../../../types/featureFlags";
+import type { FeatureFlagsRuntime } from "../../../types/featureFlags";
 import { boolFlag } from "$aero/build/featureFlags";
 
 export default {
@@ -12,4 +10,4 @@ export default {
 	HTML_USE_IS_ATTR: boolFlag(false),
 	HTML_USE_NAV_EVENTS: boolFlag(false),
 	DEBUG: boolFlag(false)
-} as FeatureFlagsRuntime;,
+} as FeatureFlagsRuntime;

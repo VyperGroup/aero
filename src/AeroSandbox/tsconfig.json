@@ -25,6 +25,7 @@
 		"types/**/*.d.ts",
 		"src/defaultConfig.js",
 		"internal/featureFlags.ts",
-		"types/contextualIdentities.ts"
+		"types/contextualIdentities.ts",
+		"types/featureMembers.ts"
 	]
 }

@@ -1,3 +1,5 @@
+/*
+// TODO: Use the new build config way like in aero.ts
 import type { UVConfig } from "@titaniumnetwork-dev/ultraviolet";
 
 import { defaultProxyFeatures } from "../featureMembers";
@@ -19,3 +21,4 @@ const buildConfig = {
 const fakeOriginSettings = ["all", UVRewriterMembers, "none"];
 
 export default new AeroSandbox(buildConfig).fakeOrigin(...fakeOriginSettings);
+*/

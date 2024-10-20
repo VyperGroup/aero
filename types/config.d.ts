@@ -1,8 +1,8 @@
 import type BareMux from "@mercuryworkshop/bare-mux";
 
 import type { FeatureFlagsRuntime } from "$aero/types/featureFlags";
-
 import type { SearchParamOptions } from "./catch-all";
+import type { AeroSandboxFeaturesConfig } from "./aeroSandbox";
 
 export type AeroPathFilter = (reqPath: string) => boolean;
 /** @returns the encoded url */
@@ -44,4 +44,5 @@ export interface Config {
 	urlEncoder: URLEncoder;
 	urlDecoder: URLDecoder;
 	featureFlags: FeatureFlagsRuntime;
+	featureConfig: AeroSandboxFeaturesConfig;
 }

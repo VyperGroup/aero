@@ -1,5 +1,5 @@
-import sharedConfig from "./sharedConfig";
+import { getProxyConfig } from "$util/getConfig";
 
 import { proxyLocation } from "./proxyLocation";
 
-export default () => sharedConfig("prefix") + proxyLocation().origin;
+export default () => getProxyConfig().prefix + proxyLocation().origin;

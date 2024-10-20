@@ -1,8 +1,9 @@
-import sharedConfig from "./sharedConfig";
+import getConfig from "$util/getConfig";
 
 import { afterPrefix } from "./getProxyUrl";
 
+getPropFromTree(AERO);
 const proxyLocation = () => new URL(afterPrefix(location.href));
-const upToProxyOrigin = () => sharedConfig("prefix") + proxyLocation().origin;
+const upToProxyOrigin = () => getConfig().prefix + proxyLocation().origin;
 
 export { proxyLocation, upToProxyOrigin };

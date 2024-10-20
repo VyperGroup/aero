@@ -68,6 +68,7 @@ export type APIInterceptor =
 	| APIInterceptorForProxifiyingGetters
 	| APIInterceptorForModifyingObjectProperties;
 
+// TODO: Make something like SupportEnum, but instead you provide a browser string and it only includes API interceptors for the features supported by those browsers
 // Support Enums
 // These enums are inspired by the WebIDL spec
 // biome-ignore lint/style/useEnumInitializers: <explanation>

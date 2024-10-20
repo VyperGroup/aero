@@ -1,17 +1,33 @@
 import path from "node:path";
 import { access, rm, mkdir, copyFile } from "node:fs/promises";
-import execSync from "node:child_process";
 
 import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 
-import createFeatureFlags from "./createFeatureFlags";
+//import type { FeatureFlagsRspackOptional } from "types/featureFlags";
+import createFeatureFlags from "./createDefaultFeatureFlags";
 
-const liveBuildMode = "LIVE_BUILD" in process.env; // Live debugging
+const liveBuildMode = "LIVE_BUILD" in process.env;
+/** This var is enabled by default */
+const verboseMode =
+	!("VERBOSE" in process.env) || process.env.VERBOSE !== "false"; // TODO: Copy the verbose pattern for aero's build system
 const debugMode = liveBuildMode || "DEBUG" in process.env;
 const serverMode = process.env.SERVER_MODE;
 
-const featureFlags = createFeatureFlags({ debugMode });
+import { log } from "./src/AeroSandbox/rspack.config.ts";
+
+import importSync from "import-sync";
+
+// TODO: Type assert `as FeatureFlagsRspackOptional`
+
+const { default: featureFlagOverrides } = importSync("./createFeatureFlags", {
+	cjs: false
+});
+
+const featureFlags = createFeatureFlags({
+	...featureFlagOverrides,
+	debugMode
+});
 
 if (serverMode) {
 	// @ts-ignore
@@ -32,8 +48,8 @@ if (serverMode) {
 //@ts-ignore
 featureFlags.GITHUB_REPO = JSON.stringify(featureFlags.GITHUB_REPO);
 
-console.log("The chosen feature flags are:");
-console.log(featureFlags);
+log("The chosen feature flags are:");
+log(featureFlags);
 
 // biome-ignore lint/suspicious/noExplicitAny: I don't know the exact type to use for this at the moment
 const plugins: any = [
@@ -63,8 +79,8 @@ if (debugMode)
 const properDirType = debugMode ? "debug" : "prod";
 const properDir = path.resolve(__dirname, "dist", properDirType, "sw");
 
-console.log(`Building in ${properDirType} mode`);
-if (liveBuildMode) console.log("Building in live build mode");
+log(`Building in ${properDirType} mode`);
+if (liveBuildMode) log("Building in live build mode");
 
 const sourceMapType = debugMode ? "eval-source-map" : "source-map";
 
@@ -145,7 +161,7 @@ function createSW() {
 	mkdir(path.resolve(swDir)).then(initFiles);
 }
 function initFiles() {
-	console.log("Copying over the default files to the dist folder");
+	log("Copying over the default files to the dist folder");
 	copySWFiles();
 	initLogo();
 }

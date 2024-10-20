@@ -1,13 +1,10 @@
 import { type APIInterceptor, SupportEnum } from "$types/apiInterceptors.d.ts";
 
-import config from "$aero/examples/config";
-const { prefix } = config;
-
 const createHandler = (cookieStoreId?) => {
 	return (target, that, args) => {
 		const [key]: [string] = args;
 
-		let newKey = prefix + key;
+		let newKey = $aero.aeroSandbox.config.storageKey + key;
 		if (cookieStoreId) {
 			newKey = `${cookieStoreId}_${newKey}`;
 		}
@@ -25,7 +22,7 @@ const createHandler = (cookieStoreId?) => {
 		}
 
 		return Reflect.apply(target, that, args);
-	}
+	};
 };
 
 export default [

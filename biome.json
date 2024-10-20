@@ -6,7 +6,8 @@
 			"arrowParentheses": "asNeeded",
 			"trailingCommas": "none",
 			"indentWidth": 4
-		}
+		},
+		"globals": ["PROXY_NAMESPACE", "OUR_NAMESPACE", "CONFIG_KEY"]
 	},
 	"files": {
 		"ignore": ["dist", "src/AeroSandbox/dist", "/tests/aero"]

@@ -1,4 +1,4 @@
-import { InterceptionFeaturesEnum } from "$types/apiInterceptors.d.ts";
+import { InterceptionFeaturesEnum } from "./apiInterceptors.d.ts";
 
 // TODO: Put all of these terms in the API Interception Glossary
 

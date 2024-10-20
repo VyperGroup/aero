@@ -1,10 +1,10 @@
 import { type FeatureFlags, boolFlag } from "./build/featureFlags";
 
-interface Context {
+interface CtxType {
 	debugMode: boolean;
 }
 
-export default (ctx: Context) =>
+export default (ctx: CtxType) =>
 	({
 		// JS Rewriter
 		INCLUDE_ESNIFF: boolFlag(true),

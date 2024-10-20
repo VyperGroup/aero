@@ -8,6 +8,7 @@ mutable_node_modules
 
 # Builds
 /**/dist/
+/src/AeroSandbox/types/webidlDist/
 /tests/aero
 
 # aero

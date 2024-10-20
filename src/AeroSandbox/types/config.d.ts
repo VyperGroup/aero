@@ -12,8 +12,9 @@ export type Config = {
 	rewriters: {
 		js: JSRewriter;
 		html: {
-			htmlRewriterMode;
+			htmlRewriterMode: htmlRewriterMode;
 			ignoreClasses: string[];
 		};
 	};
+	featureConfig: 
 };

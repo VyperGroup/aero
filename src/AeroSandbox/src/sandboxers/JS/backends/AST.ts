@@ -50,7 +50,7 @@ export default class ASTRewriter {
 	/**
 	 * I recomend using (@link https://astexplorer.net) to guide you when coming up with ideas of how to rewrite the AST
 	 * @param ast - The AST tree
-	 * @returns the rewritten script
+	 * @returns the rewrote script
 	 */
 	rewriteFromAst(ast: Node, windowProxyConcealmentAst: Node): Node {
 		if (INCLUDE_AST_WALKER_TRAVERSE_THE_UNIVERSE) {
@@ -129,10 +129,7 @@ export default class ASTRewriter {
 			script,
 			isModule
 		);
-		const rewrittenAst = this.rewriteFromAst(
-			ast,
-			windowProxyConcealmentAst
-		);
-		return generate(rewrittenAst);
+		const rewroteAst = this.rewriteFromAst(ast, windowProxyConcealmentAst);
+		return generate(rewroteAst);
 	}
 }

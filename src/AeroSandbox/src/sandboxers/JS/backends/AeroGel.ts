@@ -25,7 +25,7 @@ export default class AeroGel {
 	}
 	/** This essentially the rewriter
 	 * @param script The script to jail. Before it is jailed the let/const to fake vars RegExp rewriting occurs.
-	 * @param isModule Module scripts don't need to be rewritten because they don't require fake vars for scope emulation since module scripts run in their own isolated scope.
+	 * @param isModule Module scripts don't need to be rewrote because they don't require fake vars for scope emulation since module scripts run in their own isolated scope.
 	 * @example TODO: Provide an example
 	 */
 	jailScript(script: string, isModule: boolean) {
