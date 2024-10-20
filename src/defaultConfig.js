@@ -55,6 +55,7 @@
 		//urlEncoder: __uv$config.urlEncoder,
 		//urlDecoder: __uv$config.urlDecoder,
 		urlEncoder: url => url,
-		urlDecoder: url => url
+		urlDecoder: url => url,
+		featureFlags: "all"
 	};
 }

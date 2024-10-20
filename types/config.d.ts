@@ -44,5 +44,5 @@ export interface Config {
 	urlEncoder: URLEncoder;
 	urlDecoder: URLDecoder;
 	featureFlags: FeatureFlagsRuntime;
-	featureConfig: AeroSandboxFeaturesConfig;
+	featureConfig: AeroSandboxFeaturesConfig | "all";
 }

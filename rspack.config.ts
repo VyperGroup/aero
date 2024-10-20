@@ -5,7 +5,8 @@ import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 
 //import type { FeatureFlagsRspackOptional } from "types/featureFlags";
-import createFeatureFlags from "./createDefaultFeatureFlags";
+import createDefaultFeatureFlags from "./createDefaultFeatureFlags";
+import featureFlagsBuilder from "./src/AeroSandbox/featureFlagsBuilder";
 
 const liveBuildMode = "LIVE_BUILD" in process.env;
 /** This var is enabled by default */
@@ -18,32 +19,34 @@ import { log } from "./src/AeroSandbox/rspack.config.ts";
 
 import importSync from "import-sync";
 
-// TODO: Type assert `as FeatureFlagsRspackOptional`
+// TODO: Type assert with partial
+let featureFlagOverrides = {};
+try {
+	featureFlagOverrides = importSync("./createFeatureFlags.ts").default
+} catch (_err) {
+	console.warn("⚠️ Unable to find any feature flag overrides. Is this intentional?");
+}
 
-const { default: featureFlagOverrides } = importSync("./createFeatureFlags", {
-	cjs: false
-});
-
-const featureFlags = createFeatureFlags({
+const featureFlags = createDefaultFeatureFlags({
 	...featureFlagOverrides,
 	debugMode
 });
 
 if (serverMode) {
 	// @ts-ignore
-	featureFlags.REQ_INTERCEPTION_CATCH_ALL = JSON.stringify("referrer");
+	featureFlags.reqInterceptionCatchAll = JSON.stringify("referrer");
 	if (serverMode === "winterjs")
 		// @ts-ignore
-		featureFlags.SERVER_ONLY = JSON.stringify("winterjs");
+		featureFlags.serverOnly = JSON.stringify("winterjs");
 	else if (serverMode === JSON.stringify("cf-workers"))
 		// @ts-ignore
-		featureFlags.SERVER_ONLY = JSON.stringify("cf-workers");
+		featureFlags.serverOnly = JSON.stringify("cf-workers");
 	// @ts-ignore
 } else {
 	// @ts-ignore
-	featureFlags.REQ_INTERCEPTION_CATCH_ALL = JSON.stringify("clients");
+	featureFlags.reqInterceptionCatchAll = JSON.stringify("clients");
 	// @ts-ignore
-	featureFlags.SERVER_ONLY = JSON.stringify(false);
+	featureFlags.serverOnly = JSON.stringify(false);
 }
 //@ts-ignore
 featureFlags.GITHUB_REPO = JSON.stringify(featureFlags.GITHUB_REPO);
@@ -54,7 +57,7 @@ log(featureFlags);
 // biome-ignore lint/suspicious/noExplicitAny: I don't know the exact type to use for this at the moment
 const plugins: any = [
 	// @ts-ignore
-	new rspack.DefinePlugin(featureFlags)
+	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags)),
 ];
 
 if (debugMode)
@@ -120,18 +123,18 @@ const distDir = path.resolve(__dirname, "dist");
 const swDir = path.resolve(__dirname, "dist", properDirType, "sw");
 initDist();
 function initDist() {
-	console.info("Initializing the dist folder");
+	log("Initializing the dist folder");
 	access(distDir)
 		.then(initProperDir)
 		// If dir doesn't exist
 		.catch(createDistDir);
 }
 function createDistDir() {
-	console.info("Creating the dist folder");
+	log("Creating the dist folder");
 	mkdir(distDir).then(initProperDir);
 }
 function initProperDir() {
-	console.info("Initializing the proper folder (...dist/<debug/prod>)");
+	log("Initializing the proper folder (...dist/<debug/prod>)");
 	access(properDir)
 		.then(() => {
 			rm(properDir, {
@@ -142,11 +145,11 @@ function initProperDir() {
 		.catch(createProperDir);
 }
 function createProperDir() {
-	console.info("Creating the proper folder");
+	log("Creating the proper folder");
 	mkdir(properDir).then(initSW);
 }
 function initSW() {
-	console.info("Initializing the SW folder (...dist/<debug/prod>/sw");
+	log("Initializing the SW folder (...dist/<debug/prod>/sw");
 	access(swDir)
 		.then(() => {
 			rm(swDir, {
@@ -157,7 +160,7 @@ function initSW() {
 		.catch(createSW);
 }
 function createSW() {
-	console.info("Creating the SW folder");
+	log("Creating the SW folder");
 	mkdir(path.resolve(swDir)).then(initFiles);
 }
 function initFiles() {

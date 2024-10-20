@@ -68,10 +68,12 @@ import importSync from "import-sync";
 
 import featureFlagsBuilder from "./featureFlagsBuilder";
 
+// TODO: Type assert with partial
 let featureFlagOverrides = {};
 try {
 	featureFlagOverrides = importSync("./createFeatureFlags.ts").default
 } catch (_err) {
+	console.warn("⚠️ Unable to find any feature flag overrides. Is this intentional?");
 }
 
 const featureFlags = createDefaultFeatureFlags({
