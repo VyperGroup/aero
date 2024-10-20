@@ -6,7 +6,7 @@ export default ctx =>
 		featureUrlEnc: false,
 		featureCorsTesting: false,
 		featureCorsEmulationn: false,
-		FEATURE_INTEGRITY_EMULATION: false,
+		featureIntegrityEmulation: false,
 		featureEncBodyEmulation: false,
 		featureCachesEmulation: false,
 		featureClearEmulation: false,
