@@ -1,6 +1,5 @@
-import initApis from "./initApis";
+{
+	const buildConfig = require(BUILD_CONFIG_PATH);
 
-initAPIs({
-	proxyNamespaceObj: "$aero",
-	aeroSandboxNamespaceObj: "$sandbox",
-});
+	self.AeroSandbox = createAeroSandboxRuntime(buildConfig)
+}

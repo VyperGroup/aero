@@ -18,6 +18,13 @@ const minimalSharedBuild = "BUILD_SHARED_MINIMAL" in process.env;
 const testBuild = "TEST_BUILD" in process.env;
 if (!debugMode && testBuild) debugMode = true;
 
+// This is the most important env variable
+const buildConfigPath = "BUILD_CONFIG_PATH" in process.env;
+if (!buildConfigPath) {
+	console.error("Fatal: BUILD_CONFIG_PATH env variable not set. Don't know what to build for!");
+	process.exit(1);
+}
+
 // For WebIDL -> TS conversion
 // I shouldn't have to do this, but they forgot to include the "exports" definition inside their package.json, and I don't want to maintain a fork. They also defined exports for these modules in their index.js, which should be enough by itself, but they invoked the CLI, making this useless since that action throws an error.
 const fetchIDLModPath = path.resolve(
@@ -84,6 +91,9 @@ const featureFlags = createDefaultFeatureFlags({
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any[] = [
 	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags)),
+	new rspack.DefinePlugin({
+		"BUILD_CONFIG_PATH": JSON.stringify(buildConfigPath)
+	})
 ];
 
 /** A rudimentary log function that only logs if verbose mode is enabled */
@@ -93,7 +103,7 @@ export class Logger {
 		this.verboseMode = verboseMode;
 	}
 	log(msg: any) {
-		if (this.verboseMode) console.logger.log(...arguments);
+		if (this.verboseMode) console.log(...arguments);
 	}
 }
 
@@ -137,7 +147,7 @@ const output: any = {
 if (testBuild) output.library = ["Mod", "[name]"];
 
 const defaultBuild = {
-	sandbox: "./build/initApis.ts",
+	sandbox: "./build/init.ts",
 	jsRewriter: "./src/sandboxers/JS/JSRewriter.ts",
 	featureFlags: "./src/featureFlags.ts",
 	swAdditions: "./src/swAdditions.ts"

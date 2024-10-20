@@ -11,7 +11,6 @@ import type {
 	default as ToBeDefined, toBeDefinedErrsType
 } from "../types/global";
 
-import aeroFeatureConfig from "./customFeatureConfigs/aero";
 import isAPIIncluded from "./isApiIncluded";
 
 type level = number;
@@ -20,6 +19,7 @@ export default (requiredObjs: {
 	// TODO: Define types
 	proxyNamespaceObj: any,
 	aeroSandboxNamespaceObj: any,
+	featureConfig: any
 }, logger?, includeRegExp = /\.ts$/): {
 	toBeDefinedErrs: toBeDefinedErrsType[],
 	toBeDefined: ToBeDefined
@@ -49,7 +49,7 @@ export default (requiredObjs: {
 		try {
 			const aI: APIInterceptor = ctx(fileName);
 			const apiInterceptorName = aI.globalProp;
-			if (isAPIIncluded(apiInterceptorName, aeroFeatureConfig)) continue; // Should skip?
+			if (isAPIIncluded(apiInterceptorName, featureConfig)) continue; // Should skip?
 			if (DEBUG)
 				logger.log(`Processing API interceptors from the file ${fileName} (${apiInterceptorName})`);
 			if (aI.insertLevel && aI.insertLevel !== 0)

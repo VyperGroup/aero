@@ -1,34 +1,44 @@
 // TODO: This will be the runtime version of AeroSandbox
 
-import type { toBeDefinedErrsType } from "../types/global";
+import type { toBeDefinedErrsType } from "../types/global.js";
 import type { ResultAsync, ok, err } from "neverthrow";
 
-import getPropFromTree from "../src/util/getPropFromTree";
+import getPropFromTree from "../src/util/getPropFromTree.js";
 
-import type { Config } from "../types/config.d.ts";
+import type { Config } from "../types/config.js";
 
-import initApis from "./initApis";
-import isApiIncluded from "./isApiIncluded"
+import initApis from "./initApis.js";
+import isApiIncluded from "./isApiIncluded.js"
 
-export default class AeroSandboxRuntime {
+import type { BuildConfig } from "../types/buildConfig";
+
+export default (buildConfig: BuildConfig) => class AeroSandboxRuntime {
 	// TODO: Import the types for these from aero
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	proxyNamespaceObj: any;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	aeroSandboxNamespaceObj: any;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	configObj: any;
+	mergedFeatureConfig: any;
 	// TODO: Remove AeroSandboxBuildConfig
 	constructor(config: Config) {
 		/** This would be `$aero` */
 		// @ts-ignore
-		this.proxyNamespaceObj = getPropFromTree(PROXY_NAMESPACE);
+		this.proxyNamespaceObj = getPropFromTree(buildConfig.proxyNamespaceObj);
 		// @ts-ignore
 		proxyNamespaceObj[OUR_NAMESPACE] = { config };
 		/** This would be `$aero.sandbox` */
 		// @ts-ignore
-		this.aeroSandboxNamespaceObj = this.proxyNamespaceObj[OUR_NAMESPACE];
+		this.aeroSandboxNamespaceObj = this.proxyNamespaceObj[buildConfig.aeroSandboxNamespaceObj];
 		// @ts-ignore
 		aeroSandboxNamespaceObj[toBeDefined] = {};
 		// @ts-ignore
-		this.configObj = aeroSandboxNamespaceObj[CONFIG_KEY];
+		this.configObj = aeroSandboxNamespaceObj[buildConfig.configKey];
+		this.mergedFeatureConfig = {
+			...this.configObj.featuresConfig,
+			...buildConfig.featuresConfig
+		};
 	}
 	// @ts-ignore
 	initAPIs(): ResultAsync<
@@ -39,17 +49,17 @@ export default class AeroSandboxRuntime {
 		const { toBeDefinedErrs, toBeDefined } = initApis({
 			proxyNamespaceObj: this.proxyNamespaceObj,
 			aeroSandboxNamespaceObj: this.aeroSandboxNamespaceObj,
-			featureConfig: this.configObj.featureConfig
+			featureConfig: this.mergedFeatureConfig
 		});
 
 		for (const [globalProp, proxyObject] of Object.entries(
 			toBeDefined.self
 		))
-			if (isApiIncluded(globalProp, this.configObj.featuresConfig)) self[globalProp] = proxyObject;
+			if (isApiIncluded(globalProp, this.mergedFeatureConfig)) self[globalProp] = proxyObject;
 		for (const [globalProp, proxifiedObjWorkerVersion] of Object.entries(
 			toBeDefined.proxifiedObjWorkerVersion
 		))
-			if (isApiIncluded(globalProp, this.configObj.featuresConfig))
+			if (isApiIncluded(globalProp, this.mergedFeatureConfig))
 				Object.defineProperty(
 					self,
 					globalProp,

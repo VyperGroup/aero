@@ -27,7 +27,7 @@
 		"check": "biome check --write",
 		"format": "biome format --write",
 		"serve": "rspack serve",
-		"build": "rspack build"
+		"build": "BUILD_CONFIG_PATH=./buildConfigs/aero && rspack build"
 	},
 	"author": "Ryan Wilson",
 	"license": "AGPL-3.0-or-later",
