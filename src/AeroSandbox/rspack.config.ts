@@ -21,7 +21,9 @@ if (!debugMode && testBuild) debugMode = true;
 // This is the most important env variable
 const buildConfigPath = "BUILD_CONFIG_PATH" in process.env;
 if (!buildConfigPath) {
-	console.error("Fatal: BUILD_CONFIG_PATH env variable not set. Don't know what to build for!");
+	console.error(
+		"Fatal: BUILD_CONFIG_PATH env variable not set. Don't know what to build for!"
+	);
 	process.exit(1);
 }
 
@@ -78,9 +80,11 @@ import featureFlagsBuilder from "./featureFlagsBuilder";
 // TODO: Type assert with partial
 let featureFlagOverrides = {};
 try {
-	featureFlagOverrides = importSync("./createFeatureFlags.ts").default
+	featureFlagOverrides = importSync("./createFeatureFlags.ts").default;
 } catch (_err) {
-	console.warn("⚠️ Unable to find any feature flag overrides. Is this intentional?");
+	console.warn(
+		"⚠️ Unable to find any feature flag overrides. Is this intentional?"
+	);
 }
 
 const featureFlags = createDefaultFeatureFlags({
@@ -92,7 +96,7 @@ const featureFlags = createDefaultFeatureFlags({
 const plugins: any[] = [
 	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags)),
 	new rspack.DefinePlugin({
-		"BUILD_CONFIG_PATH": JSON.stringify(buildConfigPath)
+		BUILD_CONFIG_PATH: JSON.stringify(buildConfigPath)
 	})
 ];
 
@@ -134,7 +138,9 @@ if (debugMode)
 const properDirType = debugMode ? "debug" : "prod";
 const properDir = path.resolve(__dirname, "dist", properDirType);
 
-logger.log(`\nBuilding in ${properDirType === "prod" ? "production" : "debug"} mode`);
+logger.log(
+	`\nBuilding in ${properDirType === "prod" ? "production" : "debug"} mode`
+);
 if (liveBuildMode) logger.log("Building in live build mode");
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -161,28 +167,28 @@ const config: rspack.Configuration = {
 	entry: genEntryFiles(
 		testBuild
 			? {
-				// API Interceptors for the Script Sandbox
-				location: "./src/interceptors/loc/location.ts",
-				scriptSandbox:
-					"./src/interceptors/concealer/misc/scriptSandboxing.ts",
-				// Libs for the API Interceptors
-				loggers: "./src/shared/Loggers.ts",
-				replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
-				// The JS rewriter
-				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
-			}
+					// API Interceptors for the Script Sandbox
+					location: "./src/interceptors/loc/location.ts",
+					scriptSandbox:
+						"./src/interceptors/concealer/misc/scriptSandboxing.ts",
+					// Libs for the API Interceptors
+					loggers: "./src/shared/Loggers.ts",
+					replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
+					// The JS rewriter
+					jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
+				}
 			: minimalBuild
 				? {
-					...defaultBuild,
-					// Extra APIs
-					storageIsolation:
-						"./src/apis/StorageIsolator/storageIsolation.ts",
-					ControlView: "./src/apis/CustomViews/ControlView.ts",
-					ElectronControlView:
-						"./src/apis/CustomViews/ElectronControlView.ts",
-					ElectronWebView:
-						"./src/apis/CustomViews/ElectronWebView.ts"
-				}
+						...defaultBuild,
+						// Extra APIs
+						storageIsolation:
+							"./src/apis/StorageIsolator/storageIsolation.ts",
+						ControlView: "./src/apis/CustomViews/ControlView.ts",
+						ElectronControlView:
+							"./src/apis/CustomViews/ElectronControlView.ts",
+						ElectronWebView:
+							"./src/apis/CustomViews/ElectronWebView.ts"
+					}
 				: defaultBuild
 	),
 	plugins,

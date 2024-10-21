@@ -22,9 +22,11 @@ import importSync from "import-sync";
 // TODO: Type assert with partial
 let featureFlagOverrides = {};
 try {
-	featureFlagOverrides = importSync("./createFeatureFlags.ts").default
+	featureFlagOverrides = importSync("./createFeatureFlags.ts").default;
 } catch (_err) {
-	console.warn("⚠️ Unable to find any feature flag overrides. Is this intentional?");
+	console.warn(
+		"⚠️ Unable to find any feature flag overrides. Is this intentional?"
+	);
 }
 
 const featureFlags = createDefaultFeatureFlags({
@@ -59,7 +61,7 @@ logger.log(featureFlags);
 // biome-ignore lint/suspicious/noExplicitAny: I don't know the exact type to use for this at the moment
 const plugins: any = [
 	// @ts-ignore
-	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags)),
+	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags))
 ];
 
 if (debugMode)

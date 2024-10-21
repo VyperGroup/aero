@@ -24,9 +24,7 @@ export interface FeatureFlags {
 /** Used exclusively for the overrides */
 export interface FeatureFlagsRspack extends FeatureFlags {
 	/* Defaults to what is in the build config if this is not set */
-	serverOnly: "winterjs"
-	| "cf-workers"
-	| "false";
+	serverOnly: "winterjs" | "cf-workers" | "false";
 	/* Defaults to what is in the build config if this is not set. Referrer should be used in environments outside of a SW */
 	reqInterceptionCatchAll: "referrer" | "clients";
 }
@@ -34,4 +32,4 @@ export interface FeatureFlagsRspack extends FeatureFlags {
 /** Used exclusively for the overrides. Makes a copy of FeatureFlagsRspack, but all fields are optional. */
 export type FeatureFlagsRspackOptional = Partial<FeatureFlagsRspack>;
 
-export interface FeatureFlagsRuntime extends FeatureFlags { }
+export interface FeatureFlagsRuntime extends FeatureFlags {}

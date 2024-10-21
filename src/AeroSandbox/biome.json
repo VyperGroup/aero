@@ -7,6 +7,7 @@
 			"indentWidth": 4
 		},
 		"globals": [
+			"BUILD_CONFIG_PATH",
 			"PROXY_NAMESPACE",
 			"OUR_NAMESPACE",
 			"CONFIG_KEY"
@@ -14,5 +15,5 @@
 	},
 	"files": {
 		"ignore": ["/src/AeroSandbox", "/dev_server", "/**/dist/**"]
-	},
+	}
 }
