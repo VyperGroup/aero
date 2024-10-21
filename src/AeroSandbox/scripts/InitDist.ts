@@ -2,8 +2,8 @@ import { access, rm, mkdir, copyFile } from "node:fs/promises";
 import path from "node:path";
 
 interface Dirs {
-	dist: string,
-	proper: string
+	dist: string;
+	proper: string;
 }
 
 export default class InitDist {
@@ -20,21 +20,21 @@ export default class InitDist {
 		this.init();
 	}
 	init() {
-		if (this.logStatus)
-			console.log("Initializing the dist folder");
+		if (this.logStatus) console.log("Initializing the dist folder");
 		access(this.distDir)
 			.then(this.initProperDir)
 			// If dir doesn't exist
 			.catch(this.createDistDir);
 	}
 	createDistDir() {
-		if (this.logStatus)
-			console.log("Creating the dist folder");
+		if (this.logStatus) console.log("Creating the dist folder");
 		mkdir(this.distDir).then(this.initProperDir);
 	}
 	initProperDir() {
 		if (this.logStatus)
-			console.log("Initializing the proper folder (...dist/<debug/prod>)");
+			console.log(
+				"Initializing the proper folder (...dist/<debug/prod>)"
+			);
 		access(this.properDir)
 			.then(() => {
 				rm(this.properDir, {
@@ -45,8 +45,7 @@ export default class InitDist {
 			.catch(this.createProperDir);
 	}
 	createProperDir() {
-		if (this.logStatus)
-			console.log("Creating the proper folder");
+		if (this.logStatus) console.log("Creating the proper folder");
 		mkdir(this.properDir).then(this.createDistBuild);
 	}
 	createDistBuild() {
@@ -54,7 +53,10 @@ export default class InitDist {
 			console.log("Copying over the default config to the dist folder");
 		copyFile(
 			path.resolve(__dirname, "src/defaultConfig.js"),
-			path.resolve(__dirname, `dist/${this.properDirType}/defaultConfig.js`)
+			path.resolve(
+				__dirname,
+				`dist/${this.properDirType}/defaultConfig.js`
+			)
 		);
 	}
 }
@@ -62,8 +64,12 @@ export default class InitDist {
 // If the file is being ran as a script
 if (require.main === module) {
 	const properDirType = "DEBUG" in process.env ? "debug" : "prod";
-	new InitDist({
-		dist: path.resolve(__dirname, "..", "dist"),
-		proper: path.resolve(__dirname, "dist", properDirType)
-	}, properDirType, true);
-};
+	new InitDist(
+		{
+			dist: path.resolve(__dirname, "..", "dist"),
+			proper: path.resolve(__dirname, "dist", properDirType)
+		},
+		properDirType,
+		true
+	);
+}

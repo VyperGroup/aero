@@ -7,34 +7,30 @@ export default class InitDist {
 	swDir: string;
 	properDirType: string;
 	logStatus: boolean;
-	constructor({
-		dist,
-		proper,
-		sw
-	}, properDirType, logStatus) {
+	constructor({ dist, proper, sw }, properDirType, logStatus) {
 		this.distDir = dist;
 		this.properDir = proper;
 		this.properDirType = properDirType;
-		this.swDir = sw
+		this.swDir = sw;
 		this.logStatus = logStatus;
 		this.init();
 	}
 	init() {
-		if (this.logStatus)
-			console.log("Initializing the dist folder");
+		if (this.logStatus) console.log("Initializing the dist folder");
 		access(this.distDir)
 			.then(this.initProperDir)
 			// If dir doesn't exist
 			.catch(this.createDistDir);
 	}
 	createDistDir() {
-		if (this.logStatus)
-			console.log("Creating the dist folder");
+		if (this.logStatus) console.log("Creating the dist folder");
 		mkdir(this.distDir).then(this.initProperDir);
 	}
 	initProperDir() {
 		if (this.logStatus)
-			console.log("Initializing the proper folder (...dist/<debug/prod>)");
+			console.log(
+				"Initializing the proper folder (...dist/<debug/prod>)"
+			);
 		access(this.properDir)
 			.then(() => {
 				rm(this.properDir, {
@@ -45,8 +41,7 @@ export default class InitDist {
 			.catch(this.createProperDir);
 	}
 	createProperDir() {
-		if (this.logStatus)
-			console.log("Creating the proper folder");
+		if (this.logStatus) console.log("Creating the proper folder");
 		mkdir(this.properDir).then(this.initSW);
 	}
 	initSW() {
@@ -62,8 +57,7 @@ export default class InitDist {
 			.catch(this.createSW);
 	}
 	createSW() {
-		if (this.logStatus)
-			console.log("Creating the SW folder");
+		if (this.logStatus) console.log("Creating the SW folder");
 		mkdir(this.swDir).then(this.initFiles);
 	}
 	initFiles() {
@@ -93,9 +87,13 @@ export default class InitDist {
 // If the file is being ran as a script
 if (require.main === module) {
 	const properDirType = "DEBUG" in process.env ? "debug" : "prod";
-	new InitDist({
-		dist: path.resolve(__dirname, "..", "dist"),
-		proper: path.resolve(__dirname, "dist", properDirType),
-		sw: path.resolve(__dirname, "dist", properDirType, "sw")
-	}, properDirType, true);
-};
+	new InitDist(
+		{
+			dist: path.resolve(__dirname, "..", "dist"),
+			proper: path.resolve(__dirname, "dist", properDirType),
+			sw: path.resolve(__dirname, "dist", properDirType, "sw")
+		},
+		properDirType,
+		true
+	);
+}

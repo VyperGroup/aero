@@ -123,10 +123,14 @@ const config: rspack.Configuration = {
 
 if (debugMode) config.watch = true;
 
-new InitDist({
-	dist: path.resolve(__dirname, "dist"),
-	proper: properDir,
-	sw: path.resolve(__dirname, "dist", properDirType, "sw"),
-}, properDirType, verboseMode);
+new InitDist(
+	{
+		dist: path.resolve(__dirname, "dist"),
+		proper: properDir,
+		sw: path.resolve(__dirname, "dist", properDirType, "sw")
+	},
+	properDirType,
+	verboseMode
+);
 
 export default config;
