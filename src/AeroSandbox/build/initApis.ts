@@ -1,15 +1,15 @@
-/*
 import type {
 	APIInterceptor,
 	proxifiedObjType,
 	proxifiedObjGeneratorCtxType
-} from "../types";
-*/
+} from "../types/apiInterceptors";
 
 // TODO: Use ToBeDefined
 import type {
 	default as ToBeDefined, toBeDefinedErrsType
 } from "../types/global";
+
+import createApiInterceptorIteratorClient from "./createApiInterceptorIteratorClient";
 
 import isAPIIncluded from "./isApiIncluded";
 
@@ -35,19 +35,12 @@ export default (requiredObjs: {
 		...featureConfig.specialInterceptionFeatures
 	};
 
-	// TODO: Use types from Rspack
-	// @ts-ignore
-	const ctx = import.meta.webpackContext("../src/interceptors", {
-		regExp: includeRegExp
-	});
-
 	const insertLater = new Map<level, proxifiedObjType>();
 
 	const toBeDefinedErrs: toBeDefinedError[];
 	const toBeDefined: ToBeDefined;
-	for (const fileName of ctx.keys()) {
+	for (const aI of createApiInterceptorIteratorClient(includeRegExp)) {
 		try {
-			const aI: APIInterceptor = ctx(fileName);
 			const apiInterceptorName = aI.globalProp;
 			if (isAPIIncluded(apiInterceptorName, featureConfig)) continue; // Should skip?
 			if (DEBUG)

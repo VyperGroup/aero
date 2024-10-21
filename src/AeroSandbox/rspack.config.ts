@@ -126,28 +126,28 @@ const config: rspack.Configuration = {
 	entry: genEntryFiles(
 		testBuild
 			? {
-				// API Interceptors for the Script Sandbox
-				location: "./src/interceptors/loc/location.ts",
-				scriptSandbox:
-					"./src/interceptors/concealer/misc/scriptSandboxing.ts",
-				// Libs for the API Interceptors
-				loggers: "./src/shared/Loggers.ts",
-				replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
-				// The JS rewriter
-				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
-			}
+					// API Interceptors for the Script Sandbox
+					location: "./src/interceptors/loc/location.ts",
+					scriptSandbox:
+						"./src/interceptors/concealer/misc/scriptSandboxing.ts",
+					// Libs for the API Interceptors
+					loggers: "./src/shared/Loggers.ts",
+					replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
+					// The JS rewriter
+					jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
+				}
 			: minimalBuild
 				? {
-					...defaultBuild,
-					// Extra APIs
-					storageIsolation:
-						"./src/apis/StorageIsolator/storageIsolation.ts",
-					ControlView: "./src/apis/CustomViews/ControlView.ts",
-					ElectronControlView:
-						"./src/apis/CustomViews/ElectronControlView.ts",
-					ElectronWebView:
-						"./src/apis/CustomViews/ElectronWebView.ts"
-				}
+						...defaultBuild,
+						// Extra APIs
+						storageIsolation:
+							"./src/apis/StorageIsolator/storageIsolation.ts",
+						ControlView: "./src/apis/CustomViews/ControlView.ts",
+						ElectronControlView:
+							"./src/apis/CustomViews/ElectronControlView.ts",
+						ElectronWebView:
+							"./src/apis/CustomViews/ElectronWebView.ts"
+					}
 				: defaultBuild
 	),
 	plugins,
@@ -186,10 +186,14 @@ function genEntryFiles(entryFiles) {
 
 if (debugMode) config.watch = true;
 
-new InitDist({
-	dist: path.resolve(__dirname, "dist"),
-	proper: properDir
-}, properDirType, verboseMode);
+new InitDist(
+	{
+		dist: path.resolve(__dirname, "dist"),
+		proper: properDir
+	},
+	properDirType,
+	verboseMode
+);
 genWebIDL(verboseMode);
 
 export default config;
