@@ -1,5 +1,4 @@
 import path from "node:path";
-import { access, rm, mkdir, copyFile } from "node:fs/promises";
 
 import { globSync } from "glob";
 
@@ -27,53 +26,13 @@ if (!buildConfigPath) {
 	process.exit(1);
 }
 
-// For WebIDL -> TS conversion
-// I shouldn't have to do this, but they forgot to include the "exports" definition inside their package.json, and I don't want to maintain a fork. They also defined exports for these modules in their index.js, which should be enough by itself, but they invoked the CLI, making this useless since that action throws an error.
-const fetchIDLModPath = path.resolve(
-	__dirname,
-	"node_modules",
-	"@milkshakeio",
-	"webidl2ts",
-	"dist",
-	"fetch-idl.js"
-);
-const fetchIDLMod = require(fetchIDLModPath);
-const fetchIDL = fetchIDLMod.fetchIDL;
-const parseIDLModPath = path.resolve(
-	__dirname,
-	"node_modules",
-	"@milkshakeio",
-	"webidl2ts",
-	"dist",
-	"parse-idl.js"
-);
-const parseIDLMod = require(parseIDLModPath);
-const parseIDL = parseIDLMod.parseIDL;
-const convertIDLModPath = path.resolve(
-	__dirname,
-	"node_modules",
-	"@milkshakeio",
-	"webidl2ts",
-	"dist",
-	"convert-idl.js"
-);
-const convertIDLMod = require(convertIDLModPath);
-const convertIDL = convertIDLMod.convertIDL;
-const printTsModPath = path.resolve(
-	__dirname,
-	"node_modules",
-	"@milkshakeio",
-	"webidl2ts",
-	"dist",
-	"print-ts.js"
-);
-const printTsMod = require(printTsModPath);
-const printTs = printTsMod.printTs;
-
-import { writeFileSync } from "node:fs";
-
 import createDefaultFeatureFlags from "./createDefaultFeatureFlags";
 import importSync from "import-sync";
+
+// Scripts
+import InitDist from "./scripts/InitDist";
+import genWebIDL from "./scripts/initApiTypes";
+import initApis from "./scripts/initApis";
 
 import featureFlagsBuilder from "./featureFlagsBuilder";
 
@@ -167,28 +126,28 @@ const config: rspack.Configuration = {
 	entry: genEntryFiles(
 		testBuild
 			? {
-					// API Interceptors for the Script Sandbox
-					location: "./src/interceptors/loc/location.ts",
-					scriptSandbox:
-						"./src/interceptors/concealer/misc/scriptSandboxing.ts",
-					// Libs for the API Interceptors
-					loggers: "./src/shared/Loggers.ts",
-					replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
-					// The JS rewriter
-					jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
-				}
+				// API Interceptors for the Script Sandbox
+				location: "./src/interceptors/loc/location.ts",
+				scriptSandbox:
+					"./src/interceptors/concealer/misc/scriptSandboxing.ts",
+				// Libs for the API Interceptors
+				loggers: "./src/shared/Loggers.ts",
+				replaceProxyNamespace: "./build/replaceProxyNamespace.ts",
+				// The JS rewriter
+				jsRewriter: "./src/sandboxers/JS/JSRewriter.ts"
+			}
 			: minimalBuild
 				? {
-						...defaultBuild,
-						// Extra APIs
-						storageIsolation:
-							"./src/apis/StorageIsolator/storageIsolation.ts",
-						ControlView: "./src/apis/CustomViews/ControlView.ts",
-						ElectronControlView:
-							"./src/apis/CustomViews/ElectronControlView.ts",
-						ElectronWebView:
-							"./src/apis/CustomViews/ElectronWebView.ts"
-					}
+					...defaultBuild,
+					// Extra APIs
+					storageIsolation:
+						"./src/apis/StorageIsolator/storageIsolation.ts",
+					ControlView: "./src/apis/CustomViews/ControlView.ts",
+					ElectronControlView:
+						"./src/apis/CustomViews/ElectronControlView.ts",
+					ElectronWebView:
+						"./src/apis/CustomViews/ElectronWebView.ts"
+				}
 				: defaultBuild
 	),
 	plugins,
@@ -227,84 +186,10 @@ function genEntryFiles(entryFiles) {
 
 if (debugMode) config.watch = true;
 
-const distDir = path.resolve(__dirname, "dist");
-initDist();
-function initDist() {
-	logger.log("Initializing the dist folder");
-	access(distDir)
-		.then(initProperDir)
-		// If dir doesn't exist
-		.catch(createDistDir);
-}
-function createDistDir() {
-	logger.log("Creating the dist folder");
-	mkdir(distDir).then(initProperDir);
-}
-function initProperDir() {
-	logger.log("Initializing the proper folder (...dist/<debug/prod>)");
-	access(properDir)
-		.then(() => {
-			rm(properDir, {
-				recursive: true
-			}).then(createProperDir);
-		})
-		// If dir doesn't exist
-		.catch(createProperDir);
-}
-function createProperDir() {
-	logger.log("Creating the proper folder");
-	mkdir(properDir).then(createDistBuild);
-}
-function createDistBuild() {
-	logger.log("Copying over the default config to the dist folder");
-	copyFile(
-		path.resolve(__dirname, "src/defaultConfig.js"),
-		path.resolve(__dirname, `dist/${properDirType}/defaultConfig.js`)
-	);
-}
-
-type webIDLDesc = { [key: string]: string };
-const webIDLUsedInAero: webIDLDesc = {
-	"cookie-store": "https://wicg.github.io/cookie-store/",
-	// fedcm: "https://fedidcg.github.io/FedCM/", FIXME: Broken
-	"shared-storage": "https://wicg.github.io/shared-storage/",
-	"web-app-launch": "https://wicg.github.io/web-app-launch/",
-	"web-otp": "https://wicg.github.io/web-otp/"
-};
-const webIDLOutputDir = path.resolve(__dirname, "types/webidlDist");
-// Gens to types/webidlDist
-function genWebIDL(webIDL: webIDLDesc) {
-	logger.log("\nGenerating the WebIDL -> TS conversions required in aero");
-	access(webIDLOutputDir).catch(() => mkdir(webIDLOutputDir));
-	for (const [apiName, apiDocURL] of Object.entries(webIDL)) {
-		logger.log(`Fetching the WebIDL for ${apiName} with URL ${apiDocURL}`);
-		fetchIDL(apiDocURL).then(rawIdl => {
-			logger.log(`Parsing the WebIDL for ${apiName}`);
-			parseIDL(rawIdl).then(idl => {
-				logger.log(`Converting the WebIDL -> TS for ${apiName}`);
-				const ts = convertIDL(idl, {
-					emscripten: false
-				});
-
-				logger.log(`Applying the final touches to ${apiName}`);
-				const tsString = printTs(ts);
-
-				// Parity check: if the string is blank
-				if (tsString === "") {
-					const errMsg = "The ts string is invalid";
-					if (!debugMode) console.warn(`⚠️ ${errMsg}`);
-					else throw new Error(errMsg);
-				}
-
-				logger.log(`Writing the WebIDL for ${apiName}`);
-				writeFileSync(
-					path.resolve(webIDLOutputDir, `${apiName}.d.ts`),
-					`// Auto-generated by webidl2ts - ${apiDocURL}\n${tsString}`
-				);
-			});
-		});
-	}
-}
-genWebIDL(webIDLUsedInAero);
+new InitDist({
+	dist: path.resolve(__dirname, "dist"),
+	proper: properDir
+}, properDirType, verboseMode);
+genWebIDL(verboseMode);
 
 export default config;

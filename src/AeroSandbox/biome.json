@@ -1,19 +1,4 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"javascript": {
-		"formatter": {
-			"arrowParentheses": "asNeeded",
-			"trailingCommas": "none",
-			"indentWidth": 4
-		},
-		"globals": [
-			"BUILD_CONFIG_PATH",
-			"PROXY_NAMESPACE",
-			"OUR_NAMESPACE",
-			"CONFIG_KEY"
-		]
-	},
-	"files": {
-		"ignore": ["/src/AeroSandbox", "/dev_server", "/**/dist/**"]
-	}
+	"extends": ["./base.biome.json"]
 }

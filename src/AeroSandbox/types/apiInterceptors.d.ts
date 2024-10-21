@@ -77,7 +77,9 @@ export enum SupportEnum {
 	nonstandard,
 	draft,
 	shippingChromium,
-	originTrialExclusive
+	originTrialExclusive,
+	/** In Firefox, Chromium, and WebKit */
+	widelyAvailable
 }
 // biome-ignore lint/style/useEnumInitializers: <explanation>
 export enum ExposedContextsEnum {

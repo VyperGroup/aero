@@ -1,5 +1,4 @@
 import path from "node:path";
-import { access, rm, mkdir, copyFile } from "node:fs/promises";
 
 import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
@@ -11,9 +10,12 @@ import featureFlagsBuilder from "./src/AeroSandbox/featureFlagsBuilder";
 const liveBuildMode = "LIVE_BUILD" in process.env;
 /** This var is enabled by default */
 const verboseMode =
-	!("VERBOSE" in process.env) || process.env.VERBOSE !== "false"; // TODO: Copy the verbose pattern for aero's build system
+	!("VERBOSE" in process.env) || process.env.VERBOSE !== "false";
 const debugMode = liveBuildMode || "DEBUG" in process.env;
 const serverMode = process.env.SERVER_MODE;
+
+// Scripts
+import InitDist from "./scripts/InitDist";
 
 import { Logger } from "./src/AeroSandbox/rspack.config.ts";
 
@@ -50,8 +52,6 @@ if (serverMode) {
 	// @ts-ignore
 	featureFlags.serverOnly = JSON.stringify(false);
 }
-//@ts-ignore
-featureFlags.GITHUB_REPO = JSON.stringify(featureFlags.GITHUB_REPO);
 
 const logger = new Logger(verboseMode);
 
@@ -89,7 +89,7 @@ const properDir = path.resolve(__dirname, "dist", properDirType, "sw");
 logger.log(`Building in ${properDirType} mode`);
 if (liveBuildMode) logger.log("Building in live build mode");
 
-const sourceMapType = debugMode ? "eval-source-map" : "source-map";
+//const sourceMapType = debugMode ? "eval-source-map" : "source-map";
 
 const config: rspack.Configuration = {
 	mode: debugMode ? "development" : "production",
@@ -123,70 +123,10 @@ const config: rspack.Configuration = {
 
 if (debugMode) config.watch = true;
 
-const distDir = path.resolve(__dirname, "dist");
-const swDir = path.resolve(__dirname, "dist", properDirType, "sw");
-initDist();
-function initDist() {
-	logger.log("Initializing the dist folder");
-	access(distDir)
-		.then(initProperDir)
-		// If dir doesn't exist
-		.catch(createDistDir);
-}
-function createDistDir() {
-	logger.log("Creating the dist folder");
-	mkdir(distDir).then(initProperDir);
-}
-function initProperDir() {
-	logger.log("Initializing the proper folder (...dist/<debug/prod>)");
-	access(properDir)
-		.then(() => {
-			rm(properDir, {
-				recursive: true
-			}).then(createProperDir);
-		})
-		// If dir doesn't exist
-		.catch(createProperDir);
-}
-function createProperDir() {
-	logger.log("Creating the proper folder");
-	mkdir(properDir).then(initSW);
-}
-function initSW() {
-	logger.log("Initializing the SW folder (...dist/<debug/prod>/sw");
-	access(swDir)
-		.then(() => {
-			rm(swDir, {
-				recursive: true
-			}).then(createSW);
-		})
-		// If dir doesn't exist
-		.catch(createSW);
-}
-function createSW() {
-	logger.log("Creating the SW folder");
-	mkdir(path.resolve(swDir)).then(initFiles);
-}
-function initFiles() {
-	logger.log("Copying over the default files to the dist folder");
-	copySWFiles();
-	initLogo();
-}
-function copySWFiles() {
-	copyFile(
-		path.resolve(__dirname, "src/defaultConfig.js"),
-		path.resolve(`${swDir}/defaultConfig.js`)
-	).catch(err => {
-		console.error("Error copying defaultConfig.js:", err);
-	});
-}
-function initLogo() {
-	copyFile(
-		path.resolve(__dirname, "aero.webp"),
-		path.resolve(`${swDir}/logo.webp`)
-	).catch(err => {
-		console.error("Error copying logo.webp:", err);
-	});
-}
+new InitDist({
+	dist: path.resolve(__dirname, "dist"),
+	proper: properDir,
+	sw: path.resolve(__dirname, "dist", properDirType, "sw"),
+}, properDirType, verboseMode);
 
 export default config;

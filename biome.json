@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["./src/AeroSandbox/base.biome.json"],
 	"files": {
-		"ignore": ["dist", "src/AeroSandbox/dist", "/tests/aero"]
-	},
-	"extends": ["./src/AeroSandbox/biome.json"]
+		"ignore": ["/tests/aero"]
+	}
 }
