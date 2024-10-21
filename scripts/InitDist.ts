@@ -84,7 +84,7 @@ export default class InitDist {
 	}
 }
 
-// If the file is being ran as a script
+// If the file is being ran as a CLI script
 if (require.main === module) {
 	const properDirType = "DEBUG" in process.env ? "debug" : "prod";
 	new InitDist(

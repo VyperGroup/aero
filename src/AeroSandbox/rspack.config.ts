@@ -1,7 +1,5 @@
 import path from "node:path";
 
-import { globSync } from "glob";
-
 import rspack from "@rspack/core";
 import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
 
@@ -195,5 +193,6 @@ new InitDist(
 	verboseMode
 );
 genWebIDL(verboseMode);
+initApis();
 
 export default config;
