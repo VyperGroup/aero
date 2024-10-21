@@ -1,3 +1,4 @@
+import createDefaultFeatureFlags from "../createDefaultFeatureFlags";
 import type { htmlRewriterMode } from "../types/rewriters/html";
 
 export interface FeatureFlags {
@@ -19,3 +20,9 @@ export interface FeatureFlags {
 	featureHashURL: boolean;
 	debug: boolean;
 }
+
+export interface CtxType {
+	debugMode: boolean;
+}
+
+export type createFeatureFlags = (ctx: CtxType) => FeatureFlags;

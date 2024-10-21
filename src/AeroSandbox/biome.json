@@ -1,4 +1,11 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"extends": ["./base.biome.json"]
+	"extends": [
+		"./base.biome.json",
+		"./src/AeroSandbox/dist/biome/globals.biome.json",
+		"dist/biome/globals.biome.json"
+	],
+	"linter": {
+		"ignore": ["scripts/**/*.ts"]
+	}
 }

@@ -39,9 +39,9 @@ let chosenProxy = defaultProxy;
 addEventListener("message", event => {
 	if ("type" in event.data && event.data.type === "changeDefault") {
 		const possibleChosenProxy = event.data.data;
-		if (isValidProxy(possibleChosenProxy))
+		if (isValidProxy(possibleChosenProxy)) {
 			chosenProxy = possibleChosenProxy;
-		else {
+		} else {
 			console.log(
 				`Fatal error: tried to set the default proxy, but the proxy to be set isn't supported: ${chosenProxy}`
 			);
@@ -69,10 +69,12 @@ addEventListener("fetch", event => {
 				})
 		);
 	}
-	if (event.request.url.startsWith(location.origin + __uv$config.prefix))
+	if (event.request.url.startsWith(location.origin + __uv$config.prefix)) {
 		return event.respondWith(uv.fetch(event));
-	if (routeAero(event))
+	}
+	if (routeAero(event)) {
 		return event.respondWith(aeroHandlerWithExtras(event));
+	}
 });
 
 function isValidProxy(proxy) {

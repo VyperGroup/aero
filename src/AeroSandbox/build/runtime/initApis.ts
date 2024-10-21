@@ -1,12 +1,18 @@
+/**
+ * @module
+ * TODO: Write a description: ...
+ */
+
 import type {
 	APIInterceptor,
+	proxifiedObjGeneratorCtxType,
 	proxifiedObjType,
-	proxifiedObjGeneratorCtxType
 } from "../types/apiInterceptors";
 
 // TODO: Use ToBeDefined
 import type {
-	default as ToBeDefined, toBeDefinedErrsType
+	default as ToBeDefined,
+	toBeDefinedErrsType,
 } from "../types/global";
 
 import createApiInterceptorIteratorClient from "./createApiInterceptorIteratorClient";
@@ -15,14 +21,18 @@ import isAPIIncluded from "./isApiIncluded";
 
 type level = number;
 
-export default (requiredObjs: {
-	// TODO: Define types
-	proxyNamespaceObj: any,
-	aeroSandboxNamespaceObj: any,
-	featureConfig: any
-}, logger?, includeRegExp = /\.ts$/): {
-	toBeDefinedErrs: toBeDefinedErrsType[],
-	toBeDefined: ToBeDefined
+export default (
+	requiredObjs: {
+		// TODO: Define types
+		proxyNamespaceObj: any;
+		aeroSandboxNamespaceObj: any;
+		featureConfig: any;
+	},
+	logger?,
+	includeRegExp = /\.ts$/,
+): {
+	toBeDefinedErrs: toBeDefinedErrsType[];
+	toBeDefined: ToBeDefined;
 } => {
 	// Unpack
 	// We are assuming the user imports the logger bundle before AeroSandbox
@@ -32,7 +42,7 @@ export default (requiredObjs: {
 	}
 
 	const proxifiedObjGenCtx: proxifiedObjGeneratorCtxType = {
-		...featureConfig.specialInterceptionFeatures
+		...featureConfig.specialInterceptionFeatures,
 	};
 
 	const insertLater = new Map<level, proxifiedObjType>();
@@ -43,12 +53,19 @@ export default (requiredObjs: {
 		try {
 			const apiInterceptorName = aI.globalProp;
 			if (isAPIIncluded(apiInterceptorName, featureConfig)) continue; // Should skip?
-			if (DEBUG)
-				logger.log(`Processing API interceptors from the file ${fileName} (${apiInterceptorName})`);
-			if (aI.insertLevel && aI.insertLevel !== 0)
+			if (DEBUG) {
+				logger.log(
+					`Processing API interceptors from the file ${fileName} (${apiInterceptorName})`,
+				);
+			}
+			if (aI.insertLevel && aI.insertLevel !== 0) {
 				insertLater.set(aI.insertLevel, aI);
-			else {
-				toBeDefinedErr = handleAI(aI, aeroSandboxNamespaceObj.toBeDefined, proxifiedObjGenCtx);
+			} else {
+				toBeDefinedErr = handleAI(
+					aI,
+					aeroSandboxNamespaceObj.toBeDefined,
+					proxifiedObjGenCtx,
+				);
 				toBeDefinedErrs[apiInterceptorName] = toBeDefinedErrs;
 			}
 		} catch (err) {
@@ -57,7 +74,7 @@ export default (requiredObjs: {
 	}
 
 	const sortedInsertObj = Object.entries(
-		Array.from(insertLater.keys()).sort((a, b) => b[1] - a[1])
+		Array.from(insertLater.keys()).sort((a, b) => b[1] - a[1]),
 	) as {
 		[key: string]: APIInterceptor;
 	};
@@ -66,27 +83,33 @@ export default (requiredObjs: {
 
 	return {
 		toBeDefinedErrs,
-		toBeDefined
-	}
-}
+		toBeDefined,
+	};
+};
 
 // @ts-ignore
-function handleAI(aI: APIInterceptor, toBeDefined: ToBeDefined, proxifiedObjGenCtx: proxifiedObjGeneratorCtxType): toBeDefinedError | "successful" {	// @ts-ignore
+function handleAI(
+	aI: APIInterceptor,
+	toBeDefined: ToBeDefined,
+	proxifiedObjGenCtx: proxifiedObjGeneratorCtxType,
+): toBeDefinedError | "successful" { // @ts-ignore
 	if (aI.proxifiedObj) {
 		const proxyObject = resolveProxifiedObj(
 			// @ts-ignore
 			aI.proxifiedObj,
-			proxifiedObjGenCtx
+			proxifiedObjGenCtx,
 		);
 
 		// TODO: Include more logging in debug mode
 		// FIXME: I forgot what this was before
-		if (aI.proxifiedObj)
+		if (aI.proxifiedObj) {
 			toBeDefined.self[aI.globalProp] = proxyObject;
-		// @ts-ignore
-		else if (aI.proxifiedObjWorkerVersion)
+		} // @ts-ignore
+		else if (aI.proxifiedObjWorkerVersion) {
 			// @ts-ignore
-			toBeDefined.proxifiedObjWorkerVersion[aI.globalProp] = aI.proxifiedObjWorkerVersion;
+			toBeDefined.proxifiedObjWorkerVersion[aI.globalProp] =
+				aI.proxifiedObjWorkerVersion;
+		}
 		return "successful";
 	}
 }
@@ -95,7 +118,7 @@ function resolveProxifiedObj(
 	// @ts-ignore
 	proxifiedObj: proxifiedObjType,
 	// @ts-ignore
-	ctx: proxifiedObjGeneratorCtxType
+	ctx: proxifiedObjGeneratorCtxType,
 	// @ts-ignore
 ): proxifiedObjType {
 	let proxyObject = {};

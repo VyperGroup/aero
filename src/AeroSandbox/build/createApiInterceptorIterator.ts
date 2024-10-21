@@ -1,3 +1,9 @@
+/**
+ * @module
+ * This module contains iterators for API interceptors in Node.js.
+ * One is synchronous and the other is asynchronous.
+ */
+
 import type { APIInterceptor } from "../types/apiInterceptors";
 
 import { glob, globSync } from "glob";

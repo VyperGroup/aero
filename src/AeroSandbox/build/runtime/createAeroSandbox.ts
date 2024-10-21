@@ -1,7 +1,7 @@
 // TODO: This will be the runtime version of AeroSandbox
 
 import type { toBeDefinedErrsType } from "../types/global";
-import type { ResultAsync, ok, err } from "neverthrow";
+import type { err, ok, ResultAsync } from "neverthrow";
 
 import getPropFromTree from "../src/util/getPropFromTree";
 
@@ -58,19 +58,23 @@ export default (buildConfig: BuildConfig) =>
 
 			for (const [globalProp, proxyObject] of Object.entries(
 				toBeDefined.self
-			))
-				if (isApiIncluded(globalProp, this.mergedFeatureConfig))
+			)) {
+				if (isApiIncluded(globalProp, this.mergedFeatureConfig)) {
 					self[globalProp] = proxyObject;
+				}
+			}
 			for (const [
 				globalProp,
 				proxifiedObjWorkerVersion
-			] of Object.entries(toBeDefined.proxifiedObjWorkerVersion))
-				if (isApiIncluded(globalProp, this.mergedFeatureConfig))
+			] of Object.entries(toBeDefined.proxifiedObjWorkerVersion)) {
+				if (isApiIncluded(globalProp, this.mergedFeatureConfig)) {
 					Object.defineProperty(
 						self,
 						globalProp,
 						proxifiedObjWorkerVersion
 					);
+				}
+			}
 
 			return toBeDefinedErrs.length > 0 ? err(toBeDefinedErrs) : ok();
 		}

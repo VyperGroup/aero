@@ -24,18 +24,28 @@ if (!buildConfigPath) {
 	process.exit(1);
 }
 
+import type { createFeatureFlags } from "./build/featureFlags.ts";
 import createDefaultFeatureFlags from "./createDefaultFeatureFlags";
-import importSync from "import-sync";
 
-// Scripts
-import InitDist from "./scripts/InitDist";
-import genWebIDL from "./scripts/initApiTypes";
-import initApis from "./scripts/initApis";
+import initAll from "./build/initAll";
 
 import featureFlagsBuilder from "./featureFlagsBuilder";
 
 // TODO: Type assert with partial
-let featureFlagOverrides = {};
+/**
+ * Will contain the user's overrides for the default feature flags config
+ * You can modify this by defining `creatureFeatureFlags.ts`.
+ * This has no effect without defining the file.
+ * You create it like:
+ * @example
+ * import type { FeatureFlags } from "./build/featureFlags.ts";
+ *
+ * export default (ctx: CtxType) => {...} as Partial<FeatureFlags>;
+ */
+/**
+ * The user-defined overrides for the default feature flags config.
+ * It is set to Partial because we will set it later when `createFeatureFlags.ts` is imported. */
+let featureFlagOverrides: Partial<createFeatureFlags> = {};
 try {
 	featureFlagOverrides = importSync("./createFeatureFlags.ts").default;
 } catch (_err) {
@@ -44,11 +54,13 @@ try {
 	);
 }
 
+/** The feature flags to be used in the build config */
 const featureFlags = createDefaultFeatureFlags({
 	...featureFlagOverrides,
 	debugMode
 });
 
+/** The plugins to be used in the build config */
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const plugins: any[] = [
 	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags)),
@@ -59,12 +71,23 @@ const plugins: any[] = [
 
 /** A rudimentary log function that only logs if verbose mode is enabled */
 export class Logger {
+	/**
+	 * @param verboseMode Should the log method do anything?
+	 */
 	verboseMode: boolean;
-	constructor(verboseMode) {
+	/**
+	 * @param verboseMode Whether verbose mode is enabled.
+	 */
+	constructor(verboseMode: boolean) {
 		this.verboseMode = verboseMode;
 	}
+	/**
+	 * This method wraps console.log, but doesn't log if verbose mode is disabled
+	 * @param msg The message to log
+	 */
+	// biome-ignore lint/suspicious/noExplicitAny: this is intentionally generic
 	log(msg: any) {
-		if (this.verboseMode) console.log(...arguments);
+		if (this.verboseMode) console.log(msg);
 	}
 }
 
@@ -73,7 +96,7 @@ const logger = new Logger(verboseMode);
 logger.log("The chosen feature flags are:");
 logger.log(featureFlags);
 
-if (debugMode)
+if (debugMode) {
 	plugins.push(
 		// There are currently a bug with Rsdoctor where the option `disableClientServer` doesn't work. You must launch the bundle analyzer through the cli instead.
 		new RsdoctorRspackPlugin({
@@ -91,6 +114,7 @@ if (debugMode)
 			}
 		})
 	);
+}
 
 const properDirType = debugMode ? "debug" : "prod";
 const properDir = path.resolve(__dirname, "dist", properDirType);
@@ -174,6 +198,7 @@ const config: rspack.Configuration = {
  */
 function genEntryFiles(entryFiles) {
 	/*
+	// FIXME:
 	if (minimalSharedBuild) {
 		const modulesSharedWithSW = globSync(`${__dirname}/src/shared/*.ts`)
 		return [...entryFiles, ...modulesSharedWithSW];
@@ -184,15 +209,10 @@ function genEntryFiles(entryFiles) {
 
 if (debugMode) config.watch = true;
 
-new InitDist(
-	{
-		dist: path.resolve(__dirname, "dist"),
-		proper: properDir
-	},
-	properDirType,
-	verboseMode
-);
-genWebIDL(verboseMode);
-initApis();
+initAll({
+	dist: path.resolve(__dirname, "dist"),
+	proper: properDir
+});
+// TODO: Import and use this in the Rspack config for aero
 
 export default config;

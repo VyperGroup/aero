@@ -1,3 +1,6 @@
+// Import package manually because it is not global in Deno
+import process from "node:process";
+
 import path from "node:path";
 
 import rspack from "@rspack/core";
@@ -15,7 +18,7 @@ const debugMode = liveBuildMode || "DEBUG" in process.env;
 const serverMode = process.env.SERVER_MODE;
 
 // Scripts
-import InitDist from "./scripts/InitDist";
+// TODO: Instead use the one from AeroSandbox import InitDist from "./scripts/InitDist";
 
 import { Logger } from "./src/AeroSandbox/rspack.config.ts";
 
@@ -39,12 +42,13 @@ const featureFlags = createDefaultFeatureFlags({
 if (serverMode) {
 	// @ts-ignore
 	featureFlags.reqInterceptionCatchAll = JSON.stringify("referrer");
-	if (serverMode === "winterjs")
+	if (serverMode === "winterjs") {
 		// @ts-ignore
 		featureFlags.serverOnly = JSON.stringify("winterjs");
-	else if (serverMode === JSON.stringify("cf-workers"))
+	} else if (serverMode === JSON.stringify("cf-workers")) {
 		// @ts-ignore
 		featureFlags.serverOnly = JSON.stringify("cf-workers");
+	}
 	// @ts-ignore
 } else {
 	// @ts-ignore
@@ -64,7 +68,7 @@ const plugins: any = [
 	new rspack.DefinePlugin(featureFlagsBuilder(featureFlags))
 ];
 
-if (debugMode)
+if (debugMode) {
 	plugins.push(
 		// There are currently a bug with Rsdoctor where the option `disableClientServer` doesn't work. You must launch the bundle analyzer through the cli instead.
 		new RsdoctorRspackPlugin({
@@ -82,6 +86,7 @@ if (debugMode)
 			}
 		})
 	);
+}
 
 const properDirType = debugMode ? "debug" : "prod";
 const properDir = path.resolve(__dirname, "dist", properDirType, "sw");
@@ -123,6 +128,8 @@ const config: rspack.Configuration = {
 
 if (debugMode) config.watch = true;
 
+/*
+TODO: Update this to reflect the changes in `InitDist.ts` (Neverthrow)
 new InitDist(
 	{
 		dist: path.resolve(__dirname, "dist"),
@@ -132,5 +139,6 @@ new InitDist(
 	properDirType,
 	verboseMode
 );
+*/
 
 export default config;

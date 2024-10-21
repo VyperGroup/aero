@@ -5,6 +5,9 @@
 /**/aero-sandbox-*.tgz
 ## For NixOS
 mutable_node_modules
+# Deno
+/**/deno.lock
+
 
 # Builds
 /**/dist/

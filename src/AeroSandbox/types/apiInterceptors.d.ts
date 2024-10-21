@@ -2,23 +2,23 @@ import type { overwriteRecordsType } from "$types/generic";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type revokableProxyRet = { proxy: any; revoke: () => void };
-interface proxifiedObjGeneratorContext {
+interface proxifiedObjGeneratorCtxType {
 	specialInterceptionFeatures?: InterceptionFeaturesEnum;
 	// might be removed I will just replace the <proxyContext> in the entire JS file  I am importingproxyGlobalContext: string;
 	overwriteRecords?: overwriteRecordsType;
 }
 export type proxifiedObjType = revokableProxyRet | proxifiyObjGenerator;
 export type proxifiyObjGenerator = (
-	ctx: proxifiedObjGeneratorContext
+	ctx: proxifiedObjGeneratorCtxType
 ) => proxifiedObjType;
 export type storageProxifiyObjGenerator = (
 	cookieStoreId: string
 ) => proxifiedObjType;
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export type proxifyGetter = (ctx: proxifiedObjGeneratorContext) => any;
+export type proxifyGetter = (ctx: proxifiedObjGeneratorCtxType) => any;
 
 export type objectPropertyModifier = (
-	ctx: proxifiedObjGeneratorContext
+	ctx: proxifiedObjGeneratorCtxType
 ) => void;
 
 /** This is a generic type interface used for intersection in other interfaces below */
@@ -79,7 +79,7 @@ export enum SupportEnum {
 	shippingChromium,
 	originTrialExclusive,
 	/** In Firefox, Chromium, and WebKit */
-	widelyAvailable
+	widelyAvailable // TODO: Start defining this enum in my API Interceptors accordingly
 }
 // biome-ignore lint/style/useEnumInitializers: <explanation>
 export enum ExposedContextsEnum {

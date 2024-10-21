@@ -1,8 +1,4 @@
-import type { FeatureFlags } from "./build/featureFlags";
-
-interface CtxType {
-	debugMode: boolean;
-}
+import type { CtxType, FeatureFlags } from "./build/featureFlags.ts";
 
 export default (ctx: CtxType) =>
 	({

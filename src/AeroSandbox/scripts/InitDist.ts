@@ -1,4 +1,4 @@
-import { access, rm, mkdir, copyFile } from "node:fs/promises";
+import { access, copyFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 
 interface Dirs {
@@ -31,14 +31,15 @@ export default class InitDist {
 		mkdir(this.distDir).then(this.initProperDir);
 	}
 	initProperDir() {
-		if (this.logStatus)
+		if (this.logStatus) {
 			console.log(
-				"Initializing the proper folder (...dist/<debug/prod>)"
+				"Initializing the proper folder (...dist/<debug/prod>)",
 			);
+		}
 		access(this.properDir)
 			.then(() => {
 				rm(this.properDir, {
-					recursive: true
+					recursive: true,
 				}).then(this.createProperDir);
 			})
 			// If dir doesn't exist
@@ -49,14 +50,15 @@ export default class InitDist {
 		mkdir(this.properDir).then(this.createDistBuild);
 	}
 	createDistBuild() {
-		if (this.logStatus)
+		if (this.logStatus) {
 			console.log("Copying over the default config to the dist folder");
+		}
 		copyFile(
 			path.resolve(__dirname, "src/defaultConfig.js"),
 			path.resolve(
 				__dirname,
-				`dist/${this.properDirType}/defaultConfig.js`
-			)
+				`dist/${this.properDirType}/defaultConfig.js`,
+			),
 		);
 	}
 }
@@ -67,9 +69,9 @@ if (require.main === module) {
 	new InitDist(
 		{
 			dist: path.resolve(__dirname, "..", "dist"),
-			proper: path.resolve(__dirname, "dist", properDirType)
+			proper: path.resolve(__dirname, "dist", properDirType),
 		},
 		properDirType,
-		true
+		true,
 	);
 }

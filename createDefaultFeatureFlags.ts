@@ -1,6 +1,7 @@
+import type { CtxType } from "./src/AeroSandbox/build/featureFlags";
 import type { FeatureFlagsRspack } from "./types/featureFlags";
 
-export default ctx =>
+export default (ctx: CtxType) =>
 	// @ts-ignore
 	({
 		featureUrlEnc: false,

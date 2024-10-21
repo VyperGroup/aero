@@ -1,19 +1,48 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["./dist/biome/globals.biome.json"],
 	"javascript": {
 		"formatter": {
 			"arrowParentheses": "asNeeded",
 			"trailingCommas": "none",
 			"indentWidth": 4
-		},
-		"globals": [
-			"BUILD_CONFIG_PATH",
-			"PROXY_NAMESPACE",
-			"OUR_NAMESPACE",
-			"CONFIG_KEY"
-		]
+		}
 	},
-	"files": {
-		"ignore": ["/**/dist/**"]
+	"linter": {
+		"rules": {
+			"nursery": {
+				"noExportedImports": "error",
+				"useDeprecatedReason": "error",
+				"useExplicitType": "error",
+				"noUselessStringRaw": "error",
+				"useImportRestrictions": "error"
+			},
+			"performance": {
+				"noBarrelFile": "error",
+				"noReExportAll": "error",
+				"useTopLevelRegex": "error",
+				"noDelete": "off"
+			},
+			"suspicious": {
+				"noClassAssign": "error"
+			},
+			"style": {
+				"noNamespace": "error",
+				"noNamespaceImport": "error",
+				"noNegationElse": "error",
+				"noNonNullAssertion": "error",
+				"noShoutyConstants": "error",
+				"useConsistentArrayType": "error",
+				"noYodaExpression": "error",
+				"useFilenamingConvention": {
+					"level": "error",
+					"options": {
+						"filenameCases": ["camelCase", "PascalCase"],
+						"requireAscii": true
+					}
+				},
+				"useThrowOnlyError": "error"
+			}
+		}
 	}
 }

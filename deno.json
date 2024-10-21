@@ -1,0 +1,45 @@
+{
+	"$schema": "https://raw.githubusercontent.com/denoland/deno/refs/tags/v2.0.2/cli/schemas/config-file.v1.json",
+	"name": "@aero/proxy",
+	"version": "0.0.6",
+	"license": "AGPL-3.0-or-later",
+	"publish": {
+		"include": [
+			"scripts/**/*.ts",
+			"src/AeroSandbox/scripts/**/*.ts",
+			"dist/**/*",
+			"tests/**",
+			"LICENSE",
+			"README.md"
+		],
+		"exclude": ["src/AeroSandbox/scripts/runtime/**/*.ts"]
+	},
+	"tasks": {
+		"format": "npm run formatBiome && npm run formatDeno",
+		"formatBiome": "biome format --write",
+		"formatDeno": "deno fmt",
+		"rsdoctor": "npm run rsdoctorSW & npm run rsdoctorSandbox &",
+		"rsdoctors": "kill $(lsof -t -i:3300) & rsdoctor analyze --profile dist/debug/sw/.rsdoctor/manifest.json --port 3300",
+		"rsdoctorSandbox": "kill $(lsof -t -i:3301) & rsdoctor analyze --profile src/AeroSandbox/dist/debug/.rsdoctor/manifest.json --port 3301",
+		"test": "deno run tests/index.js",
+		"testsDeno": "deno run --allow-all tests/deno/index.ts",
+		"testsBrowser": "echo 'Unsupported at the moment'",
+		"buildSW": "rspack build -c rspack.config.ts",
+		"debugBuildSW": "rspack --stats-error-detail --watch --info-verbosity",
+		"start": "pm2 start ecosystemDeno.config.cjs --only \"aero-dev-server,aero-build-watch,aero-sandbox-build-watch\"",
+		"liveBuildSW": "pm2 start ecosystemDeno.config.cjs --only \"aero-build-watch,aero-sandbox-build-watch\"",
+		"liveBuildWinter": "pm2 start ecosystemDeno.config.cjs --only \"aero-build-winterjs,aero-sandbox-build-watch\", \"",
+		"liveBuildCFWorkers": "pm2 start ecosystemDeno.config.cjs --only \"aero-build-cf-workers,aero-sandbox-build-watch\", \"",
+		"liveBuildAeroSandbox": "pm2 start ecosystemDeno.config.cjs --only \"aero-sandbox-build-watch\"",
+		"initGlobalsBiome": "deno run --allow-read --allow-write ./scripts/initGlobalsBiome.ts",
+		"initGlobalsTs": "deno run --allow-read --allow-write ./scripts/initGlobalsTs.ts"
+	},
+	"include": ["scripts/**/*.ts", "tests/deno/**/*.ts"],
+	"exclude": ["src/AeroSandbox/scripts/runtime/**/*.ts"],
+	"fmt": {
+		"useTabs": true,
+		"indentWidth": 4,
+		"semiColons": true,
+		"singleQuote": false
+	}
+}
