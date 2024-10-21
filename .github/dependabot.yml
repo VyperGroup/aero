@@ -7,15 +7,31 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    # Make one combined PR for the bumps in this package ecosystem
+    groups:
+      all-deps:
+        patterns:
+          - "*"
+
 
   # Maintain dependencies for npm (aero)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "monthly"
+    # Make one combined PR for the bumps in this package ecosystem
+    groups:
+      all-deps:
+        patterns:
+          - "*"
 
   # Maintain dependencies for npm (AeroSandbox)
   - package-ecosystem: "npm"
     directory: "/src/AeroSandbox"
     schedule:
       interval: "monthly"
+    # Make one combined PR for the bumps in this package ecosystem
+    groups:
+      all-deps:
+        patterns:
+          - "*"
