@@ -30,13 +30,9 @@ export default class AeroGel {
 	 */
 	jailScript(script: string, isModule: boolean) {
 		return /* js */ `
-			!() => {
+			!(window = ${this.config.objPaths.proxy.window}, globalThis = ${this.config.objPaths.proxy.window}, location = ${this.config.objPaths.proxy.location}) => {
 				${isModule ? script : this.rewriteScript(script)}
-		  	}().call({
-				window: ${this.config.objPaths.proxy.window},
-				globalThis: ${this.config.objPaths.proxy.window},
-				location: ${this.config.objPaths.proxy.location}
-		 	 });
+		  	}();
 		`;
 	}
 	/** This method is specifically for `var keyword rewriting` */
