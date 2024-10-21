@@ -24,7 +24,7 @@ jobs:
     name: runner / tsc
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       # For aero
       - uses: EPMatt/reviewdog-action-tsc@v1
         with:
