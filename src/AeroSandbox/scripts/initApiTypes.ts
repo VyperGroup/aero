@@ -51,8 +51,8 @@ const printTs = printTsMod.printTs;
 
 const webIDLOutputDir = path.resolve(__dirname, "types/webidlDist");
 
-type webIDLDesc = { [key: string]: string };
-const webIDLUsedInAero: webIDLDesc = {
+type webIDLDescs = { [key: string]: string };
+const webIDLUsedInAero: webIDLDescs = {
 	"cookie-store": "https://wicg.github.io/cookie-store/",
 	// fedcm: "https://fedidcg.github.io/FedCM/", FIXME: Broken
 	"shared-storage": "https://wicg.github.io/shared-storage/",
@@ -61,7 +61,10 @@ const webIDLUsedInAero: webIDLDesc = {
 };
 
 // Gens to types/webidlDist
-export default function genWebIDL(webIDL: webIDLDesc, logStatus: boolean) {
+export default function genWebIDL(
+	logStatus: boolean,
+	webIDL = webIDLUsedInAero
+) {
 	if (logStatus)
 		console.log(
 			"\nGenerating the WebIDL -> TS conversions required in aero"
