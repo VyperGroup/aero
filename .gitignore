@@ -8,6 +8,9 @@ mutable_node_modules
 # Deno
 /**/deno.lock
 
+# Swap
+## VIM
+/**/*.swp
 
 # Builds
 /**/dist/
