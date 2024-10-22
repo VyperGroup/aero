@@ -1,4 +1,4 @@
-import { type FeatureFlagsRspack } from "./types/featureFlags";
+import type { FeatureFlagsRspack } from "./types/featureFlags";
 import type { BareMux } from "@mercuryworkshop/bare-mux";
 import type { Sec } from "$aero/types";
 

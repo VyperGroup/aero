@@ -8,6 +8,9 @@
 			"indentWidth": 4
 		}
 	},
+  	"files": {
+    		"ignoreUnknown": true
+  	},
 	"linter": {
 		"rules": {
 			"nursery": {
@@ -43,6 +46,7 @@
 				},
 				"useThrowOnlyError": "error"
 			}
-		}
+		},
+		"ignore": ["deno.json", "scripts/**/*.ts", "dist/"]
 	}
 }

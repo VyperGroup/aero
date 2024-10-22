@@ -11,7 +11,7 @@
 			"LICENSE",
 			"README.md"
 		],
-		"exclude": ["scripts/runtime/**/*.ts"]
+		"exclude": ["!dist/", "scripts/runtime/**/*.ts"]
 	},
 	"tasks": {
 		"rsdoctor": "kill $(lsof -t -i:3301) & rsdoctor analyze --profile src/AeroSandbox/dist/debug/.rsdoctor/manifest.json --port 3301",
@@ -27,7 +27,13 @@
 	},
 	"include": ["scripts/**/*.ts"],
 	"exclude": ["scripts/runtime/**/*.ts"],
+	"lint": {
+		"include": ["scripts/**/*.ts"],
+		"exclude": ["scripts/runtime/**/*.ts"],
+	},
 	"fmt": {
+		"include": ["scripts/**/*.ts"],
+		"exclude": ["scripts/runtime/**/*.ts"],
 		"useTabs": true,
 		"indentWidth": 4,
 		"semiColons": true,

@@ -3,7 +3,9 @@
 	"name": "@aero/proxy",
 	"version": "0.0.6",
 	"license": "AGPL-3.0-or-later",
+	"exports": "./extras/deno/denoPath.ts",
 	"publish": {
+		"exports": "./extras/deno/denoPath.ts",
 		"include": [
 			"scripts/**/*.ts",
 			"src/AeroSandbox/scripts/**/*.ts",
@@ -12,14 +14,26 @@
 			"LICENSE",
 			"README.md"
 		],
-		"exclude": ["src/AeroSandbox/scripts/runtime/**/*.ts"]
+		"exclude": ["!dist/", "src/AeroSandbox/scripts/runtime/**/*.ts"]
 	},
 	"tasks": {
-		"format": "npm run formatBiome && npm run formatDeno",
-		"formatBiome": "biome format --write",
-		"formatDeno": "deno fmt",
-		"rsdoctor": "npm run rsdoctorSW & npm run rsdoctorSandbox &",
-		"rsdoctors": "kill $(lsof -t -i:3300) & rsdoctor analyze --profile dist/debug/sw/.rsdoctor/manifest.json --port 3300",
+		"push": "deno run lint && deno run format && git push",
+		"lint": "deno run lintSW && deno run lintSandbox",
+		"lintSW": "deno run lintBiomeSW && deno run lintDenoSW",
+		"lintBiomeSW": "biome lint --write",
+		"lintDenoSW": "deno lint --compact --fix",
+		"lintSandbox": "deno run lintBiomeSandbox && deno run lintDenoSandbox",
+		"lintBiomeSandbox": "cd src/AeroSandbox && biome lint --write",
+		"lintDenoSandbox": "cd src/AeroSandbox && deno lint --compact --fix",
+		"format": "deno run formatSW && deno run formatSandbox",
+		"formatSW": "deno run formatBiomeSW && deno run formatDenoSW",
+		"formatBiomeSW": "biome format --write",
+		"formatDenoSW": "deno fmt",
+		"formatSandbox": "deno run formatBiomeSandbox && deno run formatDenoSandbox",
+		"formatBiomeSandbox": "cd src/AeroSandbox && deno fmt",
+		"formatDenoSandbox": "cd src/AeroSandbox && deno fmt",
+		"rsdoctor": "deno run rsdoctorSW & deno run rsdoctorSandbox &",
+		"rsdoctorSW": "kill $(lsof -t -i:3300) & rsdoctor analyze --profile dist/debug/sw/.rsdoctor/manifest.json --port 3300",
 		"rsdoctorSandbox": "kill $(lsof -t -i:3301) & rsdoctor analyze --profile src/AeroSandbox/dist/debug/.rsdoctor/manifest.json --port 3301",
 		"test": "deno run tests/index.js",
 		"testsDeno": "deno run --allow-all tests/deno/index.ts",
@@ -36,10 +50,21 @@
 	},
 	"include": ["scripts/**/*.ts", "tests/deno/**/*.ts"],
 	"exclude": ["src/AeroSandbox/scripts/runtime/**/*.ts"],
+	"lint": {
+		"include": ["scripts/**/*.ts", "tests/deno/**/*.ts"],
+		"exclude": ["src/AeroSandbox/scripts/runtime/**/*.ts"]
+	},
 	"fmt": {
+		"include": ["scripts/**/*.ts", "tests/deno/**/*.ts"],
+		"exclude": ["src/AeroSandbox/scripts/runtime/**/*.ts"],
 		"useTabs": true,
 		"indentWidth": 4,
 		"semiColons": true,
-		"singleQuote": false
+		"singleQuote": false,
+		"proseWrap": "never",
+		"lineWidth": 10000
+	},
+	"imports": {
+		"@std/path": "jsr:@std/path@^1.0.6"
 	}
 }

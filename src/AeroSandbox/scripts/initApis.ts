@@ -1,8 +1,8 @@
 /**
+ * @module
  * This script generates a typescript file that exports an enum of all the API interceptors in AeroSandbox
  * It is automatically ran when AeroSandbox is built with `npm run build`
  * This script can be used as an individual CLI app with `npm run initApis`
- * @module initApis
  */
 
 import path from "node:path";
